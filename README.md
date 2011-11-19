@@ -12,7 +12,7 @@ Set-up Instructions
 
 Currently, setup requires a pretty solid knowledge of certificates and openssl (or some good skills with Google). I'll see about providing automated scripts for generating the CA and relavent cert soon.
 
-1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com.
+1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory.
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
 3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior.
 4. Install the requisite Ruby gems:
