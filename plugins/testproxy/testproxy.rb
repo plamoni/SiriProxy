@@ -25,11 +25,12 @@ class TextProxy < SiriPlugin
   ####
   # When the server reports an "unkown command", this gets called. It's useful for implementing commands that aren't otherwise covered
   def unknown_command(object, connection, command)
-    if(command.match(/test siri proxy/i))
+    if command.match(/test siri proxy/i)
       self.plugin_manager.block_rest_of_session_from_server
 
-      return generate_siri_utterance(connection.lastRefId, "Siri Proxy is up and running!")
+      return generate_siri_utterance connection.lastRefId, "Siri Proxy is up and running!"
     end
+
     object
   end
 

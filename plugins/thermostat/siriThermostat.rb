@@ -15,64 +15,74 @@ THERMOSTAT_HOST = "192.168.2.71"
 class SiriThermostat < SiriPlugin
   def status_of_thermostat(connection)
     Thread.new {
-      status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+      status = JSON.parse open("http://#{THERMOSTAT_HOST}/tstat").read
 
-      connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "The temperature is currently #{status["temp"]} degrees."))
-      connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, " The heater and air conditioner are turned off." )) if(status["tmode"] == 0)
+      connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "The temperature is currently #{status["temp"]} degrees.")
+      connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, " The heater and air conditioner are turned off.") if status["tmode"] == 0
 
-      if(status["tmode"] == 1)
-        connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, " The heater is set to engage at #{status["t_heat"]} degrees."))
-        response = " The heater is off." if(status["tstate"] == 0)
-        response = " The heater is running." if(status["tstate"] == 1)
-        connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, response))
-      elsif(status["tmode"] == 2)
-        connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, " The air conditioner is set to engage at #{status["t_cool"]} degrees."))
-        response = " The air conditioner is off." if(status["tstate"] == 0)
-        response = " The air conditioner running." if(status["tstate"] == 2)
-        connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, response))
+      case status["tmode"]
+      when 1
+        connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, " The heater is set to engage at #{status["t_heat"]} degrees.")
+        response = case status["tstate"]
+        when 0
+          " The heater is off."
+        when 1
+          " The heater is running."
+        end
+        connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, response)
+      when 2
+        connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, " The air conditioner is set to engage at #{status["t_cool"]} degrees.")
+        response = case status["tstate"]
+        when
+          " The air conditioner is off."
+        when 2
+          " The air conditioner running."
+        end
+        connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, response)
       end
     }
 
-    return "Checking the status of the thermostat"
+    "Checking the status of the thermostat"
   end
 
   def set_thermostat(temp, connection)
     Thread.new {
-      status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+      status = JSON.parse open("http://#{THERMOSTAT_HOST}/tstat").read
 
-      if(status["tmode"] == 1) #heat
-        status = HTTParty.post("http://#{THERMOSTAT_HOST}/tstat", {:body => "{\"tmode\":1,\"t_heat\":#{temp.to_i}}"})
+      case status["tmode"]
+      when 1 #heat
+        status = HTTParty.post "http://#{THERMOSTAT_HOST}/tstat", :body => "{\"tmode\":1,\"t_heat\":#{temp.to_i}}"
 
-        if(status["success"] == 0)
-          connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "The heater has been set to #{temp} degrees."))
+        if status["success"] == 0
+          connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "The heater has been set to #{temp} degrees.")
         else
-          connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Sorry, there was a problem setting the temperature"))
+          connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "Sorry, there was a problem setting the temperature")
         end
-      elsif(status["tmode"] == 2) #a/c
-        res = Net::HTTP.post_form(URI("http://#{THERMOSTAT_HOST}/tstat"), 'tmode' => 2, 't_cool' => temp.to_i)
-        status = JSON.parse(res.body)
+      when 2 #a/c
+        res = Net::HTTP.post_form URI("http://#{THERMOSTAT_HOST}/tstat"), 'tmode' => 2, 't_cool' => temp.to_i
+        status = JSON.parse res.body
 
-        if(status["success"] == 0)
-          connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "The air conditioner has been set to #{temp} degrees."))
+        if status["success"] == 0
+          connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "The air conditioner has been set to #{temp} degrees.")
         else
-          connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Sorry, there was a problem setting the temperature"))
+          connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "Sorry, there was a problem setting the temperature")
         end
       else
-        connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Sorry, the thermostat is off."))
+        connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "Sorry, the thermostat is off.")
       end
     }
 
-    return "One moment while I set the thermostat to #{temp} degrees"
+    "One moment while I set the thermostat to #{temp} degrees"
   end
 
   def temperature(connection)
     Thread.new {
-      status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+      status = JSON.parse open("http://#{THERMOSTAT_HOST}/tstat").read
 
-      connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "The current inside temperature is #{status["temp"]} degrees."))
+      connection.inject_object_to_output_stream generate_siri_utterance(connection.lastRefId, "The current inside temperature is #{status["temp"]} degrees.")
     }
 
-    return "Checking the inside temperature."
+    "Checking the inside temperature."
   end
 
   #plusgin implementations:
@@ -84,17 +94,17 @@ class SiriThermostat < SiriPlugin
   #Don't forget to return the object!
   def object_from_client(object, connection)
 
-
     object
   end
 
   def unknown_command(object, connection, command)
-    if(command.match(/thermostat/i))
+    if command.match(/thermostat/i)
       self.plugin_manager.block_rest_of_session_from_server
-      if(temp = command.match(/([0-9]+)/)[1] rescue false)
-        response = set_thermostat(temp, connection)
-      elsif(command.match(/status/i))
-        response = status_of_thermostat(connection)
+      response = case command
+      when /([0-9]+)/
+        set_thermostat $1, connection
+      when /status/i
+        status_of_thermostat connection
       end
 
       return generate_siri_utterance(connection.lastRefId, response)
@@ -104,15 +114,15 @@ class SiriThermostat < SiriPlugin
   end
 
   def speech_recognized(object, connection, phrase)
-    if(phrase.match(/temperature/i) && phrase.match(/inside/i))
+    if phrase.match(/temperature/i) && phrase.match(/inside/i)
       self.plugin_manager.block_rest_of_session_from_server
-      connection.inject_object_to_output_stream(object)
+      connection.inject_object_to_output_stream object
       return generate_siri_utterance(connection.lastRefId, temperature(connection))
     end
 
-    if(phrase.match(/thermostat/i) && phrase.match(/status/i))
+    if phrase.match(/thermostat/i) && phrase.match(/status/i)
       self.plugin_manager.block_rest_of_session_from_server
-      connection.inject_object_to_output_stream(object)
+      connection.inject_object_to_output_stream object
       return generate_siri_utterance(connection.lastRefId, status_of_thermostat(connection))
     end
 

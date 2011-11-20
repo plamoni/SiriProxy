@@ -17,34 +17,35 @@ class InterpretSiri
   #determine the intent of the query
   #processor(object, connection, unknown_text)
   def unknown_intent(object, connection, processor)
-    return false if object == nil
-    return false if (!(object["properties"]["views"][0]["properties"]["dialogIdentifier"] == "Common#unknownIntent") rescue true)
+    object or return false
+
+    dialog_identifier = object["properties"]["views"][0]["properties"]["dialogIdentifier"] rescue false
+    return false unless dialog_identifier == "Common#unknownIntent"
 
     searchUtterance = object["properties"]["views"][1]["properties"]["commands"][0]["properties"]["commands"][0]["properties"]["utterance"]
     searchText = searchUtterance.split("^")[3]
-    return processor.call(object, connection, searchText)
-
-    return false
+    processor.call object, connection, searchText
   end
 
   #Checks if the object is Guzzoni responding that it recognized
   #speech. Sends "best interpretation" phrase to processor
   #processor(object, connection, phrase)
   def speech_recognized(object, connection, processor)
-    return false if object == nil
-    return false if (!(object["class"] == "SpeechRecognized") rescue true)
+    object or return false
+    object["class"] == "SpeechRecognized" or return false
+
     phrase = ""
 
-    object["properties"]["recognition"]["properties"]["phrases"].map { |phraseObj|
-        phraseObj["properties"]["interpretations"].first["properties"]["tokens"].map { |token|
-            tokenProps = token["properties"]
+    object["properties"]["recognition"]["properties"]["phrases"].map do |phraseObj|
+      phraseObj["properties"]["interpretations"].first["properties"]["tokens"].map do |token|
+          tokenProps = token["properties"]
 
-            phrase = phrase[0..-2] if tokenProps["removeSpaceBefore"]
-            phrase << tokenProps["text"]
-            phrase << " " if !tokenProps["removeSpaceAfter"]
-        }
-    }
+          phrase = phrase[0..-2] if tokenProps["removeSpaceBefore"]
+          phrase << tokenProps["text"]
+          phrase << " " unless tokenProps["removeSpaceAfter"]
+      end
+    end
 
-    return processor.call(object, connection, phrase)
+    processor.call object, connection, phrase
   end
 end

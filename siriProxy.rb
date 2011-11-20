@@ -22,19 +22,19 @@ class SiriProxyConnection < EventMachine::Connection
 
   def lastRefId=(refId)
     @lastRefId = refId
-    self.otherConnection.lastRefId = refId if self.otherConnection.lastRefId != refId
+    self.otherConnection.lastRefId = refId unless self.otherConnection.lastRefId == refId
   end
 
   def initialize
     super
     self.processedHeaders = false
-    self.outputBuffer = ""
-    self.inputBuffer = ""
-    self.unzippedInput = ""
-    self.unzippedOutput = ""
-    self.unzipStream = Zlib::Inflate.new
-    self.zipStream = Zlib::Deflate.new
-    self.consumedAce = false
+    self.outputBuffer     = ""
+    self.inputBuffer      = ""
+    self.unzippedInput    = ""
+    self.unzippedOutput   = ""
+    self.unzipStream      = Zlib::Inflate.new
+    self.zipStream        = Zlib::Deflate.new
+    self.consumedAce      = false
   end
 
   def post_init
@@ -49,38 +49,38 @@ class SiriProxyConnection < EventMachine::Connection
 
   def receive_line(line) #Process header
     puts "[Header - #{self.name}] #{line}" if LOG_LEVEL > 2
-    if(line == "") #empty line indicates end of headers
+    if line == "" #empty line indicates end of headers
       puts "[Debug - #{self.name}] Found end of headers" if LOG_LEVEL > 3
       self.set_binary_mode
       self.processedHeaders = true
     end
-    self.outputBuffer << (line + "\x0d\x0a") #Restore the CR-LF to the end of the line
+    self.outputBuffer << "#{line}\x0d\x0a" #Restore the CR-LF to the end of the line
 
-    flush_output_buffer()
+    flush_output_buffer
   end
 
   def receive_binary_data(data)
     self.inputBuffer << data
 
     ##Consume the "0xAACCEE02" data at the start of the stream if necessary (by forwarding it to the output buffer)
-    if(self.consumedAce == false)
+    if self.consumedAce == false
       self.outputBuffer << self.inputBuffer[0..3]
       self.inputBuffer = self.inputBuffer[4..-1]
-      self.consumedAce = true;
+      self.consumedAce = true
     end
 
-    process_compressed_data()
+    process_compressed_data
 
-    flush_output_buffer()
+    flush_output_buffer
   end
 
   def flush_output_buffer
     return if self.outputBuffer.empty?
 
-    if(self.otherConnection.ssled)
+    if self.otherConnection.ssled
       puts "[Debug - #{self.name}] Forwarding #{self.outputBuffer.length} bytes of data to #{self.otherConnection.name}" if LOG_LEVEL > 5
       #puts  self.outputBuffer.to_hex if LOG_LEVEL > 5
-      self.otherConnection.send_data(self.outputBuffer)
+      self.otherConnection.send_data self.outputBuffer
       self.outputBuffer = ""
     else
       puts "[Debug - #{self.name}] Buffering some data for later (#{self.outputBuffer.length} bytes buffered)" if LOG_LEVEL > 5
@@ -95,69 +95,74 @@ class SiriProxyConnection < EventMachine::Connection
     puts self.unzippedInput.to_hex if LOG_LEVEL > 5
     puts "==================================================" if LOG_LEVEL > 5
 
-    while(self.has_next_object?)
-      object = read_next_object_from_unzipped()
+    while self.has_next_object?
+      object = read_next_object_from_unzipped
 
-      if(object != nil) #will be nil if the next object is a ping/pong
-        new_object = prep_received_object(object) #give the world a chance to mess with folks
+      return unless object #will be nil if the next object is a ping/pong
 
-        inject_object_to_output_stream(new_object) if new_object != nil #might be nil if "the world" decides to rid us of the object
-      end
+      new_object = prep_received_object object #give the world a chance to mess with folks
+
+      return unless new_object #might be nil if "the world" decides to rid us of the object
+
+      inject_object_to_output_stream new_object
     end
   end
 
   def has_next_object?
     return false if self.unzippedInput.empty? #empty
+
     unpacked = self.unzippedInput[0...5].unpack('H*').first
-    return true if(unpacked.match(/^0[34]/)) #Ping or pong
+
+    return true if unpacked.match(/^0[34]/) #Ping or pong
+
     objectLength = unpacked.match(/^0200(.{6})/)[1].to_i(16)
-    return ((objectLength + 5) < self.unzippedInput.length) #determine if the length of the next object (plus its prefix) is less than the input buffer
+    return (objectLength + 5) < self.unzippedInput.length #determine if the length of the next object (plus its prefix) is less than the input buffer
   end
 
   def read_next_object_from_unzipped
     unpacked = self.unzippedInput[0...5].unpack('H*').first
-    info = unpacked.match(/^0(.)(.{8})$/)
+    info = unpacked.match /^0(.)(.{8})$/
 
-    if(info[1] == "3" || info[1] == "4") #Ping or pong -- just get these out of the way (and log them for good measure)
+    if %w{3 4}.include?(info[1]) #Ping or pong -- just get these out of the way (and log them for good measure)
       object = self.unzippedInput[0...5]
       self.unzippedOutput << object
 
-      type = (info[1] == "3") ? "Ping" : "Pong"
+      type = info[1] == "3" ? "Ping" : "Pong"
       puts "[#{type} - #{self.name}] (#{info[2].to_i(16)})" if LOG_LEVEL > 3
       self.unzippedInput = self.unzippedInput[5..-1]
 
-      flush_unzipped_output()
-      return nil
+      flush_unzipped_output
+      return
     end
 
-    object_size = info[2].to_i(16)
-    prefix = self.unzippedInput[0...5]
-    object_data = self.unzippedInput[5...object_size+5]
-    self.unzippedInput = self.unzippedInput[object_size+5..-1]
+    object_size         = info[2].to_i(16)
+    prefix              = self.unzippedInput[0...5]
+    object_data         = self.unzippedInput[5...object_size+5]
+    self.unzippedInput  = self.unzippedInput[object_size+5..-1]
 
-    parse_object(object_data)
+    parse_object object_data
   end
 
   def parse_object(object_data)
-    plist = CFPropertyList::List.new(:data => object_data)
-    object = CFPropertyList.native_types(plist.value)
+    plist = CFPropertyList::List.new :data => object_data
+    object = CFPropertyList.native_types plist.value
 
     object
   end
 
   def inject_object_to_output_stream(object)
     self.lastRefId = object["refId"] if object["refId"] != nil && !object["refId"].empty?
-    object_data = object.to_plist(:plist_format => CFPropertyList::List::FORMAT_BINARY)
+    object_data = object.to_plist :plist_format => CFPropertyList::List::FORMAT_BINARY
 
     #Recalculate the size in case the object gets modified. If new size is 0, then remove the object from the stream entirely
     obj_len = object_data.length
 
-    if(obj_len > 0)
+    if obj_len > 0
       prefix = [(0x0200000000 + obj_len).to_s(16).rjust(10, '0')].pack('H*')
       self.unzippedOutput << prefix + object_data
     end
 
-    flush_unzipped_output()
+    flush_unzipped_output
   end
 
   def flush_unzipped_output
@@ -165,7 +170,7 @@ class SiriProxyConnection < EventMachine::Connection
     self.unzippedOutput = ""
     self.outputBuffer << self.zipStream.flush
 
-    flush_output_buffer()
+    flush_output_buffer
   end
 
   def prep_received_object(object)
@@ -174,11 +179,11 @@ class SiriProxyConnection < EventMachine::Connection
     puts "[Info - #{self.name}] Object: #{object["class"]} (group: #{object["group"]}, refId: #{object["refId"]}, aceId: #{object["aceId"]})" if LOG_LEVEL > 2
     pp object if LOG_LEVEL > 3
 
-    object = received_object(object)
+    object = received_object object
 
     new_obj = object
-    object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, self.pluginManager.method(:unknown_command))) != false)
-    object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, self.pluginManager.method(:speech_recognized))) != false)
+    object = new_obj unless (new_obj = Interpret.unknown_intent(object, self, self.pluginManager.method(:unknown_command))) == false
+    object = new_obj unless (new_obj = Interpret.speech_recognized(object, self, self.pluginManager.method(:speech_recognized))) == false
 
     object
   end
@@ -201,20 +206,20 @@ class SiriIPhoneConnection < SiriProxyConnection
 
   def post_init
     super
-    start_tls(:cert_chain_file => "server.passless.crt",
-         :private_key_file => "server.passless.key",
-            :verify_peer => false)
+    start_tls :cert_chain_file  => "server.passless.crt",
+              :private_key_file => "server.passless.key",
+              :verify_peer      => false
   end
 
   def ssl_handshake_completed
     super
-    self.otherConnection = EventMachine.connect('guzzoni.apple.com', 443, SiriGuzzoniConnection)
-    self.otherConnection.otherConnection = self #hehe
-    self.otherConnection.pluginManager = self.pluginManager
+    self.otherConnection                  = EventMachine.connect 'guzzoni.apple.com', 443, SiriGuzzoniConnection
+    self.otherConnection.otherConnection  = self #hehe
+    self.otherConnection.pluginManager    = self.pluginManager
   end
 
   def received_object(object)
-    self.pluginManager.object_from_client(object, self)
+    self.pluginManager.object_from_client object, self
   end
 end
 
@@ -229,22 +234,20 @@ class SiriGuzzoniConnection < SiriProxyConnection
 
   def connection_completed
     super
-    start_tls(:verify_peer => false)
+    start_tls :verify_peer => false
   end
 
   def received_object(object)
-    self.pluginManager.object_from_guzzoni(object, self)
+    self.pluginManager.object_from_guzzoni object, self
   end
 end
 
 class SiriProxy
-  def initialize(pluginClasses = [])
+  def initialize(*pluginClasses)
     EventMachine.run do
-      EventMachine::start_server('0.0.0.0', 443, SiriIPhoneConnection) { |conn|
-        conn.pluginManager = SiriPluginManager.new(
-          pluginClasses
-        )
-      }
+      EventMachine::start_server '0.0.0.0', 443, SiriIPhoneConnection do |conn|
+        conn.pluginManager = SiriPluginManager.new pluginClasses
+      end
     end
   end
 end

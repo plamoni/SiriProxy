@@ -3,14 +3,14 @@ require 'pp'
 class SiriPluginManager
   attr_accessor :plugins
 
-  def initialize(pluginClasses = [])
+  def initialize(*pluginClasses)
     self.plugins = []
 
-    pluginClasses.each { |pluginClass|
+    pluginClasses.each do |pluginClass|
       plugin = pluginClass.new
       plugin.plugin_manager = self
       self.plugins << plugin
-    }
+    end
 
     @blockNextObjectsFromServer = 0
     @blockNextObjectsFromClient = 0
@@ -18,44 +18,41 @@ class SiriPluginManager
   end
 
   def object_from_guzzoni(object, connection)
-    if(@blockRestOfSessionFromServer)
-      if(connection.lastRefId == object["refId"])
-        puts "[Info - Dropping Object from Guzzoni] #{object["class"]}"
-        return nil
-      else
-        @blockRestOfSessionFromServer = false
-      end
+    if @blockRestOfSessionFromServer
+      puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" && return if connection.lastRefId == object["refId"]
+
+      @blockRestOfSessionFromServer = false
     end
 
-    if(@blockNextObjectsFromServer > 0)
+    if @blockNextObjectsFromServer > 0
       puts "[Info - Dropping Object from Guzzoni] #{object["class"]}"
       @blockNextObjectsFromServer -= 1
-      return nil
+      return
     end
 
-    plugins.each { |plugin|
-      object = plugin.object_from_guzzoni(object, connection)
-    }
+    plugins.each do |plugin|
+      object = plugin.object_from_guzzoni object, connection
+    end
 
     object
   end
 
   def object_from_client(object, connection)
-    if(@blockNextObjectsFromClient > 0)
+    if @blockNextObjectsFromClient > 0
       puts "[Info - Dropping Object from iPhone] #{object["class"]}"
       @blockNextObjectsFromClient -= 1
-      return nil
+      return
     end
 
     ##Often this indicates a bug in OUR code. So let's not send it to Apple. :-)
-    if(object["class"] == "CommandIgnored")
+    if object["class"] == "CommandIgnored"
       pp object
-      return nil
+      return
     end
 
-    plugins.each { |plugin|
-      object = plugin.object_from_client(object, connection)
-    }
+    plugins.each do |plugin|
+      object = plugin.object_from_client object, connection
+    end
 
     object
   end
@@ -63,9 +60,9 @@ class SiriPluginManager
   def unknown_command(object, connection, command)
     puts "[UnknownCommand] #{command}"
 
-    plugins.each { |plugin|
-      object = plugin.unknown_command(object, connection, command)
-    }
+    plugins.each do |plugin|
+      object = plugin.unknown_command object, connection, command
+    end
 
     object
   end
@@ -73,9 +70,9 @@ class SiriPluginManager
   def speech_recognized(object, connection, phrase)
     puts "[Recognized Speech] #{phrase}"
 
-    plugins.each { |plugin|
-      object = plugin.speech_recognized(object, connection, phrase)
-    }
+    plugins.each do |plugin|
+      object = plugin.speech_recognized object, connection, phrase
+    end
 
     object
   end
