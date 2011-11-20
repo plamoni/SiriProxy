@@ -96,3 +96,91 @@ end
 add_property_to_class(SiriAssistantUtteranceView, :text)
 add_property_to_class(SiriAssistantUtteranceView, :speakableText)
 add_property_to_class(SiriAssistantUtteranceView, :dialogIdentifier)
+
+class SiriMapItemSnippet < SiriObject
+	def initialize(userCurrentLocation=true, items=[])
+		super("MapItemSnippet", "com.apple.ace.localsearch")
+		self.userCurrentLocation = userCurrentLocation
+		self.items = items
+	end
+end
+add_property_to_class(SiriMapItemSnippet, :userCurrentLocation)
+add_property_to_class(SiriMapItemSnippet, :items)
+
+class SiriMapItem < SiriObject
+	def initialize(label="Apple Headquarters", location=SiriLocation.new, detailType="BUSINESS_ITEM")
+		super("MapItem", "com.apple.ace.localsearch")
+		self.label = label
+		self.detailType = detailType
+		self.location = location
+	end
+end
+add_property_to_class(SiriMapItem, :label)
+add_property_to_class(SiriMapItem, :detailType)
+add_property_to_class(SiriMapItem, :location)
+
+class SiriLocation < SiriObject
+	def initialize(label="Apple", street="1 Infinite Loop", city="Cupertino", stateCode="CA", countryCode="US", postalCode="95014", latitude=37.3317031860352, longitude=-122.030089795589)
+		super("Location", "com.apple.ace.system")
+		self.label = label
+		self.street = street
+		self.city = city
+		self.stateCode = stateCode
+		self.countryCode = countryCode
+		self.postalCode = postalCode
+		self.latitude = latitude
+		self.longitude = longitude
+	end
+end
+add_property_to_class(SiriLocation, :label)
+add_property_to_class(SiriLocation, :street)
+add_property_to_class(SiriLocation, :city)
+add_property_to_class(SiriLocation, :stateCode)
+add_property_to_class(SiriLocation, :countryCode)
+add_property_to_class(SiriLocation, :postalCode)
+add_property_to_class(SiriLocation, :latitude)
+add_property_to_class(SiriLocation, :longitude)
+
+class SiriGetRequestOrigin < SiriObject
+	def initialize(desiredAccuracy="HundredMeters", searchTimeout=8.0, maxAge=1800)
+		super("GetRequestOrigin", "com.apple.ace.system")
+		self.desiredAccuracy = desiredAccuracy
+		self.searchTimeout = searchTimeout
+		self.maxAge = maxAge
+	end
+end
+add_property_to_class(SiriGetRequestOrigin, :desiredAccuracy)
+add_property_to_class(SiriGetRequestOrigin, :searchTimeout)
+add_property_to_class(SiriGetRequestOrigin, :maxAge)
+
+class SiriSetRequestOrigin < SiriObject
+	def initialize(longitude=-122.030089795589, latitude=37.3317031860352, desiredAccuracy="HundredMeters", altitude=0.0, speed=1.0, direction=1.0, age=0, horizontalAccuracy=50.0, verticalAccuracy=10.0)
+		super("SetRequestOrigin", "com.apple.ace.system")
+		self.horizontalAccuracy = horizontalAccuracy
+		self.latitude = latitude
+		self.desiredAccuracy = desiredAccuracy
+		self.altitude = altitude
+		self.speed = speed
+		self.longitude = longitude
+		self.verticalAccuracy = verticalAccuracy
+		self.direction = direction
+		self.age = age
+	end
+end
+add_property_to_class(SiriSetRequestOrigin, :horizontalAccuracy)
+add_property_to_class(SiriSetRequestOrigin, :latitude)
+add_property_to_class(SiriSetRequestOrigin, :desiredAccuracy)
+add_property_to_class(SiriSetRequestOrigin, :altitude)
+add_property_to_class(SiriSetRequestOrigin, :speed)
+add_property_to_class(SiriSetRequestOrigin, :longitude)
+add_property_to_class(SiriSetRequestOrigin, :verticalAccuracy)
+add_property_to_class(SiriSetRequestOrigin, :direction)
+add_property_to_class(SiriSetRequestOrigin, :age)
+
+class SiriRequestCompleted < SiriObject
+	def initialize(callbacks=[])
+		super("RequestCompleted", "com.apple.ace.system")
+		self.callbacks = callbacks
+	end
+end
+add_property_to_class(SiriRequestCompleted, :callbacks)

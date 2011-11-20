@@ -34,12 +34,34 @@ class TextProxy < SiriPlugin
 			
 			return generate_siri_utterance(connection.lastRefId, "Siri Proxy is up and running!")
 		end	
+		
+		
 		object
 	end
 	
 	####
 	# This is called whenever the server recognizes speech. It's useful for overriding commands that Siri would otherwise recognize
 	def speech_recognized(object, connection, phrase)
+		if(phrase.match(/siri proxy map/i))
+			self.plugin_manager.block_rest_of_session_from_server
+			
+			connection.inject_object_to_output_stream(object)
+			
+			addViews = SiriAddViews.new
+			addViews.make_root(connection.lastRefId)
+			mapItemSnippet = SiriMapItemSnippet.new
+			mapItemSnippet.items << SiriMapItem.new
+			utterance = SiriAssistantUtteranceView.new("Testing map injection!")
+			addViews.views << utterance
+			addViews.views << mapItemSnippet
+			
+			connection.inject_object_to_output_stream(addViews.to_hash)
+			
+			requestComplete = SiriRequestCompleted.new
+			requestComplete.make_root(connection.lastRefId)
+			
+			return requestComplete.to_hash
+		end
 		
 		object
 	end
