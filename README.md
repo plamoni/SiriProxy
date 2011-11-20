@@ -76,7 +76,7 @@ Here's some quick(-ish) steps on generating the fake CA and Guzzoni cert (on a M
 9. Enter your passphrase from the second time you did step 3.
 10. Type:
 
-	mv newcert.pem server.passless.key
+	mv newcert.pem server.passless.crt
 
 11. Move server.passless.crt and server.passless.key to your Siri Proxy server.
 12. Email cacert.pem from your demoCA folder (created in step 2) to your iPhone. Once it's there, click it and accept it (it will give you scary warnings about this -- it should).
