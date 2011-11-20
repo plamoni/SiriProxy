@@ -4,8 +4,4 @@ require 'plugins/testproxy/testproxy'
 require 'tweaksiri'
 require 'siriproxy'
 
-PLUGINS = [TextProxy]
-
-proxy = SiriProxy.new(PLUGINS)
-
-#that's it. :-)
+SiriProxy.new TextProxy
