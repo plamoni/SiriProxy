@@ -39,7 +39,7 @@ FAQ
 
 Short answer: No.
 
-Longer answer: While this doesn't let you do such a thing, it could HELP with such a thing. For instance, if you get Siri installed on your iPhone 4 (don't ask me how to do this, I really don't know), and you get someone to give you a valid iPhone 4S UIUD (don't ask me for mine, I will ignore your request), you could use this proxy in order to substitute the valid UIUD for your device's invalid UIUD. It would be pretty trivial. Of course, that would allow anyone with access to the proxy use your UIUD, so I'd recommend against that sort of action on anything externally accessible without performing some sort of authentication (might I suggest, checking the phone's UIUD? hehe).
+Longer answer: While this doesn't let you do such a thing, it could HELP with such a thing. For instance, if you get Siri installed on your iPhone 4 (don't ask me how to do this, I really don't know), and you get someone to give you a valid iPhone 4S UDID (don't ask me for mine, I will ignore your request), you could use this proxy in order to substitute the valid UDID for your device's invalid UDID. It would be pretty trivial. Of course, that would allow anyone with access to the proxy use your UDID, so I'd recommend against that sort of action on anything externally accessible without performing some sort of authentication (might I suggest, checking the phone's UDID? hehe).
 
 **How do I generate the certificate?**
 
@@ -83,7 +83,7 @@ That's it! If you're more of a "follow a video" kind of person, here's a video d
 
 No, it won't. But, as suggested by STBullard on YouTube, you COULD VPN into your home network from outside your house in order to make this work. That would not require a jailbreak. Of course, it also means ALL your traffic gets funneled through your home network. The nice thing about adding an entry to your /etc/hosts file (on a jailbroken phone) is that it funnels only Siri traffic through your home network, and not all your traffic.
 
-**Can you provide me with an iPhone 4S UIUD?**
+**Can you provide me with an iPhone 4S UDID?**
 
 No. Don't even ask.
 
@@ -104,7 +104,7 @@ Disclaimer
 ----------
 I'm not affiliated with Apple in any way. They don't endorse this application. They own all the rights to Siri (and all associated trademarks). 
 
-This software is provided as-is with no warranty whatsoever. Apple could do things to block this kind of behavior if they want. Also, if you cause problems (by sending lots of trash to the Guzzoni servers or anything), I fully support Apple's right to ban your UIUD (making your phone unable to use Siri). They can, and I wouldn't blame them if they do.
+This software is provided as-is with no warranty whatsoever. Apple could do things to block this kind of behavior if they want. Also, if you cause problems (by sending lots of trash to the Guzzoni servers or anything), I fully support Apple's right to ban your UDID (making your phone unable to use Siri). They can, and I wouldn't blame them if they do.
 
 I'm a huge fan of Apple and the work that they do. Siri is a very cool feature and I'm pretty excited to explore it and add functionality. Please refrain from using this software for anything malicious.
 
