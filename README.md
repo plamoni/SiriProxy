@@ -20,9 +20,11 @@ Set-up Instructions
 
 Currently, setup requires a pretty solid knowledge of certificates and openssl (or some good skills with Google). I'll see about providing automated scripts for generating the CA and relavent cert soon.
 
-1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory.
+1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE)
+)
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
-3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior.
+3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
+)
 4. Install the requisite Ruby gems:
 	* httparty
 	* open-uri
@@ -59,25 +61,35 @@ Here's some quick(-ish) steps on generating the fake CA and Guzzoni cert (on a M
 4. Type:
 
 	/System/Library/OpenSSL/misc/CA.pl -newreq
+
 5. Repeat step 3. Make sure you enter "guzzoni.apple.com" as your Common Name.
 6. Type:
 
 	/System/Library/OpenSSL/misc/CA.pl -sign
+
 6. Enter the passphrase from the first time you did step 3.
 7. Type "y" in response to each prompt.
 8. Type:
 
 	openssl rsa -in newkey.pem -out server.passless.key
+
 9. Enter your passphrase from the second time you did step 3.
 10. Type:
 
 	mv newcert.pem server.passless.key
+
 11. Move server.passless.crt and server.passless.key to your Siri Proxy server.
 12. Email cacert.pem from your demoCA folder (created in step 2) to your iPhone. Once it's there, click it and accept it (it will give you scary warnings about this -- it should).
 
 That's it! If you're more of a "follow a video" kind of person, here's a video demonstration of these steps:
 
 [http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE)
+
+**How do I set up a DNS server to forward Guzzoni.apple.com traffic to my computer?**
+
+Check out my video on this: 
+
+[http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
 
 **Will this work outside my home network?**
 
