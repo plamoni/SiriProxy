@@ -7,5 +7,3 @@ require 'siriproxy'
 PLUGINS = [TextProxy]
 
 proxy = SiriProxy.new(PLUGINS)
-
-#that's it. :-)
