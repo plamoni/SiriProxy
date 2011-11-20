@@ -33,6 +33,62 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 5. Execute start.rb (as root -- since it must listen on TCP/443)
 6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
+FAQ
+---
+
+**Will this let me run Siri on my iPhone 4, iPod Touch, iPhone 3G, Microwave, etc?**
+
+Short answer: No.
+
+Longer answer: While this doesn't let you do such a thing, it could HELP with such a thing. For instance, if you get Siri installed on your iPhone 4 (don't ask me how to do this, I really don't know), and you get someone to give you a valid iPhone 4S UIUD (don't ask me for mine, I will ignore your request), you could use this proxy in order to substitute the valid UIUD for your device's invalid UIUD. It would be pretty trivial. Of course, that would allow anyone with access to the proxy use your UIUD, so I'd recommend against that sort of action on anything externally accessible without performing some sort of authentication (might I suggest, checking the phone's UIUD? hehe).
+
+**How do I generate the certificate?**
+
+Here's some quick(-ish) steps on generating the fake CA and Guzzoni cert (on a Mac):
+
+1. Open a terminal (go to spotlight, type "terminal")
+2. Type:
+
+	/System/Library/OpenSSL/misc/CA.pl -newca
+3. Enter the following information:
+	
+	* CA certificate filename: hit enter, it will create a "demoCA" folder
+	* Enter PEM pass phrase: give it something 4+ characters that you'll remember. Doesn't need to be complicated
+	* Information (Country Name, State Name, etc): Just enter whatever. It's not important
+	* Common Name: For the CA, this can be whatever. For the guzzoni certificate, it MUST be: "guzzoni.apple.com"
+
+4. Type:
+
+	/System/Library/OpenSSL/misc/CA.pl -newreq
+5. Repeat step 3. Make sure you enter "guzzoni.apple.com" as your Common Name.
+6. Type:
+
+	/System/Library/OpenSSL/misc/CA.pl -sign
+6. Enter the passphrase from the first time you did step 3.
+7. Type "y" in response to each prompt.
+8. Type:
+
+	openssl rsa -in newkey.pem -out server.passless.key
+9. Enter your passphrase from the second time you did step 3.
+10. Type:
+
+	mv newcert.pem server.passless.key
+11. Move server.passless.crt and server.passless.key to your Siri Proxy server.
+12. Email cacert.pem from your demoCA folder (created in step 2) to your iPhone. Once it's there, click it and accept it (it will give you scary warnings about this -- it should).
+
+That's it! If you're more of a "follow a video" kind of person, here's a video demonstration of these steps:
+
+[http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE)
+
+**Will this work outside my home network?**
+
+No, it won't. But, as suggested by STBullard on YouTube, you COULD VPN into your home network from outside your house in order to make this work. That would not require a jailbreak. Of course, it also means ALL your traffic gets funneled through your home network. The nice thing about adding an entry to your /etc/hosts file (on a jailbroken phone) is that it funnels only Siri traffic through your home network, and not all your traffic.
+
+**Can you provide me with an iPhone 4S UIUD?**
+
+No. Don't even ask.
+
+
 Acknowledgements
 ----------------
 I really can't give enough credit to [Applidium](http://applidium.com/en/news/cracking_siri/) and the [tools they created](https://github.com/applidium/Cracking-Siri). While I've been toying with Siri for a while, their proof of concept for intercepting and interpreting the Siri protocol was invaluable. Although all the code included in the project (so far) is my own, much of the base logic behind my code is based on the sample code they provided. They do great work.
