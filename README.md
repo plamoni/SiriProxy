@@ -43,6 +43,7 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 	* CFPropertyList
 	* uuidtools
 	* eventmachine
+	* twitter (you can remove the require for the twitter plugin in start.rb if you don't want/have this gem)
 5. Execute start.rb (as root -- since it must listen on TCP/443)
 6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
