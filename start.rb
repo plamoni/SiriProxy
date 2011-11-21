@@ -6,7 +6,7 @@ require 'tweakSiri'
 require 'siriProxy'
 
 #Also try Eliza -- though it should really not be run "before" anything else.
-PLUGINS = [TestProxy]
+PLUGINS = [Eliza]
 
 proxy = SiriProxy.new(PLUGINS)
 
