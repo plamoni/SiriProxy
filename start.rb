@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+$KCODE='u' #setting KCODE to unicode for Ruby 1.8
+
 require 'plugins/thermostat/siriThermostat'
 require 'plugins/testproxy/testproxy'
 require 'plugins/eliza/eliza'
