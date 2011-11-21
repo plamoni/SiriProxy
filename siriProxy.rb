@@ -244,7 +244,7 @@ end
 class SiriProxy
 	def initialize(pluginClasses=[])
 		EventMachine.run do
-			EventMachine::start_server('0.0.0.0', 443, SiriIPhoneConnection) { |conn|
+			EventMachine::start_server('0.0.0.0', 4443, SiriIPhoneConnection) { |conn|
 				conn.pluginManager = SiriPluginManager.new(
 					pluginClasses
 				)
