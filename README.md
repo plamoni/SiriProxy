@@ -25,7 +25,6 @@ Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
 **Dominick D'Aniello's Twitter plugin (now integrated into main trunk)**  
 Source: [https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb](https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb)   
 Video: [http://www.youtube.com/watch?v=kM7Th-zcCSc](http://www.youtube.com/watch?v=kM7Th-zcCSc)
->>>>>>> upstream/master
 
 
 Set-up Instructions
