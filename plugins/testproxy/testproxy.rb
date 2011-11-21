@@ -1,4 +1,4 @@
-require 'tweaksiri'
+require 'tweakSiri'
 require 'siriObjectGenerator'
 
 #######
