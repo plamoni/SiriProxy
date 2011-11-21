@@ -14,7 +14,18 @@ See the system in action here: [http://www.youtube.com/watch?v=AN6wy0keQqo](http
 
 See it running with the ELIZA plugin here: [http://www.youtube.com/watch?v=uTiLverShyc](http://www.youtube.com/watch?v=uTiLverShyc)
 
-See it running with the hockey scores plugin here: [http://vimeo.com/32431965](http://vimeo.com/32431965)
+
+Other Plugins
+-------------
+
+**Sam Lu's Hockey Scores plugin**  
+Source: [https://github.com/senmu/SiriProxy/tree/hockeyscores](https://github.com/senmu/SiriProxy/tree/hockeyscores)  
+Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
+
+**Dominick D'Aniello's Twitter plugin (now integrated into main trunk)**  
+Source: [https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb](https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb)   
+Video: [http://www.youtube.com/watch?v=kM7Th-zcCSc](http://www.youtube.com/watch?v=kM7Th-zcCSc)
+>>>>>>> upstream/master
 
 
 Set-up Instructions
