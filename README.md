@@ -99,6 +99,10 @@ No, it won't. But, as suggested by STBullard on YouTube, you COULD VPN into your
 
 No. Don't even ask.
 
+**I'm getting a bunch of "[Info - Guzzoni] Object: SessionValidationFailed" messages. What's wrong?!**
+
+You're probably not using an iPhone 4S. You need to be using an iPhone 4S (or have a UDID you can sub in) in order to make use of SiriProxy. Sorry, this is not designed to be a way around that limitation. (Thanks to [@brownie545](http://www.twitter.com/brownie545) for providing information on what happens when you use a non-iPhone 4S)
+
 
 Acknowledgements
 ----------------
