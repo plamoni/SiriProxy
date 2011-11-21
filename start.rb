@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require 'plugins/thermostat/sirithermostat'
+require 'plugins/thermostat/siriThermostat'
 require 'plugins/testproxy/testproxy'
 require 'plugins/eliza/eliza'
 require 'tweaksiri'
