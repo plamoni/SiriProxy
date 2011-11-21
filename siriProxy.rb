@@ -4,7 +4,7 @@ require 'eventmachine'
 require 'zlib'
 require 'cfpropertylist'
 require 'pp'
-require 'tweaksiri'
+require 'tweakSiri'
 require 'interpretSiri'
 
 LOG_LEVEL = 1
