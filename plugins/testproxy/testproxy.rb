@@ -1,5 +1,5 @@
-require 'tweaksiri'
-require 'siriobjectgenerator'
+require 'tweakSiri'
+require 'siriObjectGenerator'
 
 #######
 # This is a "hello world" style plugin. It simply intercepts the phrase "text siri proxy" and responds
