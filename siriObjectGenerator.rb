@@ -2,10 +2,10 @@
 require 'rubygems'
 require 'uuidtools'
 
-def generate_siri_utterance(refId, text, speakableText=text)
+def generate_siri_utterance(refId, text, speakableText=text, listenAfterSpeaking=false)
 	object = SiriAddViews.new
 	object.make_root(refId)
-	object.views << SiriAssistantUtteranceView.new(text, speakableText)
+	object.views << SiriAssistantUtteranceView.new(text, speakableText, "Misc#ident", listenAfterSpeaking)
 	return object.to_hash
 end
 
