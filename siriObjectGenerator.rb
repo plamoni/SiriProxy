@@ -2,10 +2,10 @@
 require 'rubygems'
 require 'uuidtools'
 
-def generate_siri_utterance(refId, text, speakableText=text)
+def generate_siri_utterance(refId, text, speakableText=text, listenAfterSpeaking=false)
 	object = SiriAddViews.new
 	object.make_root(refId)
-	object.views << SiriAssistantUtteranceView.new(text, speakableText)
+	object.views << SiriAssistantUtteranceView.new(text, speakableText, "Misc#ident", listenAfterSpeaking)
 	return object.to_hash
 end
 
@@ -123,6 +123,20 @@ end
 add_property_to_class(SiriButton, :text)
 add_property_to_class(SiriButton, :commands)
 
+class SiriAnswerSnippet < SiriObject
+	def initialize(answers=[], confirmationOptions=nil)
+		super("Snippet", "com.apple.ace.answer")
+		self.answers = answers
+
+		if confirmationOptions
+			# need to figure out good way to do API for this
+			self.confirmationOptions = confirmationOptions
+		end
+
+	end
+end
+add_property_to_class(SiriAnswerSnippet, :answers)
+add_property_to_class(SiriAnswerSnippet, :confirmationOptions)
 
 #####
 # Items
@@ -152,6 +166,48 @@ class SiriSendCommands < SiriObject
 end
 add_property_to_class(SiriSendCommands, :commands)
 
+class SiriConfirmationOptions < SiriObject
+	def initialize(submitCommands=[], cancelCommands=[], denyCommands=[], confirmCommands=[], denyText="Cacnel", cancelLabel="Cancel", submitLabel="Send", confirmText="Send", cancelTrigger="Deny")
+		super("ConfirmationOptions", "com.apple.ace.assistant")
+
+		self.submitCommands=submitCommands
+		self.cancelCommands=cancelCommands
+		self.denyCommands=denyCommands
+		self.confirmCommands=confirmCommands
+
+		self.denyText = denyText 
+		self.cancelLabel = cancelLabel 
+		self.submitLabel = submitLabel 
+		self.confirmText = confirmText 
+		self.cancelTrigger = cancelTrigger 
+	end
+end
+add_property_to_class(SiriConfirmationOptions, :submitCommands)
+add_property_to_class(SiriConfirmationOptions, :cancelCommands)
+add_property_to_class(SiriConfirmationOptions, :denyCommands)
+add_property_to_class(SiriConfirmationOptions, :confirmCommands)
+add_property_to_class(SiriConfirmationOptions, :denyText)
+add_property_to_class(SiriConfirmationOptions, :cancelLabel)
+add_property_to_class(SiriConfirmationOptions, :submitLabel)
+add_property_to_class(SiriConfirmationOptions, :confirmText)
+add_property_to_class(SiriConfirmationOptions, :cancelTrigger)
+
+class SiriConfirmSnippetCommand < SiriObject
+	def initialize(requestId="")
+		super("ConfirmSnippet", "com.apple.ace.assistant")
+		self.requestId=requestId
+	end
+end
+add_property_to_class(SiriConfirmSnippetCommand, :requestId)
+
+class SiriCancelSnippetCommand < SiriObject
+	def initialize(requestId="")
+		super("ConfirmSnippet", "com.apple.ace.assistant")
+		self.requestId=requestId
+	end
+end
+add_property_to_class(SiriCancelSnippetCommand, :requestId)
+
 #####
 # Objects
 #####
@@ -177,6 +233,26 @@ add_property_to_class(SiriLocation, :countryCode)
 add_property_to_class(SiriLocation, :postalCode)
 add_property_to_class(SiriLocation, :latitude)
 add_property_to_class(SiriLocation, :longitude)
+
+class SiriAnswer < SiriObject
+	def initialize(title="", lines=[])
+		super("Object", "com.apple.ace.answer")
+		self.title = title
+		self.lines = lines
+	end
+end
+add_property_to_class(SiriAnswer, :title)
+add_property_to_class(SiriAnswer, :lines)
+
+class SiriAnswerLine < SiriObject
+	def initialize(text="", image="")
+		super("ObjectLine", "com.apple.ace.answer")
+		self.text = text
+		self.image = image
+	end
+end
+add_property_to_class(SiriAnswerLine, :text)
+add_property_to_class(SiriAnswerLine, :image)
 
 #####
 # Guzzoni Commands (commands that typically come from the server side)
@@ -207,14 +283,18 @@ add_property_to_class(SiriRequestCompleted, :callbacks)
 #####
 
 class SiriStartRequest < SiriObject
-	def initialize(utterance="Testing", handsFree=false)
+	def initialize(utterance="Testing", handsFree=false, proxyOnly=false)
 		super("StartRequest", "com.apple.ace.system")
 		self.utterance = utterance
 		self.handsFree = handsFree
+		if proxyOnly # dont send local when false since its non standard
+			self.proxyOnly = proxyOnly
+		end
 	end
 end
 add_property_to_class(SiriStartRequest, :utterance)
 add_property_to_class(SiriStartRequest, :handsFree)
+add_property_to_class(SiriStartRequest, :proxyOnly)
 
 
 class SiriSetRequestOrigin < SiriObject
@@ -240,3 +320,6 @@ add_property_to_class(SiriSetRequestOrigin, :longitude)
 add_property_to_class(SiriSetRequestOrigin, :verticalAccuracy)
 add_property_to_class(SiriSetRequestOrigin, :direction)
 add_property_to_class(SiriSetRequestOrigin, :age)
+
+
+

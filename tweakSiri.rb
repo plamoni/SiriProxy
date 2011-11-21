@@ -56,6 +56,13 @@ class SiriPluginManager
 		plugins.each { |plugin|
 			object = plugin.object_from_client(object, connection)
 		}
+
+		# This is used for commands from phone that should not be sent back to Apple, 
+		# and will be interpreted by plugins directly
+		if(object && object["properties"] && object['properties']['proxyOnly'])
+			puts "[Info - Not forwarding Object from iPhone because proxyOnly flag was set] #{object["class"]}"
+			return nil
+		end
 		
 		object
 	end
