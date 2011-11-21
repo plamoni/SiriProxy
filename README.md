@@ -25,6 +25,13 @@ Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
 Source: [https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb](https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb)   
 Video: [http://www.youtube.com/watch?v=kM7Th-zcCSc](http://www.youtube.com/watch?v=kM7Th-zcCSc)
 
+**Ninja0091's Dreambox plugin**   
+Source: (don't have it yet)  
+Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch?v=jke2bl7Vkbo)   
+
+**Hjaltij's Plex plugin**   
+Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)   
+Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch?v=jke2bl7Vkbo)   
 
 Set-up Instructions
 -------------------
@@ -52,9 +59,7 @@ FAQ
 
 **Will this let me run Siri on my iPhone 4, iPod Touch, iPhone 3G, Microwave, etc?**
 
-Short answer: No.
-
-Longer answer: While this doesn't let you do such a thing, it could HELP with such a thing. For instance, if you get Siri installed on your iPhone 4 (don't ask me how to do this, I really don't know), and you get someone to give you a valid iPhone 4S UDID (don't ask me for mine, I will ignore your request), you could use this proxy in order to substitute the valid UDID for your device's invalid UDID. It would be pretty trivial. Of course, that would allow anyone with access to the proxy use your UDID, so I'd recommend against that sort of action on anything externally accessible without performing some sort of authentication (might I suggest, checking the phone's UDID? hehe).
+No. Please stop asking. 
 
 **How do I generate the certificate?**
 
@@ -119,6 +124,10 @@ You're probably not using an iPhone 4S. You need to be using an iPhone 4S (or ha
 **How do I remove the certificate from my iPhone when I'm done?**
 
 Just go into your phone's Settings app, then go to "General->Profiles." Your CA will probably be the only thing listed under "Configuration Profiles." It will be listed as its "Common Name." Just click it and click "Remove" and it will be removed. (Thanks to [@tidegu](http://www.twitter.com/tidegu) for asking!)
+
+**Does this require a jailbreak?**
+
+No. The only action you need to take on the phone is to install the root CA's public key.
 
 
 Acknowledgements
