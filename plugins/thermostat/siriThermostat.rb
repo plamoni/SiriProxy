@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-require 'tweaksiri'
-require 'siriobjectgenerator'
+require 'tweakSiri'
+require 'siriObjectGenerator'
 require 'json' 
 require 'open-uri'
 require 'httparty'
