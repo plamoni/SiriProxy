@@ -1,5 +1,7 @@
 require 'tweaksiri'
 require 'siriobjectgenerator'
+require 'net/http'
+
 
 #######
 # This is a "hello world" style plugin. It simply intercepts the phrase "text siri proxy" and responds
@@ -9,7 +11,7 @@ require 'siriobjectgenerator'
 ######
 
 
-class TestProxy < SiriPlugin
+class Eliza < SiriPlugin
 
 	####
 	# This gets called every time an object is received from the Guzzoni server
@@ -42,28 +44,29 @@ class TestProxy < SiriPlugin
 	####
 	# This is called whenever the server recognizes speech. It's useful for overriding commands that Siri would otherwise recognize
 	def speech_recognized(object, connection, phrase)
-		if(phrase.match(/siri proxy map/i))
-			self.plugin_manager.block_rest_of_session_from_server
+		self.plugin_manager.block_rest_of_session_from_server
+		
+		Thread.new {
+			###Contact eliza
+			response =  Net::HTTP.post_form(URI.parse("http://www-ai.ijs.si/eliza-cgi-bin/eliza_script"),{'Entry1'=>phrase})
 			
-			connection.inject_object_to_output_stream(object)
-			
-			addViews = SiriAddViews.new
+			addViews = SiriAddViews.new(false, false, "Reflection")
 			addViews.make_root(connection.lastRefId)
-			mapItemSnippet = SiriMapItemSnippet.new
-			mapItemSnippet.items << SiriMapItem.new
-			utterance = SiriAssistantUtteranceView.new("Testing map injection!")
+			utterance = SiriAssistantUtteranceView.new(response.body.split("</strong>\n").last.split("\n").first)
+			utterance.listenAfterSpeaking = true
 			addViews.views << utterance
-			addViews.views << mapItemSnippet
 			
 			connection.inject_object_to_output_stream(addViews.to_hash)
-			
-			requestComplete = SiriRequestCompleted.new
-			requestComplete.make_root(connection.lastRefId)
-			
-			return requestComplete.to_hash
-		end
+		}		
+
+		return object
 		
-		object
+		##connection.inject_object_to_output_stream()
+		
+		##requestComplete = SiriRequestCompleted.new
+		##requestComplete.make_root(connection.lastRefId)
+		
+		##return requestComplete.to_hash
 	end
 	
 end 

@@ -85,17 +85,23 @@ add_property_to_class(SiriAddViews, :views)
 add_property_to_class(SiriAddViews, :temporary)
 add_property_to_class(SiriAddViews, :dialogPhase)
 
+#####
+# VIEWS
+#####
+
 class SiriAssistantUtteranceView < SiriObject
-	def initialize(text="", speakableText=text, dialogIdentifier="Misc#ident")
+	def initialize(text="", speakableText=text, dialogIdentifier="Misc#ident", listenAfterSpeaking=false)
 		super("AssistantUtteranceView", "com.apple.ace.assistant")
 		self.text = text
 		self.speakableText = speakableText
 		self.dialogIdentifier = dialogIdentifier
+		self.listenAfterSpeaking = listenAfterSpeaking
 	end
 end
 add_property_to_class(SiriAssistantUtteranceView, :text)
 add_property_to_class(SiriAssistantUtteranceView, :speakableText)
 add_property_to_class(SiriAssistantUtteranceView, :dialogIdentifier)
+add_property_to_class(SiriAssistantUtteranceView, :listenAfterSpeaking)
 
 class SiriMapItemSnippet < SiriObject
 	def initialize(userCurrentLocation=true, items=[])
@@ -106,6 +112,21 @@ class SiriMapItemSnippet < SiriObject
 end
 add_property_to_class(SiriMapItemSnippet, :userCurrentLocation)
 add_property_to_class(SiriMapItemSnippet, :items)
+
+class SiriButton < SiriObject
+	def initialize(text="Button Text", commands=[])
+		super("Button", "com.apple.ace.assistant")
+		self.text = text
+		self.commands = commands
+	end
+end
+add_property_to_class(SiriButton, :text)
+add_property_to_class(SiriButton, :commands)
+
+
+#####
+# Items
+#####
 
 class SiriMapItem < SiriObject
 	def initialize(label="Apple Headquarters", location=SiriLocation.new, detailType="BUSINESS_ITEM")
@@ -118,6 +139,22 @@ end
 add_property_to_class(SiriMapItem, :label)
 add_property_to_class(SiriMapItem, :detailType)
 add_property_to_class(SiriMapItem, :location)
+
+#####
+# Commands
+#####
+
+class SiriSendCommands < SiriObject
+	def initialize(commands=[])
+		super("SendCommands", "com.apple.ace.system")
+		self.commands=commands
+	end
+end
+add_property_to_class(SiriSendCommands, :commands)
+
+#####
+# Objects
+#####
 
 class SiriLocation < SiriObject
 	def initialize(label="Apple", street="1 Infinite Loop", city="Cupertino", stateCode="CA", countryCode="US", postalCode="95014", latitude=37.3317031860352, longitude=-122.030089795589)
@@ -141,6 +178,10 @@ add_property_to_class(SiriLocation, :postalCode)
 add_property_to_class(SiriLocation, :latitude)
 add_property_to_class(SiriLocation, :longitude)
 
+#####
+# Guzzoni Commands (commands that typically come from the server side)
+#####
+
 class SiriGetRequestOrigin < SiriObject
 	def initialize(desiredAccuracy="HundredMeters", searchTimeout=8.0, maxAge=1800)
 		super("GetRequestOrigin", "com.apple.ace.system")
@@ -152,6 +193,29 @@ end
 add_property_to_class(SiriGetRequestOrigin, :desiredAccuracy)
 add_property_to_class(SiriGetRequestOrigin, :searchTimeout)
 add_property_to_class(SiriGetRequestOrigin, :maxAge)
+
+class SiriRequestCompleted < SiriObject
+	def initialize(callbacks=[])
+		super("RequestCompleted", "com.apple.ace.system")
+		self.callbacks = callbacks
+	end
+end
+add_property_to_class(SiriRequestCompleted, :callbacks)
+
+#####
+# iPhone Responses (misc meta data back to the server)
+#####
+
+class SiriStartRequest < SiriObject
+	def initialize(utterance="Testing", handsFree=false)
+		super("StartRequest", "com.apple.ace.system")
+		self.utterance = utterance
+		self.handsFree = handsFree
+	end
+end
+add_property_to_class(SiriStartRequest, :utterance)
+add_property_to_class(SiriStartRequest, :handsFree)
+
 
 class SiriSetRequestOrigin < SiriObject
 	def initialize(longitude=-122.030089795589, latitude=37.3317031860352, desiredAccuracy="HundredMeters", altitude=0.0, speed=1.0, direction=1.0, age=0, horizontalAccuracy=50.0, verticalAccuracy=10.0)
@@ -176,11 +240,3 @@ add_property_to_class(SiriSetRequestOrigin, :longitude)
 add_property_to_class(SiriSetRequestOrigin, :verticalAccuracy)
 add_property_to_class(SiriSetRequestOrigin, :direction)
 add_property_to_class(SiriSetRequestOrigin, :age)
-
-class SiriRequestCompleted < SiriObject
-	def initialize(callbacks=[])
-		super("RequestCompleted", "com.apple.ace.system")
-		self.callbacks = callbacks
-	end
-end
-add_property_to_class(SiriRequestCompleted, :callbacks)
