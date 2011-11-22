@@ -1,11 +1,11 @@
 class SiriProxy::Connection < EventMachine::Connection
   include EventMachine::Protocols::LineText2
   
-  attr_accessor :otherConnection, :name, :ssled, :outputBuffer, :inputBuffer, :processedHeaders, :unzipStream, :zipStream, :consumedAce, :unzippedInput, :unzippedOutput, :lastRefId, :pluginManager
+  attr_accessor :otherConnection, :name, :ssled, :outputBuffer, :inputBuffer, :processedHeaders, :unzipStream, :zipStream, :consumedAce, :unzippedInput, :unzippedOutput, :last_ref_id, :pluginManager
 
-  def lastRefId=(refId)
-    @lastRefId = refId
-    self.otherConnection.lastRefId = refId if self.otherConnection.lastRefId != refId
+  def last_ref_id=(ref_id)
+    @last_ref_id = ref_id
+    self.otherConnection.last_ref_id = ref_id if otherConnection.last_ref_id != ref_id
   end
   
   def initialize
@@ -130,7 +130,7 @@ class SiriProxy::Connection < EventMachine::Connection
   end
   
   def inject_object_to_output_stream(object)
-    self.lastRefId = object["refId"] if object["refId"] != nil && !object["refId"].empty?
+    self.last_ref_id = object["refId"] if object["refId"] != nil && !object["refId"].empty?
     object_data = object.to_plist(:plist_format => CFPropertyList::List::FORMAT_BINARY)
 
     #Recalculate the size in case the object gets modified. If new size is 0, then remove the object from the stream entirely
@@ -155,7 +155,7 @@ class SiriProxy::Connection < EventMachine::Connection
   def prep_received_object(object)
     puts "[Info - #{self.name}] Object: #{object["class"]}" if LOG_LEVEL == 1
     puts "[Info - #{self.name}] Object: #{object["class"]} (group: #{object["group"]})" if LOG_LEVEL == 2
-    puts "[Info - #{self.name}] Object: #{object["class"]} (group: #{object["group"]}, refId: #{object["refId"]}, aceId: #{object["aceId"]})" if LOG_LEVEL > 2
+    puts "[Info - #{self.name}] Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if LOG_LEVEL > 2
     pp object if LOG_LEVEL > 3
     
     object = received_object(object)
