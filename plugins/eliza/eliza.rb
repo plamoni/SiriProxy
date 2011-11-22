@@ -1,5 +1,5 @@
-require 'tweakSiri'
-require 'siriObjectGenerator'
+require './tweakSiri'
+require './siriObjectGenerator'
 require 'net/http'
 
 
