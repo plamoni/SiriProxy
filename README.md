@@ -50,15 +50,14 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
 3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
 )
-4. Install the requisite Ruby gems:
-  * httparty
-  * open-uri (you may not need this on newer versions of Ruby)
-  * json
-  * CFPropertyList
-  * uuidtools
-  * eventmachine
-  * twitter (you can remove the require for the twitter plugin in start.rb if you don't want/have this gem)
+4. Install the requisite Ruby gems with bundler:
+
+  $ bundle install
+  
 5. Execute start.rb (as root -- since it must listen on TCP/443)
+
+  $ bundle exec ruby start.rb
+
 6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
 FAQ
