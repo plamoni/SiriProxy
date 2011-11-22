@@ -7,6 +7,11 @@ Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow 
 
 The main example I provide is a plugin to control [my thermostat](http://www.radiothermostat.com/latestnews.html#advanced) with Siri. It responds to commands such as, "What's the status of the thermostat?", or "Set the thermostat to 68 degrees", or even "What's the inside temperature?"
 
+Find us on IRC
+--------------
+
+We now have an IRC channel. Check out the #SiriProxy channel on irc.freenode.net.
+
 Demo Videos
 -----------
 
@@ -18,6 +23,8 @@ See it running with the ELIZA plugin here: [http://www.youtube.com/watch?v=uTiLv
 Other Plugins
 -------------
 
+While we encourage people to create SiriProxy plguins, please note that the project is still in very early stages and the **plugin API is still in flux** and may undergo radical changes.
+
 **Sam Lu's Hockey Scores plugin**  
 Source: [https://github.com/senmu/SiriProxy/tree/hockeyscores](https://github.com/senmu/SiriProxy/tree/hockeyscores)  
 Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
@@ -26,6 +33,13 @@ Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
 Source: [https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb](https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb)   
 Video: [http://www.youtube.com/watch?v=kM7Th-zcCSc](http://www.youtube.com/watch?v=kM7Th-zcCSc)
 
+**Ninja0091's Dreambox plugin**   
+Source: (don't have it yet)  
+Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch?v=jke2bl7Vkbo)   
+
+**Hjaltij's Plex plugin**   
+Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)   
+Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch?v=jke2bl7Vkbo)   
 
 Set-up Instructions
 -------------------
@@ -39,11 +53,12 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 )
 4. Install the requisite Ruby gems:
 	* httparty
-	* open-uri
+	* open-uri (you may not need this on newer versions of Ruby)
 	* json
 	* CFPropertyList
 	* uuidtools
 	* eventmachine
+	* twitter (you can remove the require for the twitter plugin in start.rb if you don't want/have this gem)
 5. Execute start.rb (as root -- since it must listen on TCP/443)
 6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
@@ -52,9 +67,7 @@ FAQ
 
 **Will this let me run Siri on my iPhone 4, iPod Touch, iPhone 3G, Microwave, etc?**
 
-Short answer: No.
-
-Longer answer: While this doesn't let you do such a thing, it could HELP with such a thing. For instance, if you get Siri installed on your iPhone 4 (don't ask me how to do this, I really don't know), and you get someone to give you a valid iPhone 4S UDID (don't ask me for mine, I will ignore your request), you could use this proxy in order to substitute the valid UDID for your device's invalid UDID. It would be pretty trivial. Of course, that would allow anyone with access to the proxy use your UDID, so I'd recommend against that sort of action on anything externally accessible without performing some sort of authentication (might I suggest, checking the phone's UDID? hehe).
+No. Please stop asking. 
 
 **How do I generate the certificate?**
 
@@ -119,6 +132,10 @@ You're probably not using an iPhone 4S. You need to be using an iPhone 4S (or ha
 **How do I remove the certificate from my iPhone when I'm done?**
 
 Just go into your phone's Settings app, then go to "General->Profiles." Your CA will probably be the only thing listed under "Configuration Profiles." It will be listed as its "Common Name." Just click it and click "Remove" and it will be removed. (Thanks to [@tidegu](http://www.twitter.com/tidegu) for asking!)
+
+**Does this require a jailbreak?**
+
+No. The only action you need to take on the phone is to install the root CA's public key.
 
 
 Acknowledgements

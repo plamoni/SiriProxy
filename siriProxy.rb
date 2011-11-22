@@ -1,8 +1,7 @@
-#!/usr/bin/env ruby
 require 'rubygems'
 require 'eventmachine'
 require 'zlib'
-require 'cfpropertylist'
+require 'CFPropertyList'
 require 'pp'
 require 'tweakSiri'
 require 'interpretSiri'
