@@ -1,6 +1,6 @@
 require 'rubygems'
-require 'tweakSiri'
-require 'siriObjectGenerator'
+require './tweakSiri'
+require './siriObjectGenerator'
 require 'twitter'
 
 #######
