@@ -13,6 +13,6 @@ class SiriProxy::Connection::Guzzoni < SiriProxy::Connection
 	end
 	
 	def received_object(object)		
-		self.pluginManager.object_from_guzzoni(object, self)
+		plugin_manager.object_from_guzzoni(object, self)
 	end
 end

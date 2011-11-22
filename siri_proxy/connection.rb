@@ -1,23 +1,23 @@
 class SiriProxy::Connection < EventMachine::Connection
   include EventMachine::Protocols::LineText2
   
-  attr_accessor :otherConnection, :name, :ssled, :outputBuffer, :inputBuffer, :processedHeaders, :unzipStream, :zipStream, :consumedAce, :unzippedInput, :unzippedOutput, :last_ref_id, :pluginManager
+  attr_accessor :other_connection, :name, :ssled, :output_buffer, :input_buffer, :processed_headers, :unzip_stream, :zip_stream, :consumed_ace, :unzipped_input, :unzipped_output, :last_ref_id, :plugin_manager
 
   def last_ref_id=(ref_id)
     @last_ref_id = ref_id
-    self.otherConnection.last_ref_id = ref_id if otherConnection.last_ref_id != ref_id
+    self.other_connection.last_ref_id = ref_id if other_connection.last_ref_id != ref_id
   end
   
   def initialize
     super
-    self.processedHeaders = false
-    self.outputBuffer = ""
-    self.inputBuffer = ""
-    self.unzippedInput = ""
-    self.unzippedOutput = ""
-    self.unzipStream = Zlib::Inflate.new
-    self.zipStream = Zlib::Deflate.new
-    self.consumedAce = false
+    self.processed_headers = false
+    self.output_buffer = ""
+    self.input_buffer = ""
+    self.unzipped_input = ""
+    self.unzipped_output = ""
+    self.unzip_stream = Zlib::Inflate.new
+    self.zip_stream = Zlib::Deflate.new
+    self.consumed_ace = false
   end
 
   def post_init
@@ -34,22 +34,22 @@ class SiriProxy::Connection < EventMachine::Connection
     puts "[Header - #{self.name}] #{line}" if LOG_LEVEL > 2
     if(line == "") #empty line indicates end of headers
       puts "[Debug - #{self.name}] Found end of headers" if LOG_LEVEL > 3
-      self.set_binary_mode
-      self.processedHeaders = true
+      set_binary_mode
+      self.processed_headers = true
     end  
-    self.outputBuffer << (line + "\x0d\x0a") #Restore the CR-LF to the end of the line
+    self.output_buffer << (line + "\x0d\x0a") #Restore the CR-LF to the end of the line
     
     flush_output_buffer()
   end
 
   def receive_binary_data(data)
-    self.inputBuffer << data
+    self.input_buffer << data
     
     ##Consume the "0xAACCEE02" data at the start of the stream if necessary (by forwarding it to the output buffer)
-    if(self.consumedAce == false)
-      self.outputBuffer << self.inputBuffer[0..3]
-      self.inputBuffer = self.inputBuffer[4..-1]
-      self.consumedAce = true;
+    if(self.consumed_ace == false)
+      self.output_buffer << input_buffer[0..3]
+      self.input_buffer = input_buffer[4..-1]
+      self.consumed_ace = true;
     end
     
     process_compressed_data()
@@ -58,24 +58,24 @@ class SiriProxy::Connection < EventMachine::Connection
   end
   
   def flush_output_buffer
-    return if self.outputBuffer.empty?
+    return if output_buffer.empty?
   
-    if(self.otherConnection.ssled)
-      puts "[Debug - #{self.name}] Forwarding #{self.outputBuffer.length} bytes of data to #{self.otherConnection.name}" if LOG_LEVEL > 5
-      #puts  self.outputBuffer.to_hex if LOG_LEVEL > 5
-      self.otherConnection.send_data(self.outputBuffer)
-      self.outputBuffer = ""
+    if other_connection.ssled
+      puts "[Debug - #{self.name}] Forwarding #{self.output_buffer.length} bytes of data to #{other_connection.name}" if LOG_LEVEL > 5
+      #puts  self.output_buffer.to_hex if LOG_LEVEL > 5
+      other_connection.send_data(output_buffer)
+      self.output_buffer = ""
     else
-      puts "[Debug - #{self.name}] Buffering some data for later (#{self.outputBuffer.length} bytes buffered)" if LOG_LEVEL > 5
-      #puts  self.outputBuffer.to_hex if LOG_LEVEL > 5
+      puts "[Debug - #{self.name}] Buffering some data for later (#{self.output_buffer.length} bytes buffered)" if LOG_LEVEL > 5
+      #puts  self.output_buffer.to_hex if LOG_LEVEL > 5
     end
   end
 
   def process_compressed_data    
-    self.unzippedInput << self.unzipStream.inflate(self.inputBuffer)
-    self.inputBuffer = ""
+    self.unzipped_input << unzip_stream.inflate(self.input_buffer)
+    self.input_buffer = ""
     puts "========UNZIPPED DATA (from #{self.name} =========" if LOG_LEVEL > 5
-    puts self.unzippedInput.to_hex if LOG_LEVEL > 5
+    puts unzipped_input.to_hex if LOG_LEVEL > 5
     puts "==================================================" if LOG_LEVEL > 5
     
     while(self.has_next_object?)
@@ -90,33 +90,33 @@ class SiriProxy::Connection < EventMachine::Connection
   end
 
   def has_next_object?
-    return false if self.unzippedInput.empty? #empty
-    unpacked = self.unzippedInput[0...5].unpack('H*').first
+    return false if unzipped_input.empty? #empty
+    unpacked = unzipped_input[0...5].unpack('H*').first
     return true if(unpacked.match(/^0[34]/)) #Ping or pong
     objectLength = unpacked.match(/^0200(.{6})/)[1].to_i(16)
-    return ((objectLength + 5) < self.unzippedInput.length) #determine if the length of the next object (plus its prefix) is less than the input buffer
+    return ((objectLength + 5) < unzipped_input.length) #determine if the length of the next object (plus its prefix) is less than the input buffer
   end
 
   def read_next_object_from_unzipped
-    unpacked = self.unzippedInput[0...5].unpack('H*').first
+    unpacked = unzipped_input[0...5].unpack('H*').first
     info = unpacked.match(/^0(.)(.{8})$/)
     
     if(info[1] == "3" || info[1] == "4") #Ping or pong -- just get these out of the way (and log them for good measure)
-      object = self.unzippedInput[0...5]
-      self.unzippedOutput << object
+      object = unzipped_input[0...5]
+      self.unzipped_output << object
       
       type = (info[1] == "3") ? "Ping" : "Pong"      
       puts "[#{type} - #{self.name}] (#{info[2].to_i(16)})" if LOG_LEVEL > 3
-      self.unzippedInput = self.unzippedInput[5..-1]
+      self.unzipped_input = unzipped_input[5..-1]
       
       flush_unzipped_output()
       return nil
     end
   
     object_size = info[2].to_i(16)
-    prefix = self.unzippedInput[0...5]
-    object_data = self.unzippedInput[5...object_size+5]
-    self.unzippedInput = self.unzippedInput[object_size+5..-1]
+    prefix = unzipped_input[0...5]
+    object_data = unzipped_input[5...object_size+5]
+    self.unzipped_input = unzipped_input[object_size+5..-1]
 
     parse_object(object_data)
   end
@@ -138,16 +138,16 @@ class SiriProxy::Connection < EventMachine::Connection
     
     if(obj_len > 0)
       prefix = [(0x0200000000 + obj_len).to_s(16).rjust(10, '0')].pack('H*')
-      self.unzippedOutput << prefix + object_data
+      self.unzipped_output << prefix + object_data
     end
     
     flush_unzipped_output()
   end
   
   def flush_unzipped_output
-    self.zipStream << self.unzippedOutput
-    self.unzippedOutput = ""
-    self.outputBuffer << self.zipStream.flush
+    self.zip_stream << self.unzipped_output
+    self.unzipped_output = ""
+    self.output_buffer << zip_stream.flush
     
     flush_output_buffer()
   end
@@ -161,8 +161,8 @@ class SiriProxy::Connection < EventMachine::Connection
     object = received_object(object)
     
     new_obj = object
-    object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, self.pluginManager.method(:unknown_command))) != false)    
-    object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, self.pluginManager.method(:speech_recognized))) != false)
+    object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
+    object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
     
     object
   end

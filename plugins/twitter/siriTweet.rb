@@ -1,5 +1,4 @@
 require 'rubygems'
-require 'tweakSiri'
 require 'siriObjectGenerator'
 require 'twitter'
 
@@ -22,7 +21,7 @@ class SiriTweet < SiriProxy::Plugin
       config.oauth_token_secret = "YOUR TOKEN SECRET"
     end 
 
-    @twitterClient= Twitter::Client.new
+    @twitterClient = Twitter::Client.new
 
 # Post a status update
     
@@ -39,7 +38,7 @@ class SiriTweet < SiriProxy::Plugin
   def object_from_client(object, connection)
     # They clicked cancel/send buttons instead of speaking
     if @state == :CONFIRM_STATE && object['class'] == "StartRequest" && object['properties']['proxyOnly']
-      connection.otherConnection.inject_object_to_output_stream self.speech_recognized object, connection, object['properties']['utterance']
+      connection.other_connection.inject_object_to_output_stream self.speech_recognized object, connection, object['properties']['utterance']
     end
     object
   end
@@ -59,7 +58,7 @@ class SiriTweet < SiriProxy::Plugin
       SiriAnswerLine.new('logo','http://cl.ly/1l040J1A392n0M1n1g35/content'), # this just makes things looks nice, but is obviously specific to my username
       SiriAnswerLine.new(text)
     ])
-    confirmationOptions = SiriConfirmationOptions.new(
+    confirmation_options = SiriConfirmationOptions.new(
       [SiriSendCommands.new([SiriConfirmSnippetCommand.new(),SiriStartRequest.new("yes",false,true)])],
       [SiriSendCommands.new([SiriCancelSnippetCommand.new(),SiriStartRequest.new("no",false,true)])],
       [SiriSendCommands.new([SiriCancelSnippetCommand.new(),SiriStartRequest.new("no",false,true)])],
@@ -67,7 +66,7 @@ class SiriTweet < SiriProxy::Plugin
     )
 
     object.views << SiriAssistantUtteranceView.new("Here is your tweet:", "Here is your tweet. Ready to send it?", "Misc#ident", true)
-    object.views << SiriAnswerSnippet.new([answer], confirmationOptions)
+    object.views << SiriAnswerSnippet.new([answer], confirmation_options)
 
     object.to_hash
   end
@@ -77,26 +76,26 @@ class SiriTweet < SiriProxy::Plugin
   def speech_recognized(object, connection, phrase)
     if @state == :DEFAULT_STATE 
       if phrase.match(/^tweet (.+)/i)
-        self.plugin_manager.block_rest_of_session_from_server
+        plugin_manager.block_rest_of_session_from_server
         @state = :CONFIRM_STATE
         @tweetText = $1
-        return self.generate_tweet_response(connection.lastRefId, $1);
+        return generate_tweet_response(connection.last_ref_id, $1);
       end
     elsif @state == :CONFIRM_STATE
       if phrase.match(/yes/i)
-        self.plugin_manager.block_rest_of_session_from_server
+        plugin_manager.block_rest_of_session_from_server
         @state = :DEFAULT_STATE
         @twitterClient.update(@tweetText) # this should probably be done in a seperate thread
-        return generate_siri_utterance(connection.lastRefId, "Ok it has been posted to Twitter.")
+        return generate_siri_utterance(connection.last_ref_id, "Ok it has been posted to Twitter.")
       end
       if phrase.match(/no/i)
-        self.plugin_manager.block_rest_of_session_from_server
+        plugin_manager.block_rest_of_session_from_server
         @state = :DEFAULT_STATE
-        return generate_siri_utterance(connection.lastRefId, "Ok I won't send it.")
+        generate_siri_utterance(connection.last_ref_id, "Ok I won't send it.")
       end
 
-      self.plugin_manager.block_rest_of_session_from_server
-      return generate_siri_utterance(connection.lastRefId, "Do you want me to send it?", "I'm sorry. I don't understand. Do you want me to send it? Say yes or no.", true)
+      plugin_manager.block_rest_of_session_from_server
+      return generate_siri_utterance(connection.last_ref_id, "Do you want me to send it?", "I'm sorry. I don't understand. Do you want me to send it? Say yes or no.", true)
     end
 
     object

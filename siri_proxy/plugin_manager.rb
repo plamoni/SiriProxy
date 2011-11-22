@@ -8,7 +8,7 @@ class SiriProxy::PluginManager
 		pluginClasses.each { |pluginClass|
 			plugin = pluginClass.new
 			plugin.plugin_manager = self
-			self.plugins << plugin
+			plugins << plugin
 		}
 	
 		@blockNextObjectsFromServer = 0
@@ -18,7 +18,7 @@ class SiriProxy::PluginManager
 	
 	def object_from_guzzoni(object, connection) 
 		if(@blockRestOfSessionFromServer)
-			if(connection.lastRefId == object["refId"])
+			if(connection.last_ref_id == object["refId"])
 				puts "[Info - Dropping Object from Guzzoni] #{object["class"]}"
 				return nil
 			else

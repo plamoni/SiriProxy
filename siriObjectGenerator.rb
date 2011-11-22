@@ -33,7 +33,7 @@ class SiriObject
         hash["properties"][key] = []
         self.properties[key].each { |val| hash["properties"][key] << (val.to_hash rescue val) }
       else
-        hash["properties"][key] = (self.properties[key].to_hash rescue self.properties[key])
+        hash["properties"][key] = (properties[key].to_hash rescue properties[key])
       end
     }
 
@@ -44,7 +44,7 @@ class SiriObject
     self.extend(SiriRootObject)
   
     self.ref_id = (ref_id || random_ref_id) 
-    self.ace_id = (ace_id || self.random_ace_id)
+    self.ace_id = (ace_id || random_ace_id)
   end
 end
 

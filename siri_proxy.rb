@@ -8,7 +8,7 @@ LOG_LEVEL = 6
 
 class String
   def to_hex(seperator=" ")
-    self.bytes.to_a.map{|i| i.to_s(16).rjust(2, '0')}.join(seperator)
+    bytes.to_a.map{|i| i.to_s(16).rjust(2, '0')}.join(seperator)
   end
 end
 
@@ -21,9 +21,7 @@ class SiriProxy
         puts "Starting SiriProxy on port #{PORT}.."
         EventMachine::start_server('0.0.0.0', PORT, SiriProxy::Connection::Iphone) { |conn|
           $stderr.puts "start conn #{conn.inspect}"
-          conn.pluginManager = SiriProxy::PluginManager.new(
-            pluginClasses
-          )
+          conn.plugin_manager = SiriProxy::PluginManager.new(pluginClasses)
         }
       rescue RuntimeError => err
         if err.message == "no acceptor"

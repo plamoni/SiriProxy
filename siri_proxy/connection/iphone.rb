@@ -9,21 +9,20 @@ class SiriProxy::Connection::Iphone < SiriProxy::Connection
   end
 
   def post_init
-    puts "Setting TLS"
     super
-    start_tls(:cert_chain_file => "server.passless.crt",
-         :private_key_file => "server.passless.key",
-             :verify_peer => false)
+    start_tls(:cert_chain_file  => "server.passless.crt",
+              :private_key_file => "server.passless.key",
+              :verify_peer      => false)
   end
 
   def ssl_handshake_completed
     super
-    self.otherConnection = EventMachine.connect('guzzoni.apple.com', 443, SiriProxy::Connection::Guzzoni)
-    self.otherConnection.otherConnection = self #hehe
-    self.otherConnection.pluginManager = self.pluginManager
+    self.other_connection = EventMachine.connect('guzzoni.apple.com', 443, SiriProxy::Connection::Guzzoni)
+    other_connection.other_connection = self #hehe
+    other_connection.plugin_manager = plugin_manager
   end
   
   def received_object(object)
-    self.pluginManager.object_from_client(object, self)
+    plugin_manager.object_from_client(object, self)
   end
 end
