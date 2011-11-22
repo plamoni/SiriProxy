@@ -241,14 +241,24 @@ class SiriGuzzoniConnection < SiriProxyConnection
 end
 
 class SiriProxy
+  PORT = 443
+  
 	def initialize(pluginClasses=[])
-		EventMachine.run do
-			EventMachine::start_server('0.0.0.0', 443, SiriIPhoneConnection) { |conn|
-				conn.pluginManager = SiriPluginManager.new(
-					pluginClasses
-				)
-			}
-		end
+	  begin
+  		EventMachine.run do
+  			EventMachine::start_server('0.0.0.0', PORT, SiriIPhoneConnection) { |conn|
+  				conn.pluginManager = SiriPluginManager.new(
+  					pluginClasses
+  				)
+  			}
+  		end
+    rescue RuntimeError => err
+      if err.message == "no acceptor"
+        raise "Cannot start the server on port #{PORT} - are you root, or have another process on this port already?"
+      else
+        raise 
+      end
+    end
 	end
 end
 
