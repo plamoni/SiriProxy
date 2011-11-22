@@ -3,15 +3,14 @@ require 'pp'
 class SiriPluginManager
 	attr_accessor :plugins
 
-	def initialize(pluginClasses=[])
+	def initialize()
 		self.plugins = []
-		
-		pluginClasses.each { |pluginClass|
+		SiriPlugin.plugins.each { |pluginClass|
 			plugin = pluginClass.new
 			plugin.plugin_manager = self
 			self.plugins << plugin
 		}
-	
+
 		@blockNextObjectsFromServer = 0
 		@blockNextObjectsFromClient = 0
 		@blockRestOfSessionFromServer = false
@@ -105,27 +104,29 @@ end
 class SiriPlugin
 	attr_accessor :plugin_manager
 
-	def object_from_guzzoni(object, connection) 
-		
+    class << self
+        attr_accessor :plugins
+        protected :plugins=
+    end
+    self.plugins ||= []
+
+    def self.inherited klass
+        self.plugins << klass
+    end
+
+	def object_from_guzzoni(object, connection)
 		object
 	end
-	
-	
-	#Don't forget to return the object!
+
 	def object_from_client(object, connection)
-		
 		object
 	end
-	
-	
+
 	def unknown_command(object, connection, command)
-		
 		object
 	end
-	
+
 	def speech_recognized(object, connection, phrase)
-		
 		object
 	end
-	
-end 
+end
