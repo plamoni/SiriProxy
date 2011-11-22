@@ -11,7 +11,7 @@ require 'net/http'
 ######
 
 
-class Eliza < SiriPlugin
+class Eliza < SiriProxy::SiriPlugin
 
 	####
 	# This gets called every time an object is received from the Guzzoni server

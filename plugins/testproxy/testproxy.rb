@@ -1,4 +1,4 @@
-require 'tweakSiri'
+require 'siri_proxy'
 require 'siriObjectGenerator'
 
 #######
@@ -9,7 +9,7 @@ require 'siriObjectGenerator'
 ######
 
 
-class TestProxy < SiriPlugin
+class TestProxy < SiriProxy::SiriPlugin
 
 	####
 	# This gets called every time an object is received from the Guzzoni server

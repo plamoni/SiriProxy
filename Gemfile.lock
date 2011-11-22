@@ -1,0 +1,21 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    CFPropertyList (2.0.17)
+      libxml-ruby (>= 1.1.0)
+      rake (>= 0.7.0)
+    eventmachine (0.12.10)
+    json (1.6.1)
+    libxml-ruby (2.2.2)
+    rake (0.9.2.2)
+    uuidtools (2.1.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  CFPropertyList
+  eventmachine
+  json
+  libxml-ruby
+  uuidtools

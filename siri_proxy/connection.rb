@@ -1,21 +1,4 @@
-require 'rubygems'
-require 'eventmachine'
-require 'zlib'
-require 'CFPropertyList'
-require 'pp'
-require 'tweakSiri'
-require 'interpretSiri'
-
-LOG_LEVEL = 1
-
-class String
-	def to_hex(seperator=" ")
-		self.bytes.to_a.map{|i| i.to_s(16).rjust(2, '0')}.join(seperator)
-	end
-end
-
-
-class SiriProxyConnection < EventMachine::Connection
+class SiriProxy::Connection < EventMachine::Connection
 	include EventMachine::Protocols::LineText2
 	
 	attr_accessor :otherConnection, :name, :ssled, :outputBuffer, :inputBuffer, :processedHeaders, :unzipStream, :zipStream, :consumedAce, :unzippedInput, :unzippedOutput, :lastRefId, :pluginManager
@@ -192,65 +175,3 @@ class SiriProxyConnection < EventMachine::Connection
 	end 
 
 end
-
-#####
-# This is the connection to the iPhone
-#####
-class SiriIPhoneConnection < SiriProxyConnection
-	def initialize
-		super
-		self.name = "iPhone"
-	end
-
-	def post_init
-		super
-		start_tls(:cert_chain_file => "server.passless.crt",
-				 :private_key_file => "server.passless.key",
-				 	  :verify_peer => false)
-	end
-
-	def ssl_handshake_completed
-		super
-		self.otherConnection = EventMachine.connect('guzzoni.apple.com', 443, SiriGuzzoniConnection)
-		self.otherConnection.otherConnection = self #hehe
-		self.otherConnection.pluginManager = self.pluginManager
-	end
-	
-	def received_object(object)
-		self.pluginManager.object_from_client(object, self)
-	end
-end
-
-#####
-# This is the connection to the Guzzoni (the Siri server backend)
-#####
-class SiriGuzzoniConnection < SiriProxyConnection
-	def initialize
-		super
-		self.name = "Guzzoni"
-	end
-
-	def connection_completed
-		super
-		start_tls(:verify_peer => false)
-	end
-	
-	def received_object(object)		
-		self.pluginManager.object_from_guzzoni(object, self)
-	end
-end
-
-class SiriProxy
-	def initialize(pluginClasses=[])
-		EventMachine.run do
-			EventMachine::start_server('0.0.0.0', 443, SiriIPhoneConnection) { |conn|
-				conn.pluginManager = SiriPluginManager.new(
-					pluginClasses
-				)
-			}
-		end
-	end
-end
-
-Interpret = InterpretSiri.new
-
