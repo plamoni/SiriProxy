@@ -166,7 +166,7 @@ end
 add_property_to_class(SiriSendCommands, :commands)
 
 class SiriConfirmationOptions < SiriObject
-	def initialize(submitCommands=[], cancelCommands=[], denyCommands=[], confirmCommands=[], denyText="Cacnel", cancelLabel="Cancel", submitLabel="Send", confirmText="Send", cancelTrigger="Deny")
+	def initialize(submitCommands=[], cancelCommands=[], denyCommands=[], confirmCommands=[], denyText="Cancel", cancelLabel="Cancel", submitLabel="Send", confirmText="Send", cancelTrigger="Deny")
 		super("ConfirmationOptions", "com.apple.ace.assistant")
 
 		self.submitCommands=submitCommands
