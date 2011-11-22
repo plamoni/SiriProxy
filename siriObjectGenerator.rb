@@ -169,10 +169,10 @@ class SiriConfirmationOptions < SiriObject
 	def initialize(submitCommands=[], cancelCommands=[], denyCommands=[], confirmCommands=[], denyText="Cancel", cancelLabel="Cancel", submitLabel="Send", confirmText="Send", cancelTrigger="Deny")
 		super("ConfirmationOptions", "com.apple.ace.assistant")
 
-		self.submitCommands=submitCommands
-		self.cancelCommands=cancelCommands
-		self.denyCommands=denyCommands
-		self.confirmCommands=confirmCommands
+		self.submitCommands = submitCommands
+		self.cancelCommands = cancelCommands
+		self.denyCommands = denyCommands
+		self.confirmCommands = confirmCommands
 
 		self.denyText = denyText 
 		self.cancelLabel = cancelLabel 
@@ -192,20 +192,20 @@ add_property_to_class(SiriConfirmationOptions, :confirmText)
 add_property_to_class(SiriConfirmationOptions, :cancelTrigger)
 
 class SiriConfirmSnippetCommand < SiriObject
-	def initialize(requestId="")
+	def initialize(request_id = "")
 		super("ConfirmSnippet", "com.apple.ace.assistant")
-		self.requestId=requestId
+		self.request_id = request_id
 	end
 end
-add_property_to_class(SiriConfirmSnippetCommand, :requestId)
+add_property_to_class(SiriConfirmSnippetCommand, :request_id)
 
 class SiriCancelSnippetCommand < SiriObject
-	def initialize(requestId="")
+	def initialize(request_id = "")
 		super("ConfirmSnippet", "com.apple.ace.assistant")
-		self.requestId=requestId
+		self.request_id = request_id
 	end
 end
-add_property_to_class(SiriCancelSnippetCommand, :requestId)
+add_property_to_class(SiriCancelSnippetCommand, :request_id)
 
 #####
 # Objects

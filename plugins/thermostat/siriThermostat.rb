@@ -11,7 +11,7 @@ require 'httparty'
 
 THERMOSTAT_HOST = "192.168.2.71"
 
-class SiriThermostat < SiriProxy::SiriPlugin
+class SiriThermostat < SiriProxy::Plugin
 	def status_of_thermostat(connection)
 		
 		Thread.new {

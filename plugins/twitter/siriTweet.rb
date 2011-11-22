@@ -11,7 +11,7 @@ require 'twitter'
 ######
 
 
-class SiriTweet < SiriProxy::SiriPlugin
+class SiriTweet < SiriProxy::Plugin
 
 	def initialize()
 		@state = :DEFAULT_STATE 

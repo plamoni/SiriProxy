@@ -9,7 +9,7 @@ require 'siriObjectGenerator'
 ######
 
 
-class TestProxy < SiriProxy::SiriPlugin
+class TestProxy < SiriProxy::Plugin
 
 	####
 	# This gets called every time an object is received from the Guzzoni server

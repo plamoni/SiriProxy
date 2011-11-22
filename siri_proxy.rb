@@ -4,7 +4,7 @@ require 'pp'
 # require 'tweakSiri'
 require 'interpretSiri'
 
-LOG_LEVEL = 1
+LOG_LEVEL = 5
 
 class String
 	def to_hex(seperator=" ")
@@ -18,7 +18,7 @@ class SiriProxy
 		  begin
 				puts "Starting SiriProxy on port 443.."
   			EventMachine::start_server('0.0.0.0', 4443, SiriProxy::Connection::Iphone) { |conn|
-  				conn.pluginManager = SiriProxy::SiriPluginManager.new(
+  				conn.pluginManager = SiriProxy::PluginManager.new(
   					pluginClasses
   				)
   			}

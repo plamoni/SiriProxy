@@ -12,8 +12,8 @@ require 'siri_proxy/connection/iphone'
 require 'siri_proxy/connection/guzzoni'
 
 
-require 'siri_proxy/siri_plugin'
-require 'siri_proxy/siri_plugin_manager'
+require 'siri_proxy/plugin'
+require 'siri_proxy/plugin_manager'
 
 require 'plugins/testproxy/testproxy'
 # require 'plugins/thermostat/siriThermostat'
