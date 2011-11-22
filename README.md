@@ -51,13 +51,13 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
 )
 4. Install the requisite Ruby gems:
-	* httparty
-	* open-uri (you may not need this on newer versions of Ruby)
-	* json
-	* CFPropertyList
-	* uuidtools
-	* eventmachine
-	* twitter (you can remove the require for the twitter plugin in start.rb if you don't want/have this gem)
+  * httparty
+  * open-uri (you may not need this on newer versions of Ruby)
+  * json
+  * CFPropertyList
+  * uuidtools
+  * eventmachine
+  * twitter (you can remove the require for the twitter plugin in start.rb if you don't want/have this gem)
 5. Execute start.rb (as root -- since it must listen on TCP/443)
 6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
@@ -75,33 +75,33 @@ Here's some quick(-ish) steps on generating the fake CA and Guzzoni cert (on a M
 1. Open a terminal (go to spotlight, type "terminal")
 2. Type:
 
-	/System/Library/OpenSSL/misc/CA.pl -newca
+  /System/Library/OpenSSL/misc/CA.pl -newca
 3. Enter the following information:
-	
-	* CA certificate filename: hit enter, it will create a "demoCA" folder
-	* Enter PEM pass phrase: give it something 4+ characters that you'll remember. Doesn't need to be complicated
-	* Information (Country Name, State Name, etc): Just enter whatever. It's not important
-	* Common Name: For the CA, this can be whatever. For the guzzoni certificate, it MUST be: "guzzoni.apple.com"
+  
+  * CA certificate filename: hit enter, it will create a "demoCA" folder
+  * Enter PEM pass phrase: give it something 4+ characters that you'll remember. Doesn't need to be complicated
+  * Information (Country Name, State Name, etc): Just enter whatever. It's not important
+  * Common Name: For the CA, this can be whatever. For the guzzoni certificate, it MUST be: "guzzoni.apple.com"
 
 4. Type:
 
-	/System/Library/OpenSSL/misc/CA.pl -newreq
+  /System/Library/OpenSSL/misc/CA.pl -newreq
 
 5. Repeat step 3. Make sure you enter "guzzoni.apple.com" as your Common Name.
 6. Type:
 
-	/System/Library/OpenSSL/misc/CA.pl -sign
+  /System/Library/OpenSSL/misc/CA.pl -sign
 
 7. Enter the passphrase from the first time you did step 3.
 8. Type "y" in response to each prompt.
 9. Type:
 
-	openssl rsa -in newkey.pem -out server.passless.key
+  openssl rsa -in newkey.pem -out server.passless.key
 
 10. Enter your passphrase from the second time you did step 3.
 11. Type:
 
-	mv newcert.pem server.passless.crt
+  mv newcert.pem server.passless.crt
 
 12. Move server.passless.crt and server.passless.key to your Siri Proxy server.
 13. Email cacert.pem from your demoCA folder (created in step 2) to your iPhone. Once it's there, click it and accept it (it will give you scary warnings about this -- it should).
