@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby
 require 'tweakSiri'
 require 'siriObjectGenerator'
 require 'json' 
