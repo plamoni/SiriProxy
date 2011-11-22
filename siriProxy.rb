@@ -3,8 +3,8 @@ require 'eventmachine'
 require 'zlib'
 require 'CFPropertyList'
 require 'pp'
-require './tweakSiri'
-require './interpretSiri'
+require 'tweakSiri'
+require 'interpretSiri'
 
 LOG_LEVEL = 1
 
