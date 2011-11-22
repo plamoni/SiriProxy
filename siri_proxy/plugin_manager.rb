@@ -4,6 +4,7 @@ class SiriProxy::PluginManager
 	def initialize(pluginClasses=[])
 		self.plugins = []
 		
+		puts "Defining plugins: #{pluginClasses.inspect}"
 		pluginClasses.each { |pluginClass|
 			plugin = pluginClass.new
 			plugin.plugin_manager = self
