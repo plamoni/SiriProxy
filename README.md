@@ -22,6 +22,8 @@ See it running with the ELIZA plugin here: [http://www.youtube.com/watch?v=uTiLv
 Other Plugins
 -------------
 
+While we encourage people to create SiriProxy plguins, please note that the project is still in very early stages and the **plugin API is still in flux** and may undergo radical changes.
+
 **Sam Lu's Hockey Scores plugin**  
 Source: [https://github.com/senmu/SiriProxy/tree/hockeyscores](https://github.com/senmu/SiriProxy/tree/hockeyscores)  
 Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
