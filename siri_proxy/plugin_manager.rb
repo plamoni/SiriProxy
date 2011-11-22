@@ -1,4 +1,4 @@
-class SiriProxy::SiriPluginManager
+class SiriProxy::PluginManager
 	attr_accessor :plugins
 
 	def initialize(pluginClasses=[])
