@@ -52,7 +52,7 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 
 	`$ rvm install 1.9.2`
 
-and switch to it
+    and switch to it
 
 	`$ rvm use 1.9.2`
 
