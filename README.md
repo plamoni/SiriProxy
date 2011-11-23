@@ -48,20 +48,28 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE))
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
 3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
-4. Install bundler
+4. *(optional)* For best results, we recommend using RVM to manage ruby versions and gemsets. For instructions on installing RVM visit [http://beginrescueend.com/](http://beginrescueend.com/). Then use RVM to install ruby 1.9.2
+
+	`$ rvm install 1.9.2`
+
+and switch to it
+
+	`$ rvm use 1.9.2`
+
+5. Install bundler *(should already be installed if you did step 4)*
 
     `$ gem install bundler`
 
-5. Edit config.yaml and enable some plugins by uncommenting them
-6. Install the requisite Ruby gems with bundler:
+6. Edit config.yaml and enable some plugins by uncommenting them
+7. Install the requisite Ruby gems with bundler:
 
     `$ bundle install`
   
-7. Execute start.rb (as root -- since it must listen on TCP/443)
+8. Execute start.rb (as root -- since it must listen on TCP/443)
 
     `$ rvmsudo ruby start.rb`
 
-8. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
+9. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
 FAQ
 ---
