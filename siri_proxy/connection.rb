@@ -1,3 +1,5 @@
+require 'cfpropertylist'
+
 class SiriProxy::Connection < EventMachine::Connection
   include EventMachine::Protocols::LineText2
   
