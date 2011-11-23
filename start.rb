@@ -6,25 +6,18 @@ require 'rubygems'
 require 'bundler'
 require 'bundler/setup'
 
+require 'yaml'
+require 'ostruct'
+
 require 'siri_proxy'
 require 'siri_proxy/connection'
 require 'siri_proxy/connection/iphone'
 require 'siri_proxy/connection/guzzoni'
 
-
 require 'siri_proxy/plugin'
 require 'siri_proxy/plugin_manager'
 
-require 'plugins/testproxy/testproxy'
-# require 'plugins/thermostat/siriThermostat'
-# require 'plugins/eliza/eliza'
-# require 'plugins/twitter/siriTweet'
-
-
-#Also try Eliza -- though it should really not be run "before" anything else.
-#Also try Twitter -- must first configure keys in siriTweet.rb
-PLUGINS = [TestProxy]
-
-proxy = SiriProxy.new(PLUGINS)
+APP_CONFIG = OpenStruct.new(YAML.load_file('config.yaml'))
+proxy = SiriProxy.new()
 
 #that's it. :-)

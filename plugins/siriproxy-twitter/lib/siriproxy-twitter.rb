@@ -1,30 +1,21 @@
-require 'rubygems'
+require 'siri_proxy'
 require 'siriObjectGenerator'
 require 'twitter'
 
-#######
-# This is a "hello world" style plugin. It simply intercepts the phrase "text siri proxy" and responds
-# with a message about the proxy being up and running. This is good base code for other plugins.
-# 
-# Remember to add other plugins to the "start.rb" file if you create them!
-######
+class SiriProxy::Plugin::Twitter < SiriProxy::Plugin
 
+  VERSION = "0.0.1"
 
-class SiriTweet < SiriProxy::Plugin
-
-  def initialize()
+  def initialize(pluginConfig)
     @state = :DEFAULT_STATE 
-    Twitter.configure do |config|
-      config.consumer_key = "YOUR KEY" 
-      config.consumer_secret = "YOUR SECRET"
-      config.oauth_token = "YOUR TOKEN" 
-      config.oauth_token_secret = "YOUR TOKEN SECRET"
+    ::Twitter.configure do |config|
+      config.consumer_key = pluginConfig['consumer_key'] 
+      config.consumer_secret = pluginConfig['consumer_secret']
+      config.oauth_token = pluginConfig['oauth_token'] 
+      config.oauth_token_secret = pluginConfig['oauth_token_secret']
     end 
 
-    @twitterClient = Twitter::Client.new
-
-# Post a status update
-    
+    @twitterClient = ::Twitter::Client.new
   end
 
   ####
@@ -91,7 +82,7 @@ class SiriTweet < SiriProxy::Plugin
       if phrase.match(/no/i)
         plugin_manager.block_rest_of_session_from_server
         @state = :DEFAULT_STATE
-        generate_siri_utterance(connection.last_ref_id, "Ok I won't send it.")
+        return generate_siri_utterance(connection.last_ref_id, "Ok I won't send it.")
       end
 
       plugin_manager.block_rest_of_session_from_server

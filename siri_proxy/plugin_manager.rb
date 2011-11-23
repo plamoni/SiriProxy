@@ -1,20 +1,33 @@
 class SiriProxy::PluginManager
 	attr_accessor :plugins
 
-	def initialize(pluginClasses=[])
-		self.plugins = []
-		
-		puts "Defining plugins: #{pluginClasses.inspect}"
-		pluginClasses.each { |pluginClass|
-			plugin = pluginClass.new
-			plugin.plugin_manager = self
-			plugins << plugin
-		}
+	def initialize()
+	  load_plugins()	
 	
 		@blockNextObjectsFromServer = 0
 		@blockNextObjectsFromClient = 0
 		@blockRestOfSessionFromServer = false
 	end
+
+  def load_plugins()
+    @plugins = []
+    if APP_CONFIG.plugins
+      APP_CONFIG.plugins.each do |pluginConfig|
+          if pluginConfig.is_a? String
+            className = pluginConfig
+            requireName = "siriproxy-#{className.downcase}"
+          else
+            className = pluginConfig['name']
+            requireName = pluginConfig['require'] || "siriproxy-#{className.downcase}"
+          end
+          require requireName 
+          plugin = SiriProxy::Plugin.const_get(className).new(pluginConfig)
+          plugin.plugin_manager = self
+          @plugins << plugin
+      end
+    end
+		puts "Plugins laoded: #{@plugins}"
+  end
 	
 	def object_from_guzzoni(object, connection) 
 		if(@blockRestOfSessionFromServer)

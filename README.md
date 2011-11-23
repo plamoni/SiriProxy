@@ -45,20 +45,23 @@ Set-up Instructions
 
 Currently, setup requires a pretty solid knowledge of certificates and openssl (or some good skills with Google). I'll see about providing automated scripts for generating the CA and relavent cert soon.
 
-1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE)
-)
+1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE))
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
-3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
-)
-4. Install the requisite Ruby gems with bundler:
+3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
+4. Install bundler
 
-  $ bundle install
+`$ gem install bundler`
+
+5. Edit config.yaml and enable some plugins by uncommenting them
+6. Install the requisite Ruby gems with bundler:
+
+`$ bundle install`
   
-5. Execute start.rb (as root -- since it must listen on TCP/443)
+7. Execute start.rb (as root -- since it must listen on TCP/443)
 
-  $ bundle exec ruby start.rb
+`$ rvmsudo ruby start.rb`
 
-6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
+8. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
 FAQ
 ---

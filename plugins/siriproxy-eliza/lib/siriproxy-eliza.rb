@@ -1,43 +1,24 @@
-require 'tweakSiri'
+require 'siri_proxy'
 require 'siriObjectGenerator'
 require 'net/http'
 
-
-#######
-# This is a "hello world" style plugin. It simply intercepts the phrase "text siri proxy" and responds
-# with a message about the proxy being up and running. This is good base code for other plugins.
-# 
-# Remember to add other plugins to the "start.rb" file if you create them!
-######
-
-
-class Eliza < SiriProxy::Plugin
+class SiriProxy::Plugin::Eliza < SiriProxy::Plugin
 
   ####
   # This gets called every time an object is received from the Guzzoni server
   def object_from_guzzoni(object, connection) 
-    
     object
   end
     
   ####
   # This gets called every time an object is received from an iPhone
   def object_from_client(object, connection)
-    
     object
   end
-  
   
   ####
   # When the server reports an "unkown command", this gets called. It's useful for implementing commands that aren't otherwise covered
   def unknown_command(object, connection, command)
-    if(command.match(/test siri proxy/i))
-      plugin_manager.block_rest_of_session_from_server
-      
-      return generate_siri_utterance(connection.lastRefId, "Siri Proxy is up and running!")
-    end  
-    
-    
     object
   end
   
@@ -51,7 +32,9 @@ class Eliza < SiriProxy::Plugin
       response =  Net::HTTP.post_form(URI.parse("http://www-ai.ijs.si/eliza-cgi-bin/eliza_script"),{'Entry1'=>phrase})
       
       addViews = SiriAddViews.new(false, false, "Reflection")
-      addViews.make_root(connection.lastRefId)
+      addViews.make_root(connection.last_ref_id)
+
+      puts response.body.split("</strong>\n").last.split("\n").first
       utterance = SiriAssistantUtteranceView.new(response.body.split("</strong>\n").last.split("\n").first)
       utterance.listenAfterSpeaking = true
       addViews.views << utterance
@@ -64,9 +47,8 @@ class Eliza < SiriProxy::Plugin
     ##connection.inject_object_to_output_stream()
     
     ##requestComplete = SiriRequestCompleted.new
-    ##requestComplete.make_root(connection.lastRefId)
+    ##requestComplete.make_root(connection.last_ref_id)
     
     ##return requestComplete.to_hash
   end
-  
 end 

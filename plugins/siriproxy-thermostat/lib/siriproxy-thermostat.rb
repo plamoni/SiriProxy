@@ -1,3 +1,4 @@
+require 'siri_proxy'
 require 'siriObjectGenerator'
 require 'json' 
 require 'open-uri'
@@ -8,13 +9,16 @@ require 'httparty'
 # use it if you like. But it's mostly for demonstration purposes. Check out the code and see what all you can do!
 #############
 
-THERMOSTAT_HOST = "192.168.2.71"
+class SiriProxy::Plugin::Thermostat < SiriProxy::Plugin
+  def initialize(pluginConfig)
+    @host = pluginConfig['host']
 
-class SiriThermostat < SiriProxy::Plugin
+  end
+
 	def status_of_thermostat(connection)
 		
 		Thread.new {
-			status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+			status = JSON.parse(open("http://#{@host}/tstat").read)
 		
 			connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, "The temperature is currently #{status["temp"]} degrees."))
 			connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, " The heater and air conditioner are turned off." )) if(status["tmode"] == 0)
@@ -36,7 +40,7 @@ class SiriThermostat < SiriProxy::Plugin
 		return "Checking the status of the thermostat"
 	end
 		Thread.new {
-			status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+			status = JSON.parse(open("http://#{@host}/tstat").read)
 		
 			connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, "The temperature is currently #{status["temp"]} degrees."))
 			connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, " The heater and air conditioner are turned off." )) if(status["tmode"] == 0)
@@ -57,10 +61,10 @@ class SiriThermostat < SiriProxy::Plugin
 	
 	def set_thermostat(temp, connection)
 		Thread.new {
-			status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+			status = JSON.parse(open("http://#{@host}/tstat").read)
 		
 			if(status["tmode"] == 1) #heat
-				status = HTTParty.post("http://#{THERMOSTAT_HOST}/tstat", {:body => "{\"tmode\":1,\"t_heat\":#{temp.to_i}}"})
+				status = HTTParty.post("http://#{@host}/tstat", {:body => "{\"tmode\":1,\"t_heat\":#{temp.to_i}}"})
 					
 				if(status["success"] == 0)
 					connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, "The heater has been set to #{temp} degrees."))
@@ -68,7 +72,7 @@ class SiriThermostat < SiriProxy::Plugin
 					connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, "Sorry, there was a problem setting the temperature"))
 				end
 			elsif(status["tmode"] == 2) #a/c
-				res = Net::HTTP.post_form(URI("http://#{THERMOSTAT_HOST}/tstat"), 'tmode' => 2, 't_cool' => temp.to_i)
+				res = Net::HTTP.post_form(URI("http://#{@host}/tstat"), 'tmode' => 2, 't_cool' => temp.to_i)
 				status = JSON.parse(res.body) 
 				
 				if(status["success"] == 0)
@@ -86,7 +90,7 @@ class SiriThermostat < SiriProxy::Plugin
 	
 	def temperature(connection)
 		Thread.new {
-			status = JSON.parse(open("http://#{THERMOSTAT_HOST}/tstat").read)
+			status = JSON.parse(open("http://#{@host}/tstat").read)
 		
 			connection.inject_object_to_output_stream(generate_siri_utterance(connection.last_ref_id, "The current inside temperature is #{status["temp"]} degrees."))		
 		}
@@ -141,3 +145,4 @@ class SiriThermostat < SiriProxy::Plugin
 		object
 	end
 end
+

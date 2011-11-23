@@ -4,7 +4,7 @@ require 'pp'
 # require 'tweakSiri'
 require 'interpretSiri'
 
-LOG_LEVEL = 6
+LOG_LEVEL = 1
 
 class String
   def to_hex(seperator=" ")
@@ -13,19 +13,18 @@ class String
 end
 
 class SiriProxy
-  PORT = 443
   
-  def initialize(pluginClasses=[])
+  def initialize()
     EventMachine.run do
       begin
-        puts "Starting SiriProxy on port #{PORT}.."
-        EventMachine::start_server('0.0.0.0', PORT, SiriProxy::Connection::Iphone) { |conn|
+        puts "Starting SiriProxy on port #{APP_CONFIG.port}.."
+        EventMachine::start_server('0.0.0.0', APP_CONFIG.port, SiriProxy::Connection::Iphone) { |conn|
           $stderr.puts "start conn #{conn.inspect}"
-          conn.plugin_manager = SiriProxy::PluginManager.new(pluginClasses)
+          conn.plugin_manager = SiriProxy::PluginManager.new()
         }
       rescue RuntimeError => err
         if err.message == "no acceptor"
-          raise "Cannot start the server on port #{PORT} - are you root, or have another process on this port already?"
+          raise "Cannot start the server on port #{APP_CONFIG.port} - are you root, or have another process on this port already?"
         else
           raise
         end

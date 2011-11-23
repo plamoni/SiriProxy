@@ -1,6 +1,10 @@
 class SiriProxy::Plugin
 	attr_accessor :plugin_manager
 
+  def initialize(pluginConfig)
+
+  end
+
 	def object_from_guzzoni(object, connection) 
 		
 		object

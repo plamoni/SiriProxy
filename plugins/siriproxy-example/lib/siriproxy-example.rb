@@ -8,8 +8,7 @@ require 'siriObjectGenerator'
 # Remember to add other plugins to the "start.rb" file if you create them!
 ######
 
-
-class TestProxy < SiriProxy::Plugin
+class SiriProxy::Plugin::Example < SiriProxy::Plugin
 
   ####
   # This gets called every time an object is received from the Guzzoni server
@@ -34,7 +33,6 @@ class TestProxy < SiriProxy::Plugin
       
       return generate_siri_utterance(connection.last_ref_id, "Siri Proxy is up and running!")
     end  
-    
     
     object
   end
