@@ -1,5 +1,7 @@
 port: 443
 plugins:
+    # NOTE: run bundle after changing plugin configurations to update required gems
+
     # - name: 'Example'
     #   path: './plugins/siriproxy-example'
 
