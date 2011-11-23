@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'eventmachine'
 require 'zlib'
-require 'CFPropertyList'
+require 'cfpropertylist'
 require 'pp'
 require 'tweakSiri'
 require 'interpretSiri'
