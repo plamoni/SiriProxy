@@ -17,7 +17,7 @@ require 'siri_proxy/connection/guzzoni'
 require 'siri_proxy/plugin'
 require 'siri_proxy/plugin_manager'
 
-APP_CONFIG = OpenStruct.new(YAML.load_file('config.yaml'))
+APP_CONFIG = OpenStruct.new(YAML.load_file('config.yml'))
 proxy = SiriProxy.new()
 
 #that's it. :-)
