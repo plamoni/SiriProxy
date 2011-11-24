@@ -7,7 +7,13 @@ gem 'uuidtools'
 # load plugins
 require 'yaml'
 require 'ostruct'
-config = OpenStruct.new(YAML.load_file('config.yaml'))
+
+if !File.exists?('config.yml')
+  $stderr.puts "config.yml not found. Copy config.example.yml to config.yml, then modify it."
+  exit 1
+end
+
+config = OpenStruct.new(YAML.load_file('config.yml'))
 if config.plugins
   config.plugins.each do |plugin|
     if plugin.is_a? String
