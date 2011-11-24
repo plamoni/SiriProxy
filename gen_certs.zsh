@@ -11,6 +11,9 @@ commonName="SiriProxy"
 emailAddress=""
 
 ## Do not edit below here!
+echo "Ok, before we get going you need to know a few things"
+echo "You're about to be asked four questions, the answers are: 1234, 1234, y, y"
+echo -n "Hit return to continue!"; read -e
 
 mkdir -p demoCA/{certs,crl,newcerts,private}
 touch demoCA/index.txt
