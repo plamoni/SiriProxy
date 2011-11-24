@@ -40,9 +40,9 @@ Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch
 Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)   
 Video: [http://www.youtube.com/watch?v=eChSxAxcxUE](http://www.youtube.com/watch?v=eChSxAxcxUE) 
 
-**mahalis's iTunes plugin**
-Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)
-Video: (none yet)
+**mahalis's iTunes plugin**   
+Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)   
+Video: (none yet) 
 
 Set-up Instructions
 -------------------
