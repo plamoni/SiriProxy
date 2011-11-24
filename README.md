@@ -40,6 +40,10 @@ Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch
 Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)   
 Video: [http://www.youtube.com/watch?v=eChSxAxcxUE](http://www.youtube.com/watch?v=eChSxAxcxUE)   
 
+**Fiquett's Viper SmartStart plugin**
+Source: (coming soon..need to clean it up)
+Video: [http://fiquett.com/?p=791](http://fiquett.com/?p=791)
+
 Set-up Instructions
 -------------------
 
