@@ -9,7 +9,7 @@ require 'open-uri'
 # I want to change the regex later to support commands like "Lock my car", "unlock my car", "start my car", etc...
 #######
 
-class Fiquett < ViperControl
+class ViperControl < SiriPlugin
 	####
 	# This gets called every time an object is received from the Guzzoni server
 	def object_from_guzzoni(object, connection) 
@@ -27,8 +27,8 @@ class Fiquett < ViperControl
 	def send_command_to_car(viper_command,connection)
 		Thread.new {
 		
-			status = JSON.parse(open("http://www.yourserver.com/viper_control.php?action=#{viper_command}").read)
-			connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Viper Connection Established"))
+			status = JSON.parse(open("http://yourserver.com/viper_control.php?action=#{viper_command}").read)
+			connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Viper Connection Successful"))
 			puts "#{status["Return"]}"
 			if(status["Return"]["ResponseSummary"]["StatusCode"] == 0) #successful
 					
@@ -71,4 +71,28 @@ class Fiquett < ViperControl
 	end
 
 	
+	####
+	# This is called whenever the server recognizes speech. It's useful for overriding commands that Siri would otherwise recognize
+	def speech_recognized(object, connection, phrase)
+  		if(phrase.match(/car/i))
+                        self.plugin_manager.block_rest_of_session_from_server
+						connection.inject_object_to_output_stream(object)
+
+						if(phrase.match(/unlock/i) || phrase.match(/disarm/i))
+							viper_command = "disarm"
+						elsif(phrase.match(/lock/i) || phrase.match(/arm/i))
+							viper_command = "arm"
+						elsif(phrase.match(/start/i) || phrase.match(/stop/i))
+							viper_command = "remote"
+						elsif(phrase.match(/trunk/i) || phrase.match(/pop/i))
+							viper_command = "trunk"
+						else return generate_siri_utterance(connection.lastRefId,"Please specify a command to send to your vehicle!") 
+						end
+                        
+				return generate_siri_utterance(connection.lastRefId, send_command_to_car(viper_command,connection))
+			                
+		end
+
+		object
+	end
 end 
