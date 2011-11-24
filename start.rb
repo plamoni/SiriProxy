@@ -6,6 +6,7 @@ require 'plugins/testproxy/testproxy'
 # require 'plugins/thermostat/siriThermostat'
 # require 'plugins/eliza/eliza'
 # require 'plugins/twitter/siriTweet'
+# require 'plugins/tunes/tunes'
 require 'tweakSiri'
 require 'siriProxy'
 
