@@ -84,7 +84,7 @@ class ViperControl < SiriPlugin
 							viper_command = "arm"
 						elsif(phrase.match(/start/i) || phrase.match(/stop/i))
 							viper_command = "remote"
-						elsif(phrase.match(/trunk/i) || phrase.match(/pop/i))
+						elsif(phrase.match(/trunk/i) && phrase.match(/pop/i))
 							viper_command = "trunk"
 						else return generate_siri_utterance(connection.lastRefId,"Please specify a command to send to your vehicle!") 
 						end
