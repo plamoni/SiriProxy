@@ -48,7 +48,7 @@ class Spotify < SiriPlugin
           utterance = "Playing #{track["name"]} by #{track["artists"][0]["name"]}"
           `open #{track["href"]}`
         else
-          utterance = "I could not find anything by #{artist}"
+          utterance = "I could not find anything by #{matchData[1]}"
         end			  
 			elsif(command.match(/play/i))
 				nowPlaying = commandSpotify("play", true)
