@@ -1,7 +1,5 @@
 source :gemcutter
 
-gemspec
-
 # load plugins
 require 'yaml'
 require 'ostruct'
@@ -11,6 +9,9 @@ if !File.exists?('config.yml')
   exit 1
 end
 
+# @todo this should move to gemspec once it is published
+# keeping here for now since I dont think you can add git
+# dependanceis directly to gemspecs
 gem 'cora', :git => "git://github.com/chendo/cora.git"
 
 config = OpenStruct.new(YAML.load_file('config.yml'))
