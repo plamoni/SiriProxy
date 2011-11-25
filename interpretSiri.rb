@@ -28,9 +28,9 @@ class InterpretSiri
   #Checks if the object is Guzzoni responding that it recognized
   #speech. Sends "best interpretation" phrase to processor
   #processor(object, connection, phrase)
-  def speech_recognized(object, connection, processor)
-    return false if object == nil
-    return false if (!(object["class"] == "SpeechRecognized") rescue true)
+  def speech_recognized(object)
+    return nil if object == nil
+    return nil if (!(object["class"] == "SpeechRecognized") rescue true)
     phrase = ""
     
     object["properties"]["recognition"]["properties"]["phrases"].map { |phraseObj| 
@@ -43,7 +43,7 @@ class InterpretSiri
       }
     }
     
-    return processor.call(object, connection, phrase)
+    phrase
   end
 
 end

@@ -4,8 +4,6 @@ require 'pp'
 # require 'tweakSiri'
 require 'interpretSiri'
 
-LOG_LEVEL = 1
-
 class String
   def to_hex(seperator=" ")
     bytes.to_a.map{|i| i.to_s(16).rjust(2, '0')}.join(seperator)
@@ -21,6 +19,7 @@ class SiriProxy
         EventMachine::start_server('0.0.0.0', APP_CONFIG.port, SiriProxy::Connection::Iphone) { |conn|
           $stderr.puts "start conn #{conn.inspect}"
           conn.plugin_manager = SiriProxy::PluginManager.new()
+          conn.plugin_manager.iphone_conn = conn
         }
       rescue RuntimeError => err
         if err.message == "no acceptor"

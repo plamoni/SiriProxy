@@ -13,6 +13,8 @@ if !File.exists?('config.yml')
   exit 1
 end
 
+gem 'cora', :git => "git://github.com/chendo/cora.git"
+
 config = OpenStruct.new(YAML.load_file('config.yml'))
 if config.plugins
   config.plugins.each do |plugin|

@@ -1,5 +1,6 @@
-require 'siri_proxy'
+require 'cora'
 require 'siriObjectGenerator'
+require 'pp'
 
 #######
 # This is a "hello world" style plugin. It simply intercepts the phrase "text siri proxy" and responds
@@ -9,59 +10,41 @@ require 'siriObjectGenerator'
 ######
 
 class SiriProxy::Plugin::Example < SiriProxy::Plugin
+  def initialize(config)
+    #if you have custom configuration options, process them here!
+  end
 
-  ####
-  # This gets called every time an object is received from the Guzzoni server
-  def object_from_guzzoni(object, connection) 
-    puts "Setup test proxy with #{object.inspect}"
-    object
-  end
+  listen_for /test siri proxy/i do
+    say "Siri Proxy is up and running!" #say something to the user!
     
-  ####
-  # This gets called every time an object is received from an iPhone
-  def object_from_client(object, connection)
-    puts "Received object from client: #{object.inspect}"
-    object
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
-  
-  
-  ####
-  # When the server reports an "unkown command", this gets called. It's useful for implementing commands that aren't otherwise covered
-  def unknown_command(object, connection, command)
-    if(command.match(/test siri proxy/i))
-      plugin_manager.block_rest_of_session_from_server
-      
-      return generate_siri_utterance(connection.last_ref_id, "Siri Proxy is up and running!")
-    end  
+
+  #demonstrate state change
+  listen_for /siri proxy test state/i do
+    set_state :some_state #set a state... this is useful when you want to change how you respond after certain conditions are met!
+    say "I set the state, try saying 'confirm state change'"
     
-    object
+	request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
   
-  ####
-  # This is called whenever the server recognizes speech. It's useful for overriding commands that Siri would otherwise recognize
-  def speech_recognized(object, connection, phrase)
-    if(phrase.match(/siri proxy map/i))
-      plugin_manager.block_rest_of_session_from_server
-      
-      connection.inject_object_to_output_stream(object)
-      
-      addViews = SiriAddViews.new
-      addViews.make_root(connection.last_ref_id)
-      mapItemSnippet = SiriMapItemSnippet.new
-      mapItemSnippet.items << SiriMapItem.new
-      utterance = SiriAssistantUtteranceView.new("Testing map injection!")
-      addViews.views << utterance
-      addViews.views << mapItemSnippet
-      
-      connection.inject_object_to_output_stream(addViews.to_hash)
-      
-      request_complete = SiriRequestCompleted.new
-      request_complete.make_root(connection.last_ref_id)
-      
-      return request_complete.to_hash
+  listen_for /confirm state change/i, within_state: :some_state do #this only gets processed if you're within the :some_state state!
+    say "State change works fine!"
+    set_state nil #clear out the state!
+    
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
+  end
+  
+  #demonstrate asking a question
+  listen_for /siri proxy test question/i do
+    response = ask "Is this thing working?" #ask the user for something
+    
+    if(response =~ /yes/i) #process their response
+      say "Great!" 
+    else
+      say "You could have just said 'yes'!"
     end
     
-    object
+    request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
-  
-end 
+end

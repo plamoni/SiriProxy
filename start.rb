@@ -18,6 +18,7 @@ require 'siri_proxy/plugin'
 require 'siri_proxy/plugin_manager'
 
 APP_CONFIG = OpenStruct.new(YAML.load_file('config.yml'))
+LOG_LEVEL = APP_CONFIG.log_level.to_i
 proxy = SiriProxy.new()
 
 #that's it. :-)

@@ -8,6 +8,13 @@ def generate_siri_utterance(ref_id, text, speakableText=text, listenAfterSpeakin
   return object.to_hash
 end
 
+def generate_request_completed(ref_id, callbacks=nil)
+  object = SiriRequestCompleted.new()
+  object.callbacks = callbacks if callbacks != nil
+  object.make_root(ref_id)
+  return object.to_hash
+end
+
 class SiriObject
   attr_accessor :klass, :group, :properties
   

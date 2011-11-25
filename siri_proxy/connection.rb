@@ -132,7 +132,13 @@ class SiriProxy::Connection < EventMachine::Connection
   end
   
   def inject_object_to_output_stream(object)
-    self.last_ref_id = object["refId"] if object["refId"] != nil && !object["refId"].empty?
+    if object["refId"] != nil && !object["refId"].empty?
+      @block_rest_of_session = false if @block_rest_of_session && self.last_ref_id != object["refId"] #new session
+      self.last_ref_id = object["refId"] 
+    end
+    
+    puts "[Info - Forwarding object to #{self.other_connection.name}] #{object["class"]}" if LOG_LEVEL >= 1
+    
     object_data = object.to_plist(:plist_format => CFPropertyList::List::FORMAT_BINARY)
 
     #Recalculate the size in case the object gets modified. If new size is 0, then remove the object from the stream entirely
@@ -155,20 +161,34 @@ class SiriProxy::Connection < EventMachine::Connection
   end
   
   def prep_received_object(object)
-    puts "[Info - #{self.name}] Object: #{object["class"]}" if LOG_LEVEL == 1
-    puts "[Info - #{self.name}] Object: #{object["class"]} (group: #{object["group"]})" if LOG_LEVEL == 2
-    puts "[Info - #{self.name}] Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if LOG_LEVEL > 2
+    if object["refId"] == self.last_ref_id && @block_rest_of_session
+      puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" if LOG_LEVEL >= 1
+      pp object if LOG_LEVEL > 1
+      return nil
+    end
+  
+    puts "[Info - #{self.name}] Received Object: #{object["class"]}" if LOG_LEVEL == 1
+    puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]})" if LOG_LEVEL == 2
+    puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if LOG_LEVEL > 2
     pp object if LOG_LEVEL > 3
     
+    #keeping this for filters
     object = received_object(object)
+
+    #block the rest of the session if a plugin claims ownership
+    speech = Interpret.speech_recognized(object)
+    if speech != nil
+      inject_object_to_output_stream(object)
+      block_rest_of_session if plugin_manager.process(speech) 
+      return nil
+    end
     
-    new_obj = object
-    object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
-    object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
+    
+    #object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
+    #object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
     
     object
-  end
-  
+  end  
   
   #Stub -- override in subclass
   def received_object(object)

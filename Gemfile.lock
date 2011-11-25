@@ -1,3 +1,14 @@
+GIT
+  remote: git://github.com/chendo/cora.git
+  revision: d29ad990e0d3b10a6c3352bd377fadbe4ccaa2b5
+  specs:
+    cora (0.0.1)
+
+PATH
+  remote: ./plugins/siriproxy-example
+  specs:
+    siriproxy-example (0.0.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -14,5 +25,7 @@ PLATFORMS
 
 DEPENDENCIES
   CFPropertyList
+  cora!
   eventmachine
+  siriproxy-example!
   uuidtools
