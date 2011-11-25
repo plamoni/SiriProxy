@@ -40,8 +40,8 @@ class SiriProxy::PluginManager < Cora
     self.guzzoni_conn.inject_object_to_output_stream(object)
   end
   
-  def respond(text, prompt_for_response=false)
-    self.guzzoni_conn.inject_object_to_output_stream(generate_siri_utterance(self.guzzoni_conn.last_ref_id, text, text, prompt_for_response))
+  def respond(text, options={})
+    self.guzzoni_conn.inject_object_to_output_stream(generate_siri_utterance(self.guzzoni_conn.last_ref_id, text, text, options[:prompt_for_response] == true))
   end
   
   def no_matches
