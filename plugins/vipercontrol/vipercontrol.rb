@@ -39,7 +39,7 @@ class ViperControl < SiriPlugin
 				elsif(status["Return"]["Results"]["Device"]["Action"]  == "remote")
 					connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Vehicle ignition has been triggered"))
 				elsif(status["Return"]["Results"]["Device"]["Action"]  == "trunk")
-					connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Vechile trunk has been opened"))
+					connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Vehicle trunk has been opened"))
 				end
 			else
 				connection.inject_object_to_output_stream(generate_siri_utterance(connection.lastRefId, "Sorry, could not connect to your vehicle."))
