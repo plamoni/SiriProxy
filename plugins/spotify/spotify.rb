@@ -1,6 +1,10 @@
 require 'tweakSiri'
 require 'siriObjectGenerator'
 
+require 'open-uri'
+require 'json'
+require 'uri'
+
 #######
 #
 # 99.9% of the work was done by Noah Witherspoon (https://github.com/mahalis) with his iTunes plugin
@@ -17,7 +21,7 @@ require 'siriObjectGenerator'
 class Spotify < SiriPlugin
 
 	def speech_recognized(object, connection, command)
-		if(command.match(/(spotify|spotter five|spot of phi|spot fie)/i)) # Siri doesn't really know how to spell "Spotify"
+		if(command.match(/(spotify|spotter five|spot of phi|spot fie|spot a fight|specify|spot if i)/i)) # Siri doesn't really know how to spell "Spotify"
 			self.plugin_manager.block_rest_of_session_from_server
 			
 			connection.inject_object_to_output_stream(object)
@@ -32,6 +36,20 @@ class Spotify < SiriPlugin
 				return generate_siri_utterance(connection.lastRefId, "This is " + nowArtist + ".")
 			elsif(command.match(/what.+(this|playing)/))
 				return generate_siri_utterance(connection.lastRefId, "This is " + commandSpotify(detailedNowPlayingCommand()) + ".");
+			elsif(matchData = command.match(/play me some (.*)/i))
+			  
+			  artist = URI.escape(matchData[1].strip)
+			  
+        results = JSON.parse(open("http://ws.spotify.com/search/1/track.json?q=#{artist}").read)
+        
+        if (results["tracks"].length > 1)
+          track = results["tracks"][0]
+
+          utterance = "Playing #{track["name"]} by #{track["artists"][0]["name"]}"
+          `open #{track["href"]}`
+        else
+          utterance "I could not find anything by #{artist}"
+        end			  
 			elsif(command.match(/play/i))
 				nowPlaying = commandSpotify("play", true)
 				utterance = "playing " + nowPlaying
