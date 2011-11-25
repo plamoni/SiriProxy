@@ -7,6 +7,19 @@ Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow 
 
 The main example I provide is a plugin to control [my thermostat](http://www.radiothermostat.com/latestnews.html#advanced) with Siri. It responds to commands such as, "What's the status of the thermostat?", or "Set the thermostat to 68 degrees", or even "What's the inside temperature?"
 
+Notice About Plugins
+--------------------
+
+We recently changed the way plugins work very significantly. That being the case, your old plugins won't work. 
+
+New plugins should be independent Gems. Take a look at the included sample plugin (plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features. 
+
+The State of This Project
+------------------------- 
+
+Please remember that this project is super-pre-alpha right now. If you're not a developer with a good bit of experience with networks, you're probably not even going to get the proxy running. But if you do (we are willing to help to an extent, check the IRC chat and my Twitter feed [@plamoni](http://www.twitter.com/plamoni)), then test out building a plugin. It's very easy to do and takes almost no time at all for most experienced developers. Check the demo videos and other plugins below for inspiration!
+
+
 Find us on IRC
 --------------
 
@@ -45,21 +58,33 @@ Set-up Instructions
 
 Currently, setup requires a pretty solid knowledge of certificates and openssl (or some good skills with Google). I'll see about providing automated scripts for generating the CA and relavent cert soon.
 
-1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE)
-)
+1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE))
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
-3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
-)
-4. Install the requisite Ruby gems:
-	* httparty
-	* open-uri (you may not need this on newer versions of Ruby)
-	* json
-	* CFPropertyList
-	* uuidtools
-	* eventmachine
-	* twitter (you can remove the require for the twitter plugin in start.rb if you don't want/have this gem)
-5. Execute start.rb (as root -- since it must listen on TCP/443)
-6. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
+3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
+4. For best results, we recommend using RVM to manage ruby versions and gemsets. For instructions on installing RVM visit [http://beginrescueend.com/](http://beginrescueend.com/). 
+5. Use RVM to install ruby 1.9.3
+
+	`$ rvm install 1.9.3`  
+	(`$ rvm install 1.9.3 --with-gcc=clang` on some OS X Lion machines)
+
+    and switch to it
+
+	`$ rvm use 1.9.3`
+
+6. Install bundler *(should already be installed if you did step 4)*
+
+    `$ gem install bundler`
+
+7. Edit config.yaml and enable some plugins by uncommenting them
+8. Install the requisite Ruby gems with bundler:
+
+    `$ bundle install`
+  
+9. Execute start.rb (as root -- since it must listen on TCP/443)
+
+    `$ rvmsudo ruby start.rb`
+
+10. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
 FAQ
 ---
@@ -75,33 +100,33 @@ Here's some quick(-ish) steps on generating the fake CA and Guzzoni cert (on a M
 1. Open a terminal (go to spotlight, type "terminal")
 2. Type:
 
-	/System/Library/OpenSSL/misc/CA.pl -newca
+    `/System/Library/OpenSSL/misc/CA.pl -newca
 3. Enter the following information:
-	
-	* CA certificate filename: hit enter, it will create a "demoCA" folder
-	* Enter PEM pass phrase: give it something 4+ characters that you'll remember. Doesn't need to be complicated
-	* Information (Country Name, State Name, etc): Just enter whatever. It's not important
-	* Common Name: For the CA, this can be whatever. For the guzzoni certificate, it MUST be: "guzzoni.apple.com"
+  
+  * CA certificate filename: hit enter, it will create a "demoCA" folder
+  * Enter PEM pass phrase: give it something 4+ characters that you'll remember. Doesn't need to be complicated
+  * Information (Country Name, State Name, etc): Just enter whatever. It's not important
+  * Common Name: For the CA, this can be whatever. For the guzzoni certificate, it MUST be: "guzzoni.apple.com"
 
 4. Type:
 
-	/System/Library/OpenSSL/misc/CA.pl -newreq
+    `/System/Library/OpenSSL/misc/CA.pl -newreq`
 
 5. Repeat step 3. Make sure you enter "guzzoni.apple.com" as your Common Name.
 6. Type:
 
-	/System/Library/OpenSSL/misc/CA.pl -sign
+    `/System/Library/OpenSSL/misc/CA.pl -sign`
 
 7. Enter the passphrase from the first time you did step 3.
 8. Type "y" in response to each prompt.
 9. Type:
 
-	openssl rsa -in newkey.pem -out server.passless.key
+    `openssl rsa -in newkey.pem -out server.passless.key`
 
 10. Enter your passphrase from the second time you did step 3.
 11. Type:
 
-	mv newcert.pem server.passless.crt
+    `mv newcert.pem server.passless.crt`
 
 12. Move server.passless.crt and server.passless.key to your Siri Proxy server.
 13. Email cacert.pem from your demoCA folder (created in step 2) to your iPhone. Once it's there, click it and accept it (it will give you scary warnings about this -- it should).

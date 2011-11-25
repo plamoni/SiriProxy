@@ -1,0 +1,29 @@
+port: 443
+log_level: 1
+plugins:
+    # NOTE: run bundle after changing plugin configurations to update required gems
+
+    - name: 'Example'
+      path: './plugins/siriproxy-example'
+
+    # - name: 'Thermostat'
+    #   path: './plugins/siriproxy-thermostat'
+    #   host: '192.168.2.71' 
+
+    # - name: 'Twitter'
+    #   path: './plugins/siriproxy-twitter' # path works just like specifing in gemfile 
+    #   consumer_key: "YOUR_KEY" 
+    #   consumer_secret: "YOUR_SECRET"
+    #   oauth_token: "YOUR_TOKEN" 
+    #   oauth_token_secret: "YOUR_TOKEN_SECRET"
+
+    # Note: Eliza should not be run with other plugins
+    # - name: 'Eliza'
+    #   path: './plugins/siriproxy-eliza' # path works just like specifing in gemfile 
+
+    # Below are not actual plugins, just further example of config options
+
+    # - SimplePlugin # simple syntax for plugins that are in rubygems and have no config 
+
+    # - name: 'AnotherPlugin'
+    #   git: 'git://github.com/netpro2k/SiriProxy-AnotherPlugin.git' # git works just like specifying in Gemfile

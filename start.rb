@@ -2,17 +2,23 @@
 $LOAD_PATH << File.dirname(__FILE__)
 $KCODE='u' #setting KCODE to unicode for Ruby 1.8
 
-require 'plugins/testproxy/testproxy'
-# require 'plugins/thermostat/siriThermostat'
-# require 'plugins/eliza/eliza'
-# require 'plugins/twitter/siriTweet'
-require 'tweakSiri'
-require 'siriProxy'
+require 'rubygems'
+require 'bundler'
+require 'bundler/setup'
 
-#Also try Eliza -- though it should really not be run "before" anything else.
-#Also try Twitter -- must first configure keys in siriTweet.rb
-PLUGINS = [TestProxy]
+require 'yaml'
+require 'ostruct'
 
-proxy = SiriProxy.new(PLUGINS)
+require 'siri_proxy'
+require 'siri_proxy/connection'
+require 'siri_proxy/connection/iphone'
+require 'siri_proxy/connection/guzzoni'
+
+require 'siri_proxy/plugin'
+require 'siri_proxy/plugin_manager'
+
+APP_CONFIG = OpenStruct.new(YAML.load_file('config.yml'))
+LOG_LEVEL = APP_CONFIG.log_level.to_i
+proxy = SiriProxy.new()
 
 #that's it. :-)
