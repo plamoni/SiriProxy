@@ -10,8 +10,8 @@ class SiriProxy::PluginManager < Cora
   
   def load_plugins()
     @plugins = []
-    if APP_CONFIG.plugins
-      APP_CONFIG.plugins.each do |pluginConfig|
+    if $APP_CONFIG.plugins
+      $APP_CONFIG.plugins.each do |pluginConfig|
           if pluginConfig.is_a? String
             className = pluginConfig
             requireName = "siriproxy-#{className.downcase}"
@@ -49,6 +49,6 @@ class SiriProxy::PluginManager < Cora
   end
   
   def log(text)
-    puts "[Info - Plugin Manager] #{text}" if LOG_LEVEL >= 1
+    puts "[Info - Plugin Manager] #{text}" if $LOG_LEVEL >= 1
   end
 end

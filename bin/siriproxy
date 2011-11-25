@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
+# @todo these 2 lines emulate "bundle exec"
 require 'pathname'
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../../Gemfile",
   Pathname.new(__FILE__).realpath)
+#
+
+$LOAD_PATH.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'rubygems'
 require 'bundler'
@@ -11,15 +15,6 @@ require 'yaml'
 require 'ostruct'
 
 require 'siriproxy'
-require 'siriproxy/connection'
-require 'siriproxy/connection/iphone'
-require 'siriproxy/connection/guzzoni'
+require 'siriproxy/command_line'
 
-require 'siriproxy/plugin'
-require 'siriproxy/plugin_manager'
-
-APP_CONFIG = OpenStruct.new(YAML.load_file('config.yml'))
-LOG_LEVEL = APP_CONFIG.log_level.to_i
-proxy = SiriProxy.new()
-
-#that's it. :-)
+SiriProxy::CommandLine.new
