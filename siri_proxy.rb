@@ -2,7 +2,7 @@ require 'eventmachine'
 require 'zlib'
 require 'pp'
 # require 'tweakSiri'
-require 'interpretSiri'
+require 'interpret_siri'
 
 class String
   def to_hex(seperator=" ")

@@ -137,7 +137,7 @@ class SiriProxy::Connection < EventMachine::Connection
       self.last_ref_id = object["refId"] 
     end
     
-    puts "[Info - Forwarding object to #{self.other_connection.name}] #{object["class"]}" if LOG_LEVEL >= 1
+    puts "[Info - Forwarding object to #{self.other_connection.name}] #{object["class"]}" if LOG_LEVEL > 1
     
     object_data = object.to_plist(:plist_format => CFPropertyList::List::FORMAT_BINARY)
 
@@ -162,8 +162,8 @@ class SiriProxy::Connection < EventMachine::Connection
   
   def prep_received_object(object)
     if object["refId"] == self.last_ref_id && @block_rest_of_session
-      puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" if LOG_LEVEL >= 1
-      pp object if LOG_LEVEL > 1
+      puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" if LOG_LEVEL > 1
+      pp object if LOG_LEVEL > 3
       return nil
     end
   

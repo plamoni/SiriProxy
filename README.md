@@ -7,6 +7,19 @@ Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow 
 
 The main example I provide is a plugin to control [my thermostat](http://www.radiothermostat.com/latestnews.html#advanced) with Siri. It responds to commands such as, "What's the status of the thermostat?", or "Set the thermostat to 68 degrees", or even "What's the inside temperature?"
 
+Notice About Plugins
+--------------------
+
+We recently changed the way plugins work very significantly. That being the case, your old plugins won't work. 
+
+New plugins should be independent Gems. Take a look at the included sample plugin (plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features. 
+
+The State of This Project
+------------------------- 
+
+Please remember that this project is super-pre-alpha right now. If you're not a developer with a good bit of experience with networks, you're probably not even going to get the proxy running. But if you do (we are willing to help to an extent, check the IRC chat and my Twitter feed [@plamoni](http://www.twitter.com/plamoni)), then test out building a plugin. It's very easy to do and takes almost no time at all for most experienced developers. Check the demo videos and other plugins below for inspiration!
+
+
 Find us on IRC
 --------------
 
@@ -48,28 +61,30 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE))
 2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
 3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
-4. *(optional)* For best results, we recommend using RVM to manage ruby versions and gemsets. For instructions on installing RVM visit [http://beginrescueend.com/](http://beginrescueend.com/). Then use RVM to install ruby 1.9.2
+4. For best results, we recommend using RVM to manage ruby versions and gemsets. For instructions on installing RVM visit [http://beginrescueend.com/](http://beginrescueend.com/). 
+5. Use RVM to install ruby 1.9.3
 
-	`$ rvm install 1.9.2`
+	`$ rvm install 1.9.3`  
+	(`$ rvm install 1.9.3 --with-gcc=clang` on some OS X Lion machines)
 
     and switch to it
 
-	`$ rvm use 1.9.2`
+	`$ rvm use 1.9.3`
 
-5. Install bundler *(should already be installed if you did step 4)*
+6. Install bundler *(should already be installed if you did step 4)*
 
     `$ gem install bundler`
 
-6. Edit config.yaml and enable some plugins by uncommenting them
-7. Install the requisite Ruby gems with bundler:
+7. Edit config.yaml and enable some plugins by uncommenting them
+8. Install the requisite Ruby gems with bundler:
 
     `$ bundle install`
   
-8. Execute start.rb (as root -- since it must listen on TCP/443)
+9. Execute start.rb (as root -- since it must listen on TCP/443)
 
     `$ rvmsudo ruby start.rb`
 
-9. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
+10. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
 
 FAQ
 ---

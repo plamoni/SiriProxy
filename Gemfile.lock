@@ -1,8 +1,8 @@
 GIT
   remote: git://github.com/chendo/cora.git
-  revision: d29ad990e0d3b10a6c3352bd377fadbe4ccaa2b5
+  revision: fe8dccd79caeb7c6c98451195864f2f4f301092f
   specs:
-    cora (0.0.1)
+    cora (0.0.2)
 
 PATH
   remote: ./plugins/siriproxy-example

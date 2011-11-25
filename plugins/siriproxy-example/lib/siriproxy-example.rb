@@ -1,12 +1,12 @@
 require 'cora'
-require 'siriObjectGenerator'
-require 'pp'
+require 'siri_objects'
 
 #######
 # This is a "hello world" style plugin. It simply intercepts the phrase "text siri proxy" and responds
-# with a message about the proxy being up and running. This is good base code for other plugins.
+# with a message about the proxy being up and running (along with a couple other core features). This 
+# is good base code for other plugins.
 # 
-# Remember to add other plugins to the "start.rb" file if you create them!
+# Remember to add other plugins to the "config.yml" file if you create them!
 ######
 
 class SiriProxy::Plugin::Example < SiriProxy::Plugin

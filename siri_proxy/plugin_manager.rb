@@ -37,7 +37,6 @@ class SiriProxy::PluginManager < Cora
   def send_request_complete_to_iphone
     log "Sending Request Completed"
     object = generate_request_completed(self.guzzoni_conn.last_ref_id)
-    pp object
     self.guzzoni_conn.inject_object_to_output_stream(object)
   end
   
@@ -50,6 +49,6 @@ class SiriProxy::PluginManager < Cora
   end
   
   def log(text)
-    puts "[Plugin Manager] #{text}"
+    puts "[Info - Plugin Manager] #{text}" if LOG_LEVEL >= 1
   end
 end
