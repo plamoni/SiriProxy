@@ -57,7 +57,7 @@ Options:
   private
   
   def parse_options
-    $APP_CONFIG = OpenStruct.new(YAML.load_file('config.yml'))
+    $APP_CONFIG = OpenStruct.new(YAML.load_file(File.expand_path('~/.siriproxy/config.yml')))
     @option_parser = OptionParser.new do |opts|
       opts.on('-p', '--port PORT', 'port number for server (central or node)') do |port_num|
         $APP_CONFIG.port = port_num
