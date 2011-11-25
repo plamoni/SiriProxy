@@ -4,7 +4,7 @@ require "siriproxy/version"
 
 Gem::Specification.new do |s|
   s.name        = "siriproxy"
-  s.version     = Siriproxy::VERSION
+  s.version     = SiriProxy::VERSION
   s.authors     = ["plamoni", "chendo", "netpro2k"]
   s.email       = []
   s.homepage    = ""
