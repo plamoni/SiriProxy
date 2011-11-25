@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 $LOAD_PATH << File.dirname(__FILE__)
-$KCODE='u' #setting KCODE to unicode for Ruby 1.8
 
 require 'rubygems'
 require 'bundler'
