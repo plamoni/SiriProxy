@@ -1,4 +1,5 @@
 require 'cfpropertylist'
+require 'siriproxy/interpret_siri'
 
 class SiriProxy::Connection < EventMachine::Connection
   include EventMachine::Protocols::LineText2
@@ -176,7 +177,7 @@ class SiriProxy::Connection < EventMachine::Connection
     object = received_object(object)
 
     #block the rest of the session if a plugin claims ownership
-    speech = Interpret.speech_recognized(object)
+    speech = SiriProxy::Interpret.speech_recognized(object)
     if speech != nil
       inject_object_to_output_stream(object)
       block_rest_of_session if plugin_manager.process(speech) 
@@ -184,8 +185,8 @@ class SiriProxy::Connection < EventMachine::Connection
     end
     
     
-    #object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
-    #object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
+    #object = new_obj if ((new_obj = SiriProxy::Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
+    #object = new_obj if ((new_obj = SiriProxy::Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
     
     object
   end  

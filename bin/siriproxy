@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+require 'pathname'
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../../Gemfile",
+  Pathname.new(__FILE__).realpath)
+
+require 'rubygems'
+require 'bundler'
+require 'bundler/setup'
+
+require 'yaml'
+require 'ostruct'
+
+require 'siriproxy'
+require 'siriproxy/connection'
+require 'siriproxy/connection/iphone'
+require 'siriproxy/connection/guzzoni'
+
+require 'siriproxy/plugin'
+require 'siriproxy/plugin_manager'
+
+APP_CONFIG = OpenStruct.new(YAML.load_file('config.yml'))
+LOG_LEVEL = APP_CONFIG.log_level.to_i
+proxy = SiriProxy.new()
+
+#that's it. :-)

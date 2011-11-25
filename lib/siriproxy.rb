@@ -1,8 +1,6 @@
 require 'eventmachine'
 require 'zlib'
 require 'pp'
-# require 'tweakSiri'
-require 'interpret_siri'
 
 class String
   def to_hex(seperator=" ")
@@ -31,6 +29,3 @@ class SiriProxy
     end
   end
 end
-
-Interpret = InterpretSiri.new
-
