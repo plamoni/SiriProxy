@@ -1,4 +1,12 @@
 require 'optparse'
+require 'yaml'
+require 'ostruct'
+
+# @todo want to make SiriProxy::Commandline without having to
+# require 'siriproxy'. Im sure theres a better way.
+class SiriProxy
+
+end
 
 class SiriProxy::CommandLine
 
@@ -10,7 +18,8 @@ See: http://github.com/plamoni/SiriProxy/
 Usage: siriproxy COMMAND OPTIONS
 
 Commands:
-server (default)  Start up the Siri proxy server
+server            Start up the Siri proxy server
+bundle            Install any dependancies needed by plugins
 console           Launch the plugin test console 
 help              Show this usage information
 
@@ -23,14 +32,20 @@ Options:
     subcommand  = ARGV.shift
     case command
     when 'server'           then run_server(subcommand)
+    when 'bundle'           then run_bundle
     when 'console'          then run_console
     when 'help'             then usage
-    else                    run_server()
+    else                    usage
     end
   end
 
   def run_console
     puts "Not yet implemented"
+  end
+
+  def run_bundle
+    setup_bundler_path
+    puts `bundle -V`
   end
 
   def run_server(subcommand='start')
@@ -75,7 +90,19 @@ Options:
     @option_parser.parse!(ARGV)
   end
 
+  def setup_bundler_path
+    require 'pathname'
+    ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../../../Gemfile",
+      Pathname.new(__FILE__).realpath)
+  end
+
   def load_code
+    setup_bundler_path
+
+    require 'bundler'
+    require 'bundler/setup'
+
+    require 'siriproxy'
     require 'siriproxy/connection'
     require 'siriproxy/connection/iphone'
     require 'siriproxy/connection/guzzoni'

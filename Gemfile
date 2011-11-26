@@ -1,8 +1,6 @@
 source :gemcutter
 
-gem 'CFPropertyList'
-gem 'eventmachine'
-gem 'uuidtools'
+gemspec
 
 # load plugins
 require 'yaml'
