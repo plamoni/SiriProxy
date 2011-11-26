@@ -1,0 +1,3 @@
+[submodule "plugins/spotify"]
+	path = plugins/spotify
+	url = git@github.com:simonmaddox/SiriProxy-Spotify.git
