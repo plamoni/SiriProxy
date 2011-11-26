@@ -32,7 +32,7 @@ Options:
     subcommand  = ARGV.shift
     case command
     when 'server'           then run_server(subcommand)
-    when 'bundle'           then run_bundle
+    when 'bundle'           then run_bundle(subcommand)
     when 'console'          then run_console
     when 'help'             then usage
     else                    usage
@@ -43,9 +43,9 @@ Options:
     puts "Not yet implemented"
   end
 
-  def run_bundle
+  def run_bundle(subcommand='')
     setup_bundler_path
-    puts `bundle -V`
+    puts `bundle #{subcommand} #{ARGV.join(' ')}`
   end
 
   def run_server(subcommand='start')
