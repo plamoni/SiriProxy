@@ -95,8 +95,9 @@ Options:
   end
 
   def gen_certs
-    command = File.join(File.dirname(__FILE__), '..', "..", 'gen_certs.sh')
-    puts `#{command}`
+    command = File.join(File.dirname(__FILE__), '..', "..", "scripts", 'gen_certs.sh')
+    sp_root = File.join(File.dirname(__FILE__), '..', "..")
+    puts `#{command} "#{sp_root}"`
   end
 
   def usage

@@ -7,7 +7,7 @@ plugins:
       path: './plugins/siriproxy-example'
 
     # - name: 'Thermostat'
-    #   path: './plugins/siriproxy-thermostat'
+    #   git: 'git://github.com/plamoni/SiriProxy-Thermostat.git'
     #   host: '192.168.2.71' 
 
     # - name: 'Twitter'

@@ -11,6 +11,7 @@ commonName="SiriProxyCA"
 emailAddress=""
 
 #You probably don't need to modify these unless you know what you're doing.
+SIRI_PROXY_ROOT=$1
 SIRI_PROXY_SETTINGS=~/.siriproxy
 LOG_FILE=$SIRI_PROXY_SETTINGS/cert.log
 TMP_DIR=/tmp
@@ -36,10 +37,10 @@ echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 
-cat $TMP_DIR/ca.args | openssl req -new -config ./openssl.cnf -keyout $TMP_CA_DIR/private/cakey.pem -out $TMP_CA_DIR/careq.pem -passin pass:1234 -passout pass:1234 >> $LOG_FILE 2>> $LOG_FILE
+cat $TMP_DIR/ca.args | openssl req -new -config $SIRI_PROXY_ROOT/scripts/openssl.cnf -keyout $TMP_CA_DIR/private/cakey.pem -out $TMP_CA_DIR/careq.pem -passin pass:1234 -passout pass:1234 >> $LOG_FILE 2>> $LOG_FILE
 
 echo "Self-signing '${commonName}' CA"
-openssl ca -create_serial -passin pass:1234 -config ./openssl.cnf -out $TMP_CA_DIR/cacert.pem -outdir $TMP_CA_DIR/newcerts -days 1095 -batch -keyfile $TMP_CA_DIR/private/cakey.pem -selfsign -extensions v3_ca -infiles $TMP_CA_DIR/careq.pem >> $LOG_FILE 2>> $LOG_FILE
+openssl ca -create_serial -passin pass:1234 -config $SIRI_PROXY_ROOT/scripts/openssl.cnf -out $TMP_CA_DIR/cacert.pem -outdir $TMP_CA_DIR/newcerts -days 1095 -batch -keyfile $TMP_CA_DIR/private/cakey.pem -selfsign -extensions v3_ca -infiles $TMP_CA_DIR/careq.pem >> $LOG_FILE 2>> $LOG_FILE
 
 echo "Generating guzzoni.apple.com certificate request"
 echo "Generating '${commonName}' CA request"
@@ -52,10 +53,10 @@ echo "guzzoni.apple.com" >> $TMP_DIR/ca.args
 echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
-cat $TMP_DIR/ca.args | openssl req -new -keyout $TMP_DIR/newkey.pem -config ./openssl.cnf -out $TMP_DIR/newreq.pem -days 1095 -passin pass:1234 -passout pass:1234 >> $LOG_FILE 2>> $LOG_FILE
+cat $TMP_DIR/ca.args | openssl req -new -keyout $TMP_DIR/newkey.pem -config $SIRI_PROXY_ROOT/scripts/openssl.cnf -out $TMP_DIR/newreq.pem -days 1095 -passin pass:1234 -passout pass:1234 >> $LOG_FILE 2>> $LOG_FILE
 
 echo "Generating guzzoni.apple.com certificate"
-yes | openssl ca -policy policy_anything -out $TMP_DIR/newcert.pem -config ./openssl.cnf -passin pass:1234 -keyfile $TMP_CA_DIR/private/cakey.pem -cert $TMP_CA_DIR/cacert.pem -infiles $TMP_DIR/newreq.pem >> $LOG_FILE 2>> $LOG_FILE
+yes | openssl ca -policy policy_anything -out $TMP_DIR/newcert.pem -config $SIRI_PROXY_ROOT/scripts/openssl.cnf -passin pass:1234 -keyfile $TMP_CA_DIR/private/cakey.pem -cert $TMP_CA_DIR/cacert.pem -infiles $TMP_DIR/newreq.pem >> $LOG_FILE 2>> $LOG_FILE
 
 echo "Removing passphrase from guzzoni.apple.com key"
 yes | openssl rsa -in $TMP_DIR/newkey.pem -out $SIRI_PROXY_SETTINGS/server.passless.key -passin pass:1234 >> $LOG_FILE 2>> $LOG_FILE
