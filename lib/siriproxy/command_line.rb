@@ -19,6 +19,7 @@ Usage: siriproxy COMMAND OPTIONS
 
 Commands:
 server            Start up the Siri proxy server
+gencerts          Generate a the certificates needed for SiriProxy
 bundle            Install any dependancies needed by plugins
 console           Launch the plugin test console 
 help              Show this usage information
@@ -32,6 +33,7 @@ Options:
     subcommand  = ARGV.shift
     case command
     when 'server'           then run_server(subcommand)
+    when 'gencerts'         then gen_certs
     when 'bundle'           then run_bundle(subcommand)
     when 'console'          then run_console
     when 'help'             then usage
@@ -90,6 +92,11 @@ Options:
   def start_server
     proxy = SiriProxy.new
     proxy.start()
+  end
+
+  def gen_certs
+    command = File.join(File.dirname(__FILE__), '..', "..", 'gen_certs.sh')
+    puts `#{command}`
   end
 
   def usage
