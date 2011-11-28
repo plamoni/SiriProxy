@@ -9,7 +9,6 @@ class SiriProxy
 end
 
 class SiriProxy::CommandLine
-
   BANNER = <<-EOS
 Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow for the creation of custom handlers for different actions. This can allow developers to easily add functionality to Siri.
 
@@ -22,12 +21,15 @@ server            Start up the Siri proxy server
 gencerts          Generate a the certificates needed for SiriProxy
 bundle            Install any dependancies needed by plugins
 console           Launch the plugin test console 
+update [dir]      Updates to the latest code from GitHub or from a provided directory
 help              Show this usage information
 
 Options:
+    Option                           Command    Description
   EOS
 
   def initialize
+    @branch = nil
     parse_options
     command     = ARGV.shift
     subcommand  = ARGV.shift
@@ -36,6 +38,7 @@ Options:
     when 'gencerts'         then gen_certs
     when 'bundle'           then run_bundle(subcommand)
     when 'console'          then run_console
+    when 'update'           then update(subcommand)
     when 'help'             then usage
     else                    usage
     end
@@ -100,6 +103,35 @@ Options:
     puts `#{command} "#{sp_root}"`
   end
 
+  def update(directory=nil)
+    if(directory)
+      puts "=== Installing from '#{directory}' ==="
+      puts `cd #{directory} && rake install`
+      puts "=== Bundling ===" if $?.exitstatus == 0
+      puts `siriproxy bundle` if $?.exitstatus == 0
+      puts "=== SUCCESS ===" if $?.exitstatus == 0
+      
+      exit $?.exitstatus
+    else
+      branch_opt = @branch ? "-b #{@branch}" : ""
+      @branch = "master" if @branch == nil
+      puts "=== Installing latest code from git://github.com/plamoni/SiriProxy.git [#{@branch}] ==="
+
+	  tmp_dir = "/tmp/SiriProxy.install." + (rand 9999).to_s.rjust(4, "0")
+
+	  `mkdir -p #{tmp_dir}`
+      puts `git clone #{branch_opt} git://github.com/plamoni/SiriProxy.git #{tmp_dir}`  if $?.exitstatus == 0
+      puts "=== Performing Rake Install ===" if $?.exitstatus == 0
+      puts `cd #{tmp_dir} && rake install`  if $?.exitstatus == 0
+      puts "=== Bundling ===" if $?.exitstatus == 0
+      puts `siriproxy bundle`  if $?.exitstatus == 0
+      puts "=== Cleaning Up ===" and puts `rm -rf #{tmp_dir}` if $?.exitstatus == 0
+      puts "=== SUCCESS ===" if $?.exitstatus == 0
+
+      exit $?.exitstatus
+    end 
+  end
+
   def usage
     puts "\n#{@option_parser}\n"
   end
@@ -108,14 +140,18 @@ Options:
   
   def parse_options
     $APP_CONFIG = OpenStruct.new(YAML.load_file(File.expand_path('~/.siriproxy/config.yml')))
+    @branch = nil
     @option_parser = OptionParser.new do |opts|
-      opts.on('-p', '--port PORT', 'port number for server (central or node)') do |port_num|
+      opts.on('-p', '--port PORT',     '[server]   port number for server (central or node)') do |port_num|
         $APP_CONFIG.port = port_num
       end
-      opts.on('-l', '--log LOG_LEVEL', 'The level of debug information displayed (higher is more)') do |log_level|
+      opts.on('-l', '--log LOG_LEVEL', '[server]   The level of debug information displayed (higher is more)') do |log_level|
         $APP_CONFIG.log_level = log_level
       end
-      opts.on_tail('-v', '--version', 'show version') do
+      opts.on('-b', '--branch BRANCH', '[update]   Choose the branch to update from (default: master)') do |branch|
+        @branch = branch
+      end
+      opts.on_tail('-v', '--version',  '           show version') do
         require "siriproxy/version"
         puts "SiriProxy version #{SiriProxy::VERSION}"
         exit
