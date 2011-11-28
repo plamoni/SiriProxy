@@ -172,6 +172,10 @@ class SiriProxy::Connection < EventMachine::Connection
     puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if LOG_LEVEL > 2
     pp object if LOG_LEVEL > 3
     
+    if object["class"] == "SetRequestOrigin"
+      plugin_manager.update_location(object["properties"]);
+    end
+    
     #keeping this for filters
     object = received_object(object)
 
