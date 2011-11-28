@@ -24,6 +24,7 @@ echo "" > $LOG_FILE
 echo "Creating CA directory"
 mkdir -p $TMP_CA_DIR/{certs,crl,newcerts,private}
 touch $TMP_CA_DIR/index.txt
+touch $TMP_CA_DIR/index.txt.attr
 echo 01 > $TMP_CA_DIR/crtnumber
 
 echo "Generating '${commonName}' CA request"
