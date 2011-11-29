@@ -83,6 +83,20 @@ Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you
 
 	`sudo ln -s ~/.siriproxy /root/.siriproxy`
 
+**Updating SiriProxy**
+
+Once you're up and running, if you modify the code, or you want to grab the latest code from GitHub, you can do that easily using the "siriproxy update" command. Here's a couple of examples:
+
+	`siriproxy update` 
+	Installs the latest code from the [master] branch on GitHub.
+	
+	`siriproxy update /path/to/SiriProxy` 
+	Installs the code from /path/to/SiriProxy
+	
+	`siriproxy update -b gemify` 
+	Installs the latest code from the [gemify] branch on GitHub
+	
+
 FAQ
 ---
 
