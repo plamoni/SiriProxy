@@ -81,20 +81,23 @@ Clone this repo locally, then navigate into the SiriProxy directory (the root of
 
 Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you may need to symlink your "`.siriproxy`" directory to "`/root/`" in order to get the application to work:  
 
-	`sudo ln -s ~/.siriproxy /root/.siriproxy`
+	sudo ln -s ~/.siriproxy /root/.siriproxy
 
 **Updating SiriProxy**
 
 Once you're up and running, if you modify the code, or you want to grab the latest code from GitHub, you can do that easily using the "siriproxy update" command. Here's a couple of examples:
 
-	`siriproxy update` 
-	Installs the latest code from the [master] branch on GitHub.
+	siriproxy update  
 	
-	`siriproxy update /path/to/SiriProxy` 
-	Installs the code from /path/to/SiriProxy
+Installs the latest code from the [master] branch on GitHub.
 	
-	`siriproxy update -b gemify` 
-	Installs the latest code from the [gemify] branch on GitHub
+	siriproxy update /path/to/SiriProxy  
+
+Installs the code from /path/to/SiriProxy
+	
+	siriproxy update -b gemify 
+
+Installs the latest code from the [gemify] branch on GitHub
 	
 
 FAQ
