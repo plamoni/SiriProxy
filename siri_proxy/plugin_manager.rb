@@ -51,4 +51,10 @@ class SiriProxy::PluginManager < Cora
   def log(text)
     puts "[Info - Plugin Manager] #{text}" if LOG_LEVEL >= 1
   end
+  
+  def update_location(latlong)
+    plugins.each do |plugin|
+      plugin.location = latlong
+    end
+  end
 end
