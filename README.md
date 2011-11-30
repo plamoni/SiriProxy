@@ -12,7 +12,7 @@ Notice About Plugins
 
 We recently changed the way plugins work very significantly. That being the case, your old plugins won't work. 
 
-New plugins should be independent Gems. Take a look at the included sample plugin (plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features. 
+New plugins should be independent Gems. Take a look at the included [example plugin](https://github.com/plamoni/SiriProxy/tree/master/plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features. 
 
 The State of This Project
 ------------------------- 
@@ -25,66 +25,80 @@ Find us on IRC
 
 We now have an IRC channel. Check out the #SiriProxy channel on irc.freenode.net.
 
-Demo Videos
+Demo Video
 -----------
 
 See the system in action here: [http://www.youtube.com/watch?v=AN6wy0keQqo](http://www.youtube.com/watch?v=AN6wy0keQqo)
 
-See it running with the ELIZA plugin here: [http://www.youtube.com/watch?v=uTiLverShyc](http://www.youtube.com/watch?v=uTiLverShyc)
+More Demo Videos and Other Plugins
+----------------------------------
 
-Other Plugins
--------------
-
-While we encourage people to create SiriProxy plguins, please note that the project is still in very early stages and the **plugin API is still in flux** and may undergo radical changes.
-
-**Sam Lu's Hockey Scores plugin**  
-Source: [https://github.com/senmu/SiriProxy-HockeyScores](https://github.com/senmu/SiriProxy-HockeyScores)  
-Video: [http://vimeo.com/32431965](http://vimeo.com/32431965)
-
-**Dominick D'Aniello's Twitter plugin (now integrated into main trunk)**  
-Source: [https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb](https://github.com/plamoni/SiriProxy/blob/master/plugins/twitter/siriTweet.rb)   
-Video: [http://www.youtube.com/watch?v=kM7Th-zcCSc](http://www.youtube.com/watch?v=kM7Th-zcCSc)
-
-**Ninja0091's Dreambox plugin**   
-Source: (don't have it yet)  
-Video: [http://www.youtube.com/watch?v=jke2bl7Vkbo](http://www.youtube.com/watch?v=jke2bl7Vkbo)   
-
-**Hjaltij's Plex plugin**   
-Source: [https://github.com/hjaltij/SiriProxy/](https://github.com/hjaltij/SiriProxy/)   
-Video: [http://www.youtube.com/watch?v=eChSxAxcxUE](http://www.youtube.com/watch?v=eChSxAxcxUE)   
+For a list of current plugins and some more demo videos, check the [Plugins page](https://github.com/plamoni/SiriProxy/wiki/Plugins) on the wiki.  
 
 Set-up Instructions
 -------------------
 
-Currently, setup requires a pretty solid knowledge of certificates and openssl (or some good skills with Google). I'll see about providing automated scripts for generating the CA and relavent cert soon.
+**Set up DNS**
 
-1. Create a root CA using open SSL and have it issue a signed certificate for guzzoni.apple.com. Save the guzzoni private key (no passphrase) and certificate as "server.passless.key" and "server.passless.crt" in the SiriProxy directory. ([http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE))
-2. Load the root CA's public certificate on your phone (you can just email it to yourself and click it to do that).
-3. Set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
-4. For best results, we recommend using RVM to manage ruby versions and gemsets. For instructions on installing RVM visit [http://beginrescueend.com/](http://beginrescueend.com/). 
-5. Use RVM to install ruby 1.9.3
+Before you can use SiriProxy, you must set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
 
-	`$ rvm install 1.9.3`  
-	(`$ rvm install 1.9.3 --with-gcc=clang` on some OS X Lion machines)
+**Set up RVM and Ruby 1.9.3**
 
-    and switch to it
+If you don't already have Ruby 1.9.3 installed through RVM, please do so in order to make sure you can follow the steps later. Experts can ignore this. If you're unsure, follow these directions carefully:
 
-	`$ rvm use 1.9.3`
+1. Download and install RVM (if you don't have it already):
+	* Download/install RVM:  
+		`bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)`  
+	* Activate RVM:  
+		`[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"`  
+	* (optional, but useful) Add RVM to your .bash_profile:  
+		`echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile`   
+2. Install Ruby 1.9.3 (if you don't have it already):   
+	`rvm install 1.9.3`  
+3. Set RVM to use/default to 1.9.3:   
+	`rvm use 1.9.3 --default`
+	
+**Set up SiriProxy**
 
-6. Install bundler *(should already be installed if you did step 4)*
+Clone this repo locally, then navigate into the SiriProxy directory (the root of the repo). Then follow these instructions carefully. Note that nothing needs to be (or should be) done as root until you launch the server:
 
-    `$ gem install bundler`
+1. Install Rake and Bundler:  
+	`rvmsudo gem install rake bundler`  
+2. Install SiriProxy gem (do this from your SiriProxy directory):  
+	`rake install`  
+3. Make .siriproxy directory:  
+	`mkdir ~/.siriproxy`  
+4. Move default config file to .siriproxy (if you need to make configuration changes, do that now by editing the config.yml):  
+	`cp ./config.example.yml ~/.siriproxy/config.yml`  
+5. Generate certificates:  
+	`siriproxy gencerts`
+6. Install `~/.siriproxy/ca.pem` on your phone. This can easily be done by emailing the file to yourself and clicking on it in the iPhone email app. Follow the prompts.
+7. Bundle SiriProxy (this should be done every time you change the config.yml):  
+	`siriproxy bundle`
+8. Start SiriProxy (must start as root because it uses a port < 1024):  
+	`rvmsudo siriproxy server`
+9. Test that the server is running by saying "Text Siri Proxy" to your phone.
 
-7. Edit config.yml and enable some plugins by uncommenting them
-8. Install the requisite Ruby gems with bundler:
+Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you may need to symlink your "`.siriproxy`" directory to "`/root/`" in order to get the application to work:  
 
-    `$ bundle install`
-  
-9. Execute start.rb (as root -- since it must listen on TCP/443)
+	sudo ln -s ~/.siriproxy /root/.siriproxy
 
-    `$ rvmsudo ruby start.rb`
+**Updating SiriProxy**
 
-10. Activate Siri on your phone (connected to the network and using the DNS server with the fake entry), and say, "Test Siri proxy." It should respond, "Siri Proxy is up and running!"
+Once you're up and running, if you modify the code, or you want to grab the latest code from GitHub, you can do that easily using the "siriproxy update" command. Here's a couple of examples:
+
+	siriproxy update  
+	
+Installs the latest code from the [master] branch on GitHub.
+	
+	siriproxy update /path/to/SiriProxy  
+
+Installs the code from /path/to/SiriProxy
+	
+	siriproxy update -b gemify 
+
+Installs the latest code from the [gemify] branch on GitHub
+	
 
 FAQ
 ---
@@ -95,45 +109,7 @@ No. Please stop asking.
 
 **How do I generate the certificate?**
 
-Here's some quick(-ish) steps on generating the fake CA and Guzzoni cert (on a Mac):
-
-1. Open a terminal (go to spotlight, type "terminal")
-2. Type:
-
-    `/System/Library/OpenSSL/misc/CA.pl -newca
-3. Enter the following information:
-  
-  * CA certificate filename: hit enter, it will create a "demoCA" folder
-  * Enter PEM pass phrase: give it something 4+ characters that you'll remember. Doesn't need to be complicated
-  * Information (Country Name, State Name, etc): Just enter whatever. It's not important
-  * Common Name: For the CA, this can be whatever. For the guzzoni certificate, it MUST be: "guzzoni.apple.com"
-
-4. Type:
-
-    `/System/Library/OpenSSL/misc/CA.pl -newreq`
-
-5. Repeat step 3. Make sure you enter "guzzoni.apple.com" as your Common Name.
-6. Type:
-
-    `/System/Library/OpenSSL/misc/CA.pl -sign`
-
-7. Enter the passphrase from the first time you did step 3.
-8. Type "y" in response to each prompt.
-9. Type:
-
-    `openssl rsa -in newkey.pem -out server.passless.key`
-
-10. Enter your passphrase from the second time you did step 3.
-11. Type:
-
-    `mv newcert.pem server.passless.crt`
-
-12. Move server.passless.crt and server.passless.key to your Siri Proxy server.
-13. Email cacert.pem from your demoCA folder (created in step 2) to your iPhone. Once it's there, click it and accept it (it will give you scary warnings about this -- it should).
-
-That's it! If you're more of a "follow a video" kind of person, here's a video demonstration of these steps:
-
-[http://www.youtube.com/watch?v=_oaNbPOUCaE](http://www.youtube.com/watch?v=_oaNbPOUCaE)
+Certificates can now be easily generated using `siriproxy gencerts` once you install the SiriProxy gem. See the instructions above.
 
 **How do I set up a DNS server to forward Guzzoni.apple.com traffic to my computer?**
 
@@ -155,7 +131,7 @@ You're probably not using an iPhone 4S. You need to be using an iPhone 4S (or ha
 
 **How do I remove the certificate from my iPhone when I'm done?**
 
-Just go into your phone's Settings app, then go to "General->Profiles." Your CA will probably be the only thing listed under "Configuration Profiles." It will be listed as its "Common Name." Just click it and click "Remove" and it will be removed. (Thanks to [@tidegu](http://www.twitter.com/tidegu) for asking!)
+Just go into your phone's Settings app, then go to "General->Profiles." Your CA will probably be the only thing listed under "Configuration Profiles." It will be listed as "SiriProxyCA" Just click it and click "Remove" and it will be removed. (Thanks to [@tidegu](http://www.twitter.com/tidegu) for asking!)
 
 **Does this require a jailbreak?**
 

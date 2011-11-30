@@ -1,4 +1,5 @@
 require 'cfpropertylist'
+require 'siriproxy/interpret_siri'
 
 class SiriProxy::Connection < EventMachine::Connection
   include EventMachine::Protocols::LineText2
@@ -29,13 +30,13 @@ class SiriProxy::Connection < EventMachine::Connection
   def ssl_handshake_completed
     self.ssled = true
     
-    puts "[Info - #{self.name}] SSL completed for #{self.name}" if LOG_LEVEL > 1
+    puts "[Info - #{self.name}] SSL completed for #{self.name}" if $LOG_LEVEL > 1
   end
   
   def receive_line(line) #Process header
-    puts "[Header - #{self.name}] #{line}" if LOG_LEVEL > 2
+    puts "[Header - #{self.name}] #{line}" if $LOG_LEVEL > 2
     if(line == "") #empty line indicates end of headers
-      puts "[Debug - #{self.name}] Found end of headers" if LOG_LEVEL > 3
+      puts "[Debug - #{self.name}] Found end of headers" if $LOG_LEVEL > 3
       set_binary_mode
       self.processed_headers = true
     end  
@@ -63,22 +64,22 @@ class SiriProxy::Connection < EventMachine::Connection
     return if output_buffer.empty?
   
     if other_connection.ssled
-      puts "[Debug - #{self.name}] Forwarding #{self.output_buffer.length} bytes of data to #{other_connection.name}" if LOG_LEVEL > 5
-      #puts  self.output_buffer.to_hex if LOG_LEVEL > 5
+      puts "[Debug - #{self.name}] Forwarding #{self.output_buffer.length} bytes of data to #{other_connection.name}" if $LOG_LEVEL > 5
+      #puts  self.output_buffer.to_hex if $LOG_LEVEL > 5
       other_connection.send_data(output_buffer)
       self.output_buffer = ""
     else
-      puts "[Debug - #{self.name}] Buffering some data for later (#{self.output_buffer.length} bytes buffered)" if LOG_LEVEL > 5
-      #puts  self.output_buffer.to_hex if LOG_LEVEL > 5
+      puts "[Debug - #{self.name}] Buffering some data for later (#{self.output_buffer.length} bytes buffered)" if $LOG_LEVEL > 5
+      #puts  self.output_buffer.to_hex if $LOG_LEVEL > 5
     end
   end
 
   def process_compressed_data    
     self.unzipped_input << unzip_stream.inflate(self.input_buffer)
     self.input_buffer = ""
-    puts "========UNZIPPED DATA (from #{self.name} =========" if LOG_LEVEL > 5
-    puts unzipped_input.to_hex if LOG_LEVEL > 5
-    puts "==================================================" if LOG_LEVEL > 5
+    puts "========UNZIPPED DATA (from #{self.name} =========" if $LOG_LEVEL > 5
+    puts unzipped_input.to_hex if $LOG_LEVEL > 5
+    puts "==================================================" if $LOG_LEVEL > 5
     
     while(self.has_next_object?)
       object = read_next_object_from_unzipped()
@@ -108,7 +109,7 @@ class SiriProxy::Connection < EventMachine::Connection
       self.unzipped_output << object
       
       type = (info[1] == "3") ? "Ping" : "Pong"      
-      puts "[#{type} - #{self.name}] (#{info[2].to_i(16)})" if LOG_LEVEL > 3
+      puts "[#{type} - #{self.name}] (#{info[2].to_i(16)})" if $LOG_LEVEL > 3
       self.unzipped_input = unzipped_input[5..-1]
       
       flush_unzipped_output()
@@ -137,7 +138,7 @@ class SiriProxy::Connection < EventMachine::Connection
       self.last_ref_id = object["refId"] 
     end
     
-    puts "[Info - Forwarding object to #{self.other_connection.name}] #{object["class"]}" if LOG_LEVEL > 1
+    puts "[Info - Forwarding object to #{self.other_connection.name}] #{object["class"]}" if $LOG_LEVEL > 1
     
     object_data = object.to_plist(:plist_format => CFPropertyList::List::FORMAT_BINARY)
 
@@ -162,21 +163,21 @@ class SiriProxy::Connection < EventMachine::Connection
   
   def prep_received_object(object)
     if object["refId"] == self.last_ref_id && @block_rest_of_session
-      puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" if LOG_LEVEL > 1
-      pp object if LOG_LEVEL > 3
+      puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" if $LOG_LEVEL > 1
+      pp object if $LOG_LEVEL > 3
       return nil
     end
   
-    puts "[Info - #{self.name}] Received Object: #{object["class"]}" if LOG_LEVEL == 1
-    puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]})" if LOG_LEVEL == 2
-    puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if LOG_LEVEL > 2
-    pp object if LOG_LEVEL > 3
+    puts "[Info - #{self.name}] Received Object: #{object["class"]}" if $LOG_LEVEL == 1
+    puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]})" if $LOG_LEVEL == 2
+    puts "[Info - #{self.name}] Received Object: #{object["class"]} (group: #{object["group"]}, ref_id: #{object["refId"]}, ace_id: #{object["aceId"]})" if $LOG_LEVEL > 2
+    pp object if $LOG_LEVEL > 3
     
     #keeping this for filters
     object = received_object(object)
 
     #block the rest of the session if a plugin claims ownership
-    speech = Interpret.speech_recognized(object)
+    speech = SiriProxy::Interpret.speech_recognized(object)
     if speech != nil
       inject_object_to_output_stream(object)
       block_rest_of_session if plugin_manager.process(speech) 
@@ -184,8 +185,8 @@ class SiriProxy::Connection < EventMachine::Connection
     end
     
     
-    #object = new_obj if ((new_obj = Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
-    #object = new_obj if ((new_obj = Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
+    #object = new_obj if ((new_obj = SiriProxy::Interpret.unknown_intent(object, self, plugin_manager.method(:unknown_command))) != false)    
+    #object = new_obj if ((new_obj = SiriProxy::Interpret.speech_recognized(object, self, plugin_manager.method(:speech_recognized))) != false)
     
     object
   end  

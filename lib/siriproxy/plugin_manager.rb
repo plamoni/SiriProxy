@@ -10,8 +10,8 @@ class SiriProxy::PluginManager < Cora
   
   def load_plugins()
     @plugins = []
-    if APP_CONFIG.plugins
-      APP_CONFIG.plugins.each do |pluginConfig|
+    if $APP_CONFIG.plugins
+      $APP_CONFIG.plugins.each do |pluginConfig|
           if pluginConfig.is_a? String
             className = pluginConfig
             requireName = "siriproxy-#{className.downcase}"
@@ -41,7 +41,7 @@ class SiriProxy::PluginManager < Cora
   end
   
   def respond(text, options={})
-    self.guzzoni_conn.inject_object_to_output_stream(generate_siri_utterance(self.guzzoni_conn.last_ref_id, text, text, options[:prompt_for_response] == true))
+    self.guzzoni_conn.inject_object_to_output_stream(generate_siri_utterance(self.guzzoni_conn.last_ref_id, text, (options[:spoken] or text), options[:prompt_for_response] == true))
   end
   
   def no_matches
@@ -49,6 +49,6 @@ class SiriProxy::PluginManager < Cora
   end
   
   def log(text)
-    puts "[Info - Plugin Manager] #{text}" if LOG_LEVEL >= 1
+    puts "[Info - Plugin Manager] #{text}" if $LOG_LEVEL >= 1
   end
 end

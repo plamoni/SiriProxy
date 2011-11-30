@@ -10,8 +10,8 @@ class SiriProxy::Connection::Iphone < SiriProxy::Connection
 
   def post_init
     super
-    start_tls(:cert_chain_file  => "server.passless.crt",
-              :private_key_file => "server.passless.key",
+    start_tls(:cert_chain_file  => File.expand_path("~/.siriproxy/server.passless.crt"),
+              :private_key_file => File.expand_path("~/.siriproxy/server.passless.key"),
               :verify_peer      => false)
   end
 
