@@ -75,7 +75,7 @@ Currently, setup requires a pretty solid knowledge of certificates and openssl (
 
     `$ gem install bundler`
 
-7. Edit config.yaml and enable some plugins by uncommenting them
+7. Edit config.yml and enable some plugins by uncommenting them
 8. Install the requisite Ruby gems with bundler:
 
     `$ bundle install`
