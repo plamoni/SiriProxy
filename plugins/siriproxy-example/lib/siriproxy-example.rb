@@ -19,6 +19,11 @@ class SiriProxy::Plugin::Example < SiriProxy::Plugin
     
     request_completed #always complete your request! Otherwise the phone will "spin" at the user!
   end
+  
+  #Demonstrate that you can have Siri say one thing and write another"!
+  listen_for /you don't say/i do
+    say "Sometimes I don't write what I say", spoken: "Sometimes I don't say what I write"
+  end 
 
   #demonstrate state change
   listen_for /siri proxy test state/i do
