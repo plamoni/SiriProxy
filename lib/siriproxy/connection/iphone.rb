@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 #####
   # This is the connection to the iPhone
 #####
