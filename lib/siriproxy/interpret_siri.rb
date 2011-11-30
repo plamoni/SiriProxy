@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 ######
 # The idea behind this class is that you can call the different
 # methods to get different interpretations of a Siri object.

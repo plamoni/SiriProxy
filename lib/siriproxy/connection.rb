@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 require 'cfpropertylist'
 require 'siriproxy/interpret_siri'
 

@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 require 'eventmachine'
 require 'zlib'
 require 'pp'
