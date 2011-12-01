@@ -36,6 +36,7 @@ tsa_policy3 = 1.2.3.4.5.7
 [ ca ]
 default_ca	= CA_default		# The default ca section
 
+
 ####################################################################
 [ CA_default ]
 
@@ -46,6 +47,8 @@ database	= $dir/index.txt	# database index file.
 #unique_subject	= no			# Set to 'no' to allow creation of
 					# several ctificates with same subject.
 new_certs_dir	= $dir/newcerts		# default place for new certs.
+
+default_md = sha-1
 
 certificate	= $dir/cacert.pem 	# The CA certificate
 serial		= $dir/serial 		# The current serial number
@@ -108,6 +111,8 @@ default_keyfile 	= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes
 x509_extensions	= v3_ca	# The extentions to add to the self signed cert
+default_md = sha-1
+
 
 # Passwords for private keys if not present they will be prompted for
 # input_password = secret
