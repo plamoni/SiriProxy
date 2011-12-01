@@ -1,1 +1,1 @@
-rvm 1.9.3-head@SiriProxy --create
+rvm 1.9.3@SiriProxy --create
