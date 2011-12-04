@@ -38,6 +38,14 @@ For a list of current plugins and some more demo videos, check the [Plugins page
 Set-up Instructions
 -------------------
 
+**Video of a complete installation on Ubuntu 11.10**
+
+[http://www.youtube.com/watch?v=GQXyJR6mOk0](http://www.youtube.com/watch?v=GQXyJR6mOk0)
+
+This is a video of a complete start-to-finish installation on a fresh install of Ubuntu 11.10. 
+
+The commands used in the video can be found at [https://gist.github.com/1428474](https://gist.github.com/1428474).
+
 **Set up DNS**
 
 Before you can use SiriProxy, you must set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
