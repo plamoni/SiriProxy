@@ -19,7 +19,7 @@ if config.plugins
     if plugin.is_a? String
       gem "siriproxy-#{plugin.downcase}"
     else
-      gem "siriproxy-#{plugin['gem'] || plugin['name'].downcase}", :path => plugin['path'], :git => plugin['git'], :require => plugin['require']
+      gem "siriproxy-#{plugin['gem'] || plugin['name'].downcase}", :path => plugin['path'], :git => plugin['git'], :branch => plugin['branch'], :require => plugin['require']
     end
   end
 end

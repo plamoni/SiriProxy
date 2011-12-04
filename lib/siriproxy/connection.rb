@@ -174,7 +174,12 @@ class SiriProxy::Connection < EventMachine::Connection
     pp object if $LOG_LEVEL > 3
     
     #keeping this for filters
-    object = received_object(object)
+    new_obj = received_object(object)
+    if new_obj == nil 
+      puts "[Info - Dropping Object from #{self.name}] #{object["class"]}" if $LOG_LEVEL > 1
+      pp object if $LOG_LEVEL > 3
+      return nil
+    end
 
     #block the rest of the session if a plugin claims ownership
     speech = SiriProxy::Interpret.speech_recognized(object)
@@ -193,7 +198,7 @@ class SiriProxy::Connection < EventMachine::Connection
   
   #Stub -- override in subclass
   def received_object(object)
-  
+    
     object
   end 
 

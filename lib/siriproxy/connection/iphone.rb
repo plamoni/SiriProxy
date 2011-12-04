@@ -24,7 +24,8 @@ class SiriProxy::Connection::Iphone < SiriProxy::Connection
   end
   
   def received_object(object)
-    object
+    return plugin_manager.process_filters(object, :from_iphone)
+
     #plugin_manager.object_from_client(object, self)
   end
 end

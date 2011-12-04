@@ -98,9 +98,10 @@ Options:
   end
 
   def gen_certs
+    ca_name = @ca_name ||= ""
     command = File.join(File.dirname(__FILE__), '..', "..", "scripts", 'gen_certs.sh')
     sp_root = File.join(File.dirname(__FILE__), '..', "..")
-    puts `#{command} "#{sp_root}"`
+    puts `#{command} "#{sp_root}" "#{ca_name}"`
   end
 
   def update(directory=nil)
@@ -151,6 +152,9 @@ Options:
       opts.on('-b', '--branch BRANCH', '[update]   Choose the branch to update from (default: master)') do |branch|
         @branch = branch
       end
+      opts.on('-n', '--name CA_NAME',  '[gencerts] Define a common name for the CA (default: "SiriProxyCA")') do |ca_name|
+        @ca_name = ca_name
+      end 
       opts.on_tail('-v', '--version',  '           show version') do
         require "siriproxy/version"
         puts "SiriProxy version #{SiriProxy::VERSION}"
