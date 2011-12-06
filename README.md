@@ -115,6 +115,10 @@ FAQ
 
 No. Please stop asking. 
 
+**What is your opinion on h1siri, public SiriProxy servers, and other Siri "ports"?**
+
+Glad you asked! Watch this: [http://youtu.be/Y_Q6PfxBSbA](http://youtu.be/Y_Q6PfxBSbA)
+
 **How do I generate the certificate?**
 
 Certificates can now be easily generated using `siriproxy gencerts` once you install the SiriProxy gem. See the instructions above.
