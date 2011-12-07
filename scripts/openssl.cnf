@@ -36,6 +36,7 @@ tsa_policy3 = 1.2.3.4.5.7
 [ ca ]
 default_ca	= CA_default		# The default ca section
 
+
 ####################################################################
 [ CA_default ]
 
@@ -72,7 +73,7 @@ cert_opt 	= ca_default		# Certificate field options
 
 default_days	= 365			# how long to certify for
 default_crl_days= 30			# how long before next CRL
-default_md	= default		# use public key default MD
+default_md	= sha1		# use public key default MD
 preserve	= no			# keep passed DN ordering
 
 # A few difference way of specifying how similar the request should look
@@ -108,6 +109,8 @@ default_keyfile 	= privkey.pem
 distinguished_name	= req_distinguished_name
 attributes		= req_attributes
 x509_extensions	= v3_ca	# The extentions to add to the self signed cert
+default_md = sha1
+
 
 # Passwords for private keys if not present they will be prompted for
 # input_password = secret

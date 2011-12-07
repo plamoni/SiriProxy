@@ -27,3 +27,12 @@ plugins:
 
     # - name: 'AnotherPlugin'
     #   git: 'git://github.com/netpro2k/SiriProxy-AnotherPlugin.git' # git works just like specifying in Gemfile
+
+
+#Can define an alternative plugin manager to be used as follows
+#pluginManager: 
+#  class:      
+#     name: "myPM"      #requried.  Used to determine the class name using same logic as used with a plugin
+#     path: './managers/siriproxypm-mypm' #required: same use as in plugins
+#  
+
