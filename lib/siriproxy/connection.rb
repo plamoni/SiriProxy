@@ -96,6 +96,11 @@ class SiriProxy::Connection < EventMachine::Connection
     return false if unzipped_input.empty? #empty
     unpacked = unzipped_input[0...5].unpack('H*').first
     return true if(unpacked.match(/^0[34]/)) #Ping or pong
+    
+    if unpacked.match(/^[0-9][15-9]/)
+      puts "ROGUE PACKET!!! WHAT IS IT?! TELL US!!! IN IRC!! COPY THE STUFF FROM BELOW"
+      puts unpacked.to_hex
+    end 
     objectLength = unpacked.match(/^0200(.{6})/)[1].to_i(16)
     return ((objectLength + 5) < unzipped_input.length) #determine if the length of the next object (plus its prefix) is less than the input buffer
   end
