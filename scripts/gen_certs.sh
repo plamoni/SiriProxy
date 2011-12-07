@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+commonName=$2
+
+if [ "${commonName}" == "" ]
+then
+  commonName="SiriProxyCA"
+fi
 
 # Feel free to change any of these defaults
 countryName="US"
@@ -7,7 +13,6 @@ stateOrProvinceName="Missouri"
 localityName=""
 organizationName="Siri Proxy"
 organizationalUnitName=""
-commonName="SiriProxyCA"
 emailAddress=""
 
 #You probably don't need to modify these unless you know what you're doing.

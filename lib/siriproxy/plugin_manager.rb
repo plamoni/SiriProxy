@@ -28,6 +28,18 @@ class SiriProxy::PluginManager < Cora
     log "Plugins laoded: #{@plugins}"
   end
 
+  def process_filters(object, direction)
+    object_class = object.class #This way, if we change the object class we won't need to modify this code.
+    plugins.each do |plugin|
+      #log "Processing filters on #{plugin} for '#{object["class"]}'"
+      new_obj = plugin.process_filters(object, direction)
+      object = new_obj if(new_obj == false || new_obj.class == object_class) #prevent accidental poorly formed returns
+      return nil if object == false #if any filter returns "false," then the object should be dropped
+    end
+    
+    return object
+  end
+
   def process(text)
     result = super(text)
     self.guzzoni_conn.block_rest_of_session if result
