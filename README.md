@@ -14,7 +14,7 @@ We recently changed the way plugins work very significantly. That being the case
 
 New plugins should be independent Gems. Take a look at the included [example plugin](https://github.com/plamoni/SiriProxy/tree/master/plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features. 
 
-The State of This Project
+The State of This Project [![Dependency Status](https://gemnasium.com/plamoni/SiriProxy.png?travis)](https://gemnasium.com/plamoni/SiriProxy)
 ------------------------- 
 
 Please remember that this project is super-pre-alpha right now. If you're not a developer with a good bit of experience with networks, you're probably not even going to get the proxy running. But if you do (we are willing to help to an extent, check the IRC chat and my Twitter feed [@plamoni](http://www.twitter.com/plamoni)), then test out building a plugin. It's very easy to do and takes almost no time at all for most experienced developers. Check the demo videos and other plugins below for inspiration!
