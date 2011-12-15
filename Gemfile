@@ -11,7 +11,7 @@ if !File.exists?(File.expand_path('~/.siriproxy/config.yml'))
   exit 1
 end
 
-gem 'cora', :version => '0.0.4'
+gem 'cora', '0.0.4'
 
 config = OpenStruct.new(YAML.load_file(File.expand_path('~/.siriproxy/config.yml')))
 if config.plugins
