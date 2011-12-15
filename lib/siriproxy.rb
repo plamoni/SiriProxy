@@ -9,7 +9,7 @@ class String
 end
 
 class SiriProxy
-  
+
   def initialize()
     # @todo shouldnt need this, make centralize logging instead
     $LOG_LEVEL = $APP_CONFIG.log_level.to_i
@@ -21,6 +21,7 @@ class SiriProxy
           conn.plugin_manager = SiriProxy::PluginManager.new()
           conn.plugin_manager.iphone_conn = conn
         }
+        puts "SiriProxy up and running."
       rescue RuntimeError => err
         if err.message == "no acceptor"
           raise "Cannot start the server on port #{$APP_CONFIG.port} - are you root, or have another process on this port already?"
