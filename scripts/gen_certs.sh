@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
+hostName=$3
 commonName=$2
 
 if [ "${commonName}" == "" ]
 then
   commonName="SiriProxyCA"
 fi
+
+if [ "${hostName}" == "" ]
+then
+  hostName="guzzoni.apple.com"
+fi
+
 
 # Feel free to change any of these defaults
 countryName="US"
@@ -54,7 +61,7 @@ echo "${stateOrProvinceName}" >> $TMP_DIR/ca.args
 echo "${localityName}" >> $TMP_DIR/ca.args
 echo "${organizationName}" >> $TMP_DIR/ca.args
 echo "${organizationalUnitName}" >> $TMP_DIR/ca.args
-echo "guzzoni.apple.com" >> $TMP_DIR/ca.args
+echo "${hostName}" >> $TMP_DIR/ca.args
 echo "${emailAddress}" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
 echo "" >> $TMP_DIR/ca.args
