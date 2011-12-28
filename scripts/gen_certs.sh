@@ -8,6 +8,12 @@ then
   commonName="SiriProxyCA"
 fi
 
+if [ "${hostName}" == "" ]
+then
+  hostName="guzzoni.apple.com"
+fi
+
+
 # Feel free to change any of these defaults
 countryName="US"
 stateOrProvinceName="Missouri"
