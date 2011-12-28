@@ -35,7 +35,7 @@ Options:
     subcommand  = ARGV.shift
     case command
     when 'server'           then run_server(subcommand)
-    when 'gencerts'         then gen_certs
+    when 'gencerts'         then gen_certs(subcommand)
     when 'bundle'           then run_bundle(subcommand)
     when 'console'          then run_console
     when 'update'           then update(subcommand)
@@ -101,7 +101,7 @@ Options:
     ca_name = @ca_name ||= ""
     command = File.join(File.dirname(__FILE__), '..', "..", "scripts", 'gen_certs.sh')
     sp_root = File.join(File.dirname(__FILE__), '..', "..")
-    puts `#{command} "#{sp_root}" "#{ca_name}"`
+    puts `#{command} "#{sp_root}" "#{ca_name}" "#{subcommand}"`
   end
 
   def update(directory=nil)
