@@ -80,7 +80,8 @@ Clone this repo locally, then navigate into the SiriProxy directory (the root of
 	`cp ./config.example.yml ~/.siriproxy/config.yml`  
 5. Generate certificates:  
 	`siriproxy gencerts *(optional) ip address/domain you are listening on*` 
-	for example: `siriproxy gencerts 172.0.0.1` OR `siriproxy gencerts`
+	for example: `siriproxy gencerts 172.0.0.1` OR `siriproxy gencerts` 
+	if you are not using spire, use the latter option
 6. Install `~/.siriproxy/ca.pem` on your phone. This can easily be done by emailing the file to yourself and clicking on it in the iPhone email app. Follow the prompts.
 7. Bundle SiriProxy (this should be done every time you change the config.yml):  
 	`siriproxy bundle`
