@@ -97,7 +97,7 @@ Options:
     proxy.start()
   end
 
-  def gen_certs
+  def gen_certs(subcommand)
     ca_name = @ca_name ||= ""
     command = File.join(File.dirname(__FILE__), '..', "..", "scripts", 'gen_certs.sh')
     sp_root = File.join(File.dirname(__FILE__), '..', "..")
