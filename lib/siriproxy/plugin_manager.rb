@@ -47,9 +47,15 @@ class SiriProxy::PluginManager < Cora
   end
 
   def process(text)
-    result = super(text)
-    self.guzzoni_conn.block_rest_of_session if result
-    return result
+    begin
+      result = super(text)
+      self.guzzoni_conn.block_rest_of_session if result
+      return result
+    rescue Exception=>e
+      log "Plugin Crashed: #{e}"
+      respond e.to_s, spoken: "a plugin crashed"
+      return true
+    end  
   end
 
   def send_request_complete_to_iphone
