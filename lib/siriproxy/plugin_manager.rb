@@ -25,7 +25,7 @@ class SiriProxy::PluginManager < Cora
           @plugins << plugin
       end
     end
-    log "Plugins laoded: #{@plugins}"
+    log "Plugins loaded: #{@plugins}"
   end
 
   def process_filters(object, direction)
