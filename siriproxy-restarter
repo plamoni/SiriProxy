@@ -1,7 +1,7 @@
 #!/bin/bash
 while true;
 do
-echo "Starting Server"
+echo "[Info - SiriProxy] Starting Server"
     if siriproxy server; then
        echo "[Info - SiriProxy] Restarter Bye"
       exit 1
