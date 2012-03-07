@@ -9,8 +9,15 @@ class String
 end
 
 class SiriProxy
-  
   def initialize()
+    #Lets make the Ctrl+C a little more user friendly
+    trap("INT") {quit_on_int} 
+    def quit_on_int 
+      puts "\nTerminating SiriProxy..."
+      puts "Done, bye bye!!!"
+      exit 
+    end
+    
     # @todo shouldnt need this, make centralize logging instead
     $LOG_LEVEL = $APP_CONFIG.log_level.to_i
     EventMachine.run do
