@@ -4,17 +4,19 @@ while true;
 
 do
 
-echo "Starting Server"
+echo "Updating and Starting Server"
 
-    if siriproxy server; then
+    if siriproxy update; then
 
-       echo "[Info - Restarter] Bye"
+       echo "[Info - SiriProxy] Updating Complete!"
+       siriproxy server;
+       echo "[Info - SiriProxy] Restarter Bye"
  
       exit 1
 
     else
 
-      echo "[Warning - Crash - SiriProxy] Crashed! Restarting in 2 sec!"
+      echo "[Warning - Crash - SiriProxy] Crashed! Updating then restarting in 2 sec!"
 
       sleep 1
 
