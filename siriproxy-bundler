@@ -2,9 +2,9 @@
 while true;
 do
 echo "[Info - SiriProxy] Bundling and Starting Server"
-    if siriproxy bundle; then
+    siriproxy bundle;
        echo "[Info - SiriProxy] Bundling Complete!"
-       siriproxy server;
+    if siriproxy server; then
        echo "[Info - SiriProxy] Restarter Bye"
       exit 1
     else
