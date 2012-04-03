@@ -31,7 +31,7 @@ class SiriProxy::Connection::Iphone < SiriProxy::Connection
     
     addresses.map do |address|
       address.address.unpack('C*').join('.')
-    end.sample(1).first
+    end.sample
   end
 
   def ssl_handshake_completed
