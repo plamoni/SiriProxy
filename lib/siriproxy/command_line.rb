@@ -141,6 +141,10 @@ Options:
   
   def parse_options
     $APP_CONFIG = OpenStruct.new(YAML.load_file(File.expand_path('~/.siriproxy/config.yml')))
+
+    # Google Public DNS servers
+    $APP_CONFIG.upstream_dns ||= %w[8.8.8.8 8.8.4.4]
+
     @branch = nil
     @option_parser = OptionParser.new do |opts|
       opts.on('-p', '--port PORT',     '[server]   port number for server (central or node)') do |port_num|
@@ -148,6 +152,9 @@ Options:
       end
       opts.on('-l', '--log LOG_LEVEL', '[server]   The level of debug information displayed (higher is more)') do |log_level|
         $APP_CONFIG.log_level = log_level
+      end
+      opts.on(      '--upstream-dns SERVERS', Array, '[server]   List of upstream DNS servers to query for the real guzzoni.apple.com.  Defaults to Google DNS servers') do |servers|
+        $APP_CONFIG.upstream_dns = servers
       end
       opts.on('-b', '--branch BRANCH', '[update]   Choose the branch to update from (default: master)') do |branch|
         @branch = branch

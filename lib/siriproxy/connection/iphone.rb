@@ -4,10 +4,11 @@ require 'resolv'
   # This is the connection to the iPhone
 #####
 class SiriProxy::Connection::Iphone < SiriProxy::Connection
-  def initialize
+  def initialize upstream_dns
     puts "Create server for iPhone connection"
-    super
+    super()
     self.name = "iPhone"
+    @upstream_dns = upstream_dns
   end
 
   def post_init
@@ -20,8 +21,9 @@ class SiriProxy::Connection::Iphone < SiriProxy::Connection
   # Resolves guzzoni.apple.com using the Google DNS servers.  This allows the
   # machine running siriproxy to use the DNS server returning fake records for
   # guzzoni.apple.com.
+
   def resolve_guzzoni
-    addresses = Resolv::DNS.open(nameserver: %w[8.8.8.8 8.8.4.4]) do |dns|
+    addresses = Resolv::DNS.open(nameserver: @upstream_dns) do |dns|
       res = dns.getresources('guzzoni.apple.com', Resolv::DNS::Resource::IN::A)
     
       res.map { |r| r.address }
@@ -29,7 +31,7 @@ class SiriProxy::Connection::Iphone < SiriProxy::Connection
     
     addresses.map do |address|
       address.address.unpack('C*').join('.')
-    end.sample(1)
+    end.sample(1).first
   end
 
   def ssl_handshake_completed
