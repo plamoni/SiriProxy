@@ -28,6 +28,8 @@ class SiriProxy
           raise
         end
       end
+
+      EventMachine.set_effective_user($APP_CONFIG.user) if $APP_CONFIG.user
     end
   end
 end
