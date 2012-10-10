@@ -149,6 +149,84 @@ Just go into your phone's Settings app, then go to "General->Profiles." Your CA 
 
 No. The only action you need to take on the phone is to install the root CA's public key.
 
+**Using Siri causes a whole bunch of the following messages, followed by SiriProxy crashing!**
+
+	Create server for iPhone connection
+	start conn #<SiriProxy::Connection::Iphone:0x966a400 @signature=880, @processed_headers=false, @output_buffer="", @input_buffer="", @unzipped_input="", @unzipped_output="", @unzip_stream=#<Zlib::Inflate:0x9669640>, @zip_stream=#<Zlib::Deflate:0x96695dc>, @consumed_ace=false, @name="iPhone", @ssled=false>
+	[Info - Plugin Manager] Plugins laoded: [#<SiriProxy::Plugin::Example:0x968a818 @manager=#<SiriProxy::PluginManager:0x9685750 @plugins=[...]>>]
+	
+This is actually really common (but can be tricky to fix). The problem is that your SiriProxy server is using your tainted DNS server. So what happens is this:
+
+1. Your iPhone connects to your server, thinking it's `guzzoni.apple.com`
+2. Your server connects to *itself*, thinking that *it's* `guzzoni.apple.com`
+3. Your server thinks another iPhone has connected, and repeats step 2.
+
+This goes on forever, or at least a second or two before the server up and dies. The trick is that you need to make sure your server isn't connecting to itself when it requests a connection to `guzzoni.apple.com`. This is actually the default behavior, but many people accidentally mess things up by either (1) setting up their server to use itself as a DNS server (while using dnsmasq to taint the entry for `guzzoni.apple.com`), or (2) putting their server on a network where the DNS server issued by DHCP is tainted to point to the wrong `guzzoni.apple.com`.
+
+So the fix for this varies based on your setup, but one possible fix for scenario 1 (above) on many *NIX machines is to edit `/etc/resolve.conf` and change the `nameserver` entry to `8.8.8.8` (one of Google's public DNS servers). Do this and then restart networking (or just restart the computer) and things should start working.
+
+Your network setup may be different. This is THE most complex part of setting up SiriProxy (getting DNS set up correctly). So once you have this working, you are probably home free. Keep with it, good luck, and have fun!
+
+
+Running SiriProxy as an unprivileged user
+-----------------------------------------
+
+Given that SiriProxy is a bit of a hack and very unstable, it's probably a good idea to not run it as root. This is especially true if you're allowing access to your server from outside your network. Doing this isn't actually that hard, as SiriProxy doesn't need access to anything privileged.
+
+The only trick is that Siri expects the server to be running on port 443, and only privileged users can open ports below 1024 on *NIX operating systems. So I work around this by running SiriProxy on port 2000 and redirecting traffic to that port using iptables.
+
+**Step 1: Set up an account**
+
+I just set up an account called "siriproxy". I made sure it wasn't a "sudoer" (on my computer, that means keep it out of the "sudo" group). I also think it's a good idea to refrain from giving it login privileges. But do as I say on that one, not as I do.
+
+**Step 2: Set up iptables/ufw**
+
+I run UFW on my machine, which is pretty much a wrapper on iptables. I tossed in the following at the top of my `/etc/ufw/before.rules`:
+
+	*nat
+	:PREROUTING ACCEPT [0:0]
+	-A PREROUTING --dst 10.0.0.3 -p tcp --dport 443 -j REDIRECT --to-port 2000
+	COMMIT
+
+The IP referenced (10.0.0.3) is the IP of the computer running SiriProxy. Since this computer is being used as a wireless AP, it's important to only redirect traffic targeted directly at the server, otherwise all traffic to 443/tcp on my wifi network would be incorrectly redirected.
+
+I also made sure to open up 2000/tcp to allow traffic:
+
+    sudo ufw allow 2000/tcp
+    
+**Step 3: Set up upstart script**
+
+The full explanation of this is shown below. It's a handy thing to do by itself. It allows me to have SiriProxy start on boot and also allows me to easily control it using commands like `start siriproxy` and `stop siriproxy`.
+
+Running SiriProxy via Upstart
+-----------------------------
+
+Here's the upstart script I created for my home SiriProxy server. It respawns on a crash because SiriProxy is delicate and likes to crash. My server is running BackTrack 5 (a derivative of Ubuntu 10.04, I believe) and I use it as my wireless access point, making it an obvious location for SiriProxy:
+
+	description	"SiriProxy server"
+	
+	#Not sure if this is right, but it seems to work.
+	start on (started networking
+			  and filesystem)
+	
+	stop on runlevel [!023456]
+	
+	respawn
+	
+	exec start-stop-daemon --start --chuid siriproxy --exec /home/siriproxy/src/SiriProxy/siriproxy2000.sh
+
+Here are the contents of `siriproxy2000.sh` (as referenced above):
+
+	#!/bin/bash
+	
+	#make sure that rvm is set up
+	[[ -s "/home/siriproxy/.rvm/scripts/rvm" ]] && . "/home/siriproxy/.rvm/scripts/rvm"
+	
+	#feel free to insert logging if needed.
+	siriproxy server --port 2000 > /dev/null 2>&1 
+	
+Note that I run my server on port 2000 as the siriproxy user. See the comments above about running as an unprivileged user.
+
 
 Acknowledgements
 ----------------
@@ -161,25 +239,25 @@ Regarding Licensing
 
 Several people have come to me over the past few weeks about licensing. They (correctly) informed me that my [previous use](https://github.com/plamoni/SiriProxy/blob/2d7134fe93bd7b9281ceeda94a95f350d68f39b6/README.md) of the Creative Commons 3.0 [BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/3.0/) license was a [bad idea](http://wiki.creativecommons.org/FAQ#Can_I_use_a_Creative_Commons_license_for_software.3F). That being said, I spoke with the other core contributors and we decided a change was in order. Going forward, SiriProxy will be licensed under the [GNU General Public License v3.0](http://www.gnu.org/licenses/). In order to head off some confusion, here's a quick FAQ about the switch:
 
-*What does this mean for forks?*
+**What does this mean for forks?**
 
 Good question. It is my totally-not-a-lawyer belief that the change in license affects all versions of the code starting with [this one](https://github.com/plamoni/SiriProxy/commit/5f9d4a66b6c01488325680cbce59a5a3e69d0de7). 
 
 If you forked the project before this commit and you want to use the new license, I recommend (to be on the safe side, and remember, I'm totally not a lawyer) that you re-fork from this commit or a future one and then merge/patch in your changes. Should be pretty simple with Git.
 
-*What does this mean for public SiriProxy servers?*
+**What does this mean for public SiriProxy servers?**
 
 If you are selling public SiriProxy spots, then shame on you, you violated the spirit of the [CC license](http://creativecommons.org/licenses/by-nc-sa/3.0/). But good news, this new license lets you continue about your whacky ways without fear of legal recourse. As far as I'm concerned. If Apple calls, you are on your own. Read the "WITHOUT ANY WARRANTY" part of the GPL. You should probably pull the latest version of the code to use on your servers in order to be sure you're in 100% compliance.
 
-*What does this mean for end-users?*
+**What does this mean for end-users?**
 
 If you're using SiriProxy at home (like I am!), then you can do what you want. If you want to pull the latest code, that's cool. If you want to leave it as is, then that's cool too.
 
-*What does this mean for home automation companies that want to sell solutions based on SiriProxy*
+**What does this mean for home automation companies that want to sell solutions based on SiriProxy**
 
 It's open season. You probably sell other services based on GPL licensed software (like Linux). So just do what you've always done. Keep up the good work. Home automation is awesome. Some of our most helpful bug reports came from a couple of home automation guys who hung out in our IRC chat. Working in home automation is totally going to be my retirement job. Keep me in mind if you have any job openings in 2045 or so.
 
-*Are you a lawyer?*
+**Are you a lawyer?**
 
 No, I'm a programmer. So if you really seriously have real-life legal questions, you should go talk to someone with a real-life legal law degree. And a license to practice law. And the ability to advise you regarding copyright stuff.
 
