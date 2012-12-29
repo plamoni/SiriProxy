@@ -7,7 +7,7 @@ require 'yaml'
 require 'ostruct'
 
 if !File.exists?(File.expand_path('~/.siriproxy/config.yml'))
-  $stderr.puts "config.yml not found. Copy config.example.yml to config.yml, then modify it."
+  $stderr.puts "$HOME/.siriproxy/config.yml not found.  Copy config.example.yml from the\nsource tree to $HOME/.siriproxy/config.yml, then modify it."
   exit 1
 end
 
