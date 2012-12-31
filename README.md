@@ -47,6 +47,7 @@ on my Raspberry Pi.
 
 ==============================================================================
 
+'''
 # Need all of these *before* you install RVM and Ruby
 sudo apt-get install ruby build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion
 
@@ -83,12 +84,13 @@ rvm use 1.9.3 --default
 rake install
 # This is a workaround because the CFPropertyList in 2.2.0 is broken
 gem install CFPropertyList -v 2.1.2
-# Make the certifiecate
+# Make the certificate
 siriproxy gencerts
 ...copy $HOME/.rvm/ca.pem to the phone...
 # Bundle and run the server
 siriproxy bundle
 rvnsudo siriproxy server
+'''
 
 Test with asking Siri: "Test siri proxy"
 It should reply with "Siri proxy is up and running"
