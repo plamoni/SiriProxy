@@ -1,3 +1,104 @@
+Jeff's fork of SiriProxy
+========================
+
+This file contains my notes and instructions for installing SiriProxy
+on my Raspberry Pi.
+
+- The Three Little Pigs SiriProxy fork appears to be a much more
+  advanced version of SiriProxy, and much more actively maintained.
+  But it requires MySQL, which I don't really want to install on RPi.
+  I've submitted a ticket to them to see if they'll support TLP
+  without MySQL.
+
+  So in the meantime, I'm going with the stock SiriProxy plus a few
+  patches that I've pulled in from others.
+
+- This URL is the set of instructions with which I started.  There's a
+  video and the text of all the commands used is copy-n-pasteable.
+  I've modified them a bit, but this is where I started from:
+
+  http://www.idownloadblog.com/2011/12/09/how-to-install-siri-proxy-tutorial-video/
+
+- Note that I'm not using dnsmasq for the DNS proxying, and I'm not
+  modifying the DNS server on my iDevices.  I use pfsense
+  (pfsense.org) as a network firewall / appliance in my home network,
+  and it runs a DNS proxy.  Hence, I can just change the result for
+  guzzoni.apple.com to my raspberry pi's IP address in pfsense (and
+  then I have a patch for SiriProxy that makes it explicitly use
+  external DNS servers to resolve guzzoni.apple.com).
+
+  *** NOTE: I have the only Siri-enabled iDevice on my network right
+      now; not sure what will happen if some other Siri-enabled
+      iDevice attempts to use my SiriProxy....
+
+- I've got my own github fork of the vanilla SiriProxy project which
+  includes the patches that I want:
+
+  https://github.com/jsquyres/SiriProxy
+
+  1. Make the error message slightly more clear
+     https://github.com/jsquyres/SiriProxy/commit/e69a886f37b5dde9673322bb5ec18445db3d87b7
+
+  2. Make SiriProxy use Google DNS to resolve guzzoni.apple.com (from
+     https://github.com/plamoni/SiriProxy/pull/336
+
+  3. Don't let a crashing plugin take down the server (from 
+     https://github.com/plamoni/SiriProxy/pull/263
+
+==============================================================================
+
+    # Need all of these *before* you install RVM and Ruby
+    sudo apt-get install ruby build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion
+
+    bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+
+    # The RVM installer puts some stuff in .bash_profile, but I'd rather
+    # have it in .bashrc
+    cd
+    cat .bash_profile >> .bashrc
+    rm .bash_profile
+    exit
+    ...log back in again...
+
+    # Build and install Ruby
+    # ==> This step takes a LOOOOOOONG time <==
+    rvm install 1.9.3
+    rvm use 1.9.3 --default
+
+    # Checkout my clone of SiriProxy
+    cd
+    mkdir git
+    cd git
+    git clone git://github.com/jsquyres/SiriProxy.git
+
+    cd SiriProxy
+    ...enter "y" for the rvm question...
+
+    # Make a token config file
+    mkdir $HOME/.siriproxy
+    cp config.example.yml $HOME/.siriproxy/config.yml
+
+    # Build and install siriproxy
+    rvm use 1.9.3 --default
+    rake install
+    # This is a workaround because the CFPropertyList in 2.2.0 is broken
+    gem install CFPropertyList -v 2.1.2
+    # Make the certificate
+    siriproxy gencerts
+    ...copy $HOME/.rvm/ca.pem to the phone...
+    # Bundle and run the server
+    siriproxy bundle
+    rvnsudo siriproxy server
+
+Test with asking Siri: "Test siri proxy"
+It should reply with "Siri proxy is up and running"
+
+###############################################################################
+
+The original README.md is below
+
+###############################################################################
+
 Siri Proxy
 ==========
 
@@ -48,7 +149,7 @@ The commands used in the video can be found at [https://gist.github.com/1428474]
 
 **Set up DNS**
 
-Before you can use SiriProxy, you must set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (make sure that computer is not using your DNS server!). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
+Before you can use SiriProxy, you must set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (siriproxy uses Google's public DNS servers to resolve guzzoni.apple.com, so it may use your forwarding DNS server). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
 
 **Set up RVM and Ruby 1.9.3**
 
