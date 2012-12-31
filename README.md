@@ -47,48 +47,48 @@ on my Raspberry Pi.
 
 ==============================================================================
 
-'''# Need all of these *before* you install RVM and Ruby
-sudo apt-get install ruby build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion
+    # Need all of these *before* you install RVM and Ruby
+    sudo apt-get install ruby build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev ncurses-dev automake libtool bison subversion
 
-bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
+    bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)
 
-# The RVM installer puts some stuff in .bash_profile, but I'd rather
-# have it in .bashrc
-cd
-cat .bash_profile >> .bashrc
-rm .bash_profile
-exit
-...log back in again...
+    # The RVM installer puts some stuff in .bash_profile, but I'd rather
+    # have it in .bashrc
+    cd
+    cat .bash_profile >> .bashrc
+    rm .bash_profile
+    exit
+    ...log back in again...
 
-# Build and install Ruby
-# ==> This step takes a LOOOOOOONG time <==
-rvm install 1.9.3
-rvm use 1.9.3 --default
+    # Build and install Ruby
+    # ==> This step takes a LOOOOOOONG time <==
+    rvm install 1.9.3
+    rvm use 1.9.3 --default
 
-# Checkout my clone of SiriProxy
-cd
-mkdir git
-cd git
-git clone git://github.com/jsquyres/SiriProxy.git
+    # Checkout my clone of SiriProxy
+    cd
+    mkdir git
+    cd git
+    git clone git://github.com/jsquyres/SiriProxy.git
 
-cd SiriProxy
-...enter "y" for the rvm question...
+    cd SiriProxy
+    ...enter "y" for the rvm question...
 
-# Make a token config file
-mkdir $HOME/.siriproxy
-cp config.example.yml $HOME/.siriproxy/config.yml
+    # Make a token config file
+    mkdir $HOME/.siriproxy
+    cp config.example.yml $HOME/.siriproxy/config.yml
 
-# Build and install siriproxy
-rvm use 1.9.3 --default
-rake install
-# This is a workaround because the CFPropertyList in 2.2.0 is broken
-gem install CFPropertyList -v 2.1.2
-# Make the certificate
-siriproxy gencerts
-...copy $HOME/.rvm/ca.pem to the phone...
-# Bundle and run the server
-siriproxy bundle
-rvnsudo siriproxy server'''
+    # Build and install siriproxy
+    rvm use 1.9.3 --default
+    rake install
+    # This is a workaround because the CFPropertyList in 2.2.0 is broken
+    gem install CFPropertyList -v 2.1.2
+    # Make the certificate
+    siriproxy gencerts
+    ...copy $HOME/.rvm/ca.pem to the phone...
+    # Bundle and run the server
+    siriproxy bundle
+    rvnsudo siriproxy server
 
 Test with asking Siri: "Test siri proxy"
 It should reply with "Siri proxy is up and running"
