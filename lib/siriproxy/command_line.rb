@@ -143,7 +143,7 @@ Options:
     $APP_CONFIG = OpenStruct.new(YAML.load_file(File.expand_path('~/.siriproxy/config.yml')))
     @branch = nil
     @option_parser = OptionParser.new do |opts|
-      opts.on('-l', '--listen ADDRESS',     '[server]   address to listen on (central or node)') do |listen|
+      opts.on('-L', '--listen ADDRESS',     '[server]   address to listen on (central or node)') do |listen|
         $APP_CONFIG.listen = listen
       end
       opts.on('-p', '--port PORT',     '[server]   port number for server (central or node)') do |port_num|
