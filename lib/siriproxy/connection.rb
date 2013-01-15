@@ -169,6 +169,11 @@ class SiriProxy::Connection < EventMachine::Connection
   end
   
   def prep_received_object(object)
+      
+    if object["class"] == "FinishSpeech" or object["class"] == "SpeechRecognized"
+          @block_rest_of_session = false
+    end
+      
     if object["refId"] == self.last_ref_id && @block_rest_of_session
       puts "[Info - Dropping Object from Guzzoni] #{object["class"]}" if $LOG_LEVEL > 1
       pp object if $LOG_LEVEL > 3
