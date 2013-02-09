@@ -15,8 +15,9 @@ class SiriProxy
     $LOG_LEVEL = $APP_CONFIG.log_level.to_i
     EventMachine.run do
       begin
-        puts "Starting SiriProxy on #{$APP_CONFIG.listen}:#{$APP_CONFIG.port}.."
-        EventMachine::start_server($APP_CONFIG.listen, $APP_CONFIG.port, SiriProxy::Connection::Iphone) { |conn|
+        listen_addr = $APP_CONFIG.listen || "0.0.0.0"
+        puts "Starting SiriProxy on #{listen_addr}:#{$APP_CONFIG.port}.."
+        EventMachine::start_server(listen_addr, $APP_CONFIG.port, SiriProxy::Connection::Iphone) { |conn|
           $stderr.puts "start conn #{conn.inspect}"
           conn.plugin_manager = SiriProxy::PluginManager.new()
           conn.plugin_manager.iphone_conn = conn
