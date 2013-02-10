@@ -3,19 +3,19 @@ Siri Proxy
 
 About
 -----
-Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow for the creation of custom handlers for different actions. This can allow developers to easily add functionality to Siri. 
+Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow for the creation of custom handlers for different actions. This can allow developers to easily add functionality to Siri.
 
 The main example I provide is a plugin to control [my thermostat](http://www.radiothermostat.com/latestnews.html#advanced) with Siri. It responds to commands such as, "What's the status of the thermostat?", or "Set the thermostat to 68 degrees", or even "What's the inside temperature?"
 
 Notice About Plugins
 --------------------
 
-We recently changed the way plugins work very significantly. That being the case, your old plugins won't work. 
+We recently changed the way plugins work very significantly. That being the case, your old plugins won't work.
 
-New plugins should be independent Gems. Take a look at the included [example plugin](https://github.com/plamoni/SiriProxy/tree/master/plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features. 
+New plugins should be independent Gems. Take a look at the included [example plugin](https://github.com/plamoni/SiriProxy/tree/master/plugins/siriproxy-example) for some inspiration. We will try to keep that file up to date with the latest features.
 
 The State of This Project
-------------------------- 
+-------------------------
 
 Please remember that this project is super-pre-alpha right now. If you're not a developer with a good bit of experience with networks, you're probably not even going to get the proxy running. But if you do (we are willing to help to an extent, check the IRC chat and my Twitter feed [@plamoni](http://www.twitter.com/plamoni)), then test out building a plugin. It's very easy to do and takes almost no time at all for most experienced developers. Check the demo videos and other plugins below for inspiration!
 
@@ -33,7 +33,7 @@ See the system in action here: [http://www.youtube.com/watch?v=AN6wy0keQqo](http
 More Demo Videos and Other Plugins
 ----------------------------------
 
-For a list of current plugins and some more demo videos, check the [Plugins page](https://github.com/plamoni/SiriProxy/wiki/Plugins) on the wiki.  
+For a list of current plugins and some more demo videos, check the [Plugins page](https://github.com/plamoni/SiriProxy/wiki/Plugins) on the wiki.
 
 Set-up Instructions
 -------------------
@@ -42,7 +42,7 @@ Set-up Instructions
 
 [http://www.youtube.com/watch?v=GQXyJR6mOk0](http://www.youtube.com/watch?v=GQXyJR6mOk0)
 
-This is a video of a complete start-to-finish installation on a fresh install of Ubuntu 11.10. 
+This is a video of a complete start-to-finish installation on a fresh install of Ubuntu 11.10.
 
 The commands used in the video can be found at [https://gist.github.com/1428474](https://gist.github.com/1428474).
 
@@ -55,65 +55,65 @@ Before you can use SiriProxy, you must set up a DNS server on your network to fo
 If you don't already have Ruby 1.9.3 installed through RVM, please do so in order to make sure you can follow the steps later. Experts can ignore this. If you're unsure, follow these directions carefully:
 
 1. Download and install RVM (if you don't have it already):
-	* Download/install RVM:  
-		`bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)`  
-	* Activate RVM:  
-		`[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"`  
-	* (optional, but useful) Add RVM to your .bash_profile:  
-		`echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile`   
-2. Install Ruby 1.9.3 (if you don't have it already):   
-	`rvm install 1.9.3`  
-3. Set RVM to use/default to 1.9.3:   
-	`rvm use 1.9.3 --default`
-	
+  * Download/install RVM:
+    `bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)`
+  * Activate RVM:
+    `[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"`
+  * (optional, but useful) Add RVM to your .bash_profile:
+    `echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile`
+2. Install Ruby 1.9.3 (if you don't have it already):
+  `rvm install 1.9.3`
+3. Set RVM to use/default to 1.9.3:
+  `rvm use 1.9.3 --default`
+
 **Set up SiriProxy**
 
 Clone this repo locally, then navigate into the SiriProxy directory (the root of the repo). Then follow these instructions carefully. Note that nothing needs to be (or should be) done as root until you launch the server:
 
-1. Install Rake and Bundler:  
-	`rvmsudo gem install rake bundler`  
-2. Install SiriProxy gem (do this from your SiriProxy directory):  
-	`rake install`  
-3. Make .siriproxy directory:  
-	`mkdir ~/.siriproxy`  
-4. Move default config file to .siriproxy (if you need to make configuration changes, do that now by editing the config.yml):  
-	`cp ./config.example.yml ~/.siriproxy/config.yml`  
-5. Generate certificates:  
-	`siriproxy gencerts`
+1. Install Rake and Bundler:
+  `rvmsudo gem install rake bundler`
+2. Install SiriProxy gem (do this from your SiriProxy directory):
+  `rake install`
+3. Make .siriproxy directory:
+  `mkdir ~/.siriproxy`
+4. Move default config file to .siriproxy (if you need to make configuration changes, do that now by editing the config.yml):
+  `cp ./config.example.yml ~/.siriproxy/config.yml`
+5. Generate certificates:
+  `siriproxy gencerts`
 6. Install `~/.siriproxy/ca.pem` on your phone. This can easily be done by emailing the file to yourself and clicking on it in the iPhone email app. Follow the prompts.
-7. Bundle SiriProxy (this should be done every time you change the config.yml):  
-	`siriproxy bundle`
-8. Start SiriProxy (must start as root because it uses a port < 1024):  
-	`rvmsudo siriproxy server`
+7. Bundle SiriProxy (this should be done every time you change the config.yml):
+  `siriproxy bundle`
+8. Start SiriProxy (must start as root because it uses a port < 1024):
+  `rvmsudo siriproxy server`
 9. Test that the server is running by saying "Test Siri Proxy" to your phone.
 
-Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you may need to symlink your "`.siriproxy`" directory to "`/root/`" in order to get the application to work:  
+Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you may need to symlink your "`.siriproxy`" directory to "`/root/`" in order to get the application to work:
 
-	sudo ln -s ~/.siriproxy /root/.siriproxy
+  sudo ln -s ~/.siriproxy /root/.siriproxy
 
 **Updating SiriProxy**
 
 Once you're up and running, if you modify the code, or you want to grab the latest code from GitHub, you can do that easily using the "siriproxy update" command. Here's a couple of examples:
 
-	siriproxy update  
-	
+  siriproxy update
+
 Installs the latest code from the [master] branch on GitHub.
-	
-	siriproxy update /path/to/SiriProxy  
+
+  siriproxy update /path/to/SiriProxy
 
 Installs the code from /path/to/SiriProxy
-	
-	siriproxy update -b gemify 
+
+  siriproxy update -b gemify
 
 Installs the latest code from the [gemify] branch on GitHub
-	
+
 
 FAQ
 ---
 
 **Will this let me run Siri on my iPhone 4, iPod Touch, iPhone 3G, Microwave, etc?**
 
-No. Please stop asking. 
+No. Please stop asking.
 
 **What is your opinion on h1siri, public SiriProxy servers, and other Siri "ports"?**
 
@@ -125,7 +125,7 @@ Certificates can now be easily generated using `siriproxy gencerts` once you ins
 
 **How do I set up a DNS server to forward Guzzoni.apple.com traffic to my computer?**
 
-Check out my video on this: 
+Check out my video on this:
 
 [http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s)
 
@@ -151,10 +151,10 @@ No. The only action you need to take on the phone is to install the root CA's pu
 
 **Using Siri causes a whole bunch of the following messages, followed by SiriProxy crashing!**
 
-	Create server for iPhone connection
-	start conn #<SiriProxy::Connection::Iphone:0x966a400 @signature=880, @processed_headers=false, @output_buffer="", @input_buffer="", @unzipped_input="", @unzipped_output="", @unzip_stream=#<Zlib::Inflate:0x9669640>, @zip_stream=#<Zlib::Deflate:0x96695dc>, @consumed_ace=false, @name="iPhone", @ssled=false>
-	[Info - Plugin Manager] Plugins laoded: [#<SiriProxy::Plugin::Example:0x968a818 @manager=#<SiriProxy::PluginManager:0x9685750 @plugins=[...]>>]
-	
+  Create server for iPhone connection
+  start conn #<SiriProxy::Connection::Iphone:0x966a400 @signature=880, @processed_headers=false, @output_buffer="", @input_buffer="", @unzipped_input="", @unzipped_output="", @unzip_stream=#<Zlib::Inflate:0x9669640>, @zip_stream=#<Zlib::Deflate:0x96695dc>, @consumed_ace=false, @name="iPhone", @ssled=false>
+  [Info - Plugin Manager] Plugins loaded: [#<SiriProxy::Plugin::Example:0x968a818 @manager=#<SiriProxy::PluginManager:0x9685750 @plugins=[...]>>]
+
 This is actually really common (but can be tricky to fix). The problem is that your SiriProxy server is using your tainted DNS server. So what happens is this:
 
 1. Your iPhone connects to your server, thinking it's `guzzoni.apple.com`
@@ -183,17 +183,17 @@ I just set up an account called "siriproxy". I made sure it wasn't a "sudoer" (o
 
 I run UFW on my machine, which is pretty much a wrapper on iptables. I tossed in the following at the top of my `/etc/ufw/before.rules`:
 
-	*nat
-	:PREROUTING ACCEPT [0:0]
-	-A PREROUTING --dst 10.0.0.3 -p tcp --dport 443 -j REDIRECT --to-port 2000
-	COMMIT
+  *nat
+  :PREROUTING ACCEPT [0:0]
+  -A PREROUTING --dst 10.0.0.3 -p tcp --dport 443 -j REDIRECT --to-port 2000
+  COMMIT
 
 The IP referenced (10.0.0.3) is the IP of the computer running SiriProxy. Since this computer is being used as a wireless AP, it's important to only redirect traffic targeted directly at the server, otherwise all traffic to 443/tcp on my wifi network would be incorrectly redirected.
 
 I also made sure to open up 2000/tcp to allow traffic:
 
     sudo ufw allow 2000/tcp
-    
+
 **Step 3: Set up upstart script**
 
 The full explanation of this is shown below. It's a handy thing to do by itself. It allows me to have SiriProxy start on boot and also allows me to easily control it using commands like `start siriproxy` and `stop siriproxy`.
@@ -203,28 +203,28 @@ Running SiriProxy via Upstart
 
 Here's the upstart script I created for my home SiriProxy server. It respawns on a crash because SiriProxy is delicate and likes to crash. My server is running BackTrack 5 (a derivative of Ubuntu 10.04, I believe) and I use it as my wireless access point, making it an obvious location for SiriProxy:
 
-	description	"SiriProxy server"
-	
-	#Not sure if this is right, but it seems to work.
-	start on (started networking
-			  and filesystem)
-	
-	stop on runlevel [!023456]
-	
-	respawn
-	
-	exec start-stop-daemon --start --chuid siriproxy --exec /home/siriproxy/src/SiriProxy/siriproxy2000.sh
+  description "SiriProxy server"
+
+  #Not sure if this is right, but it seems to work.
+  start on (started networking
+        and filesystem)
+
+  stop on runlevel [!023456]
+
+  respawn
+
+  exec start-stop-daemon --start --chuid siriproxy --exec /home/siriproxy/src/SiriProxy/siriproxy2000.sh
 
 Here are the contents of `siriproxy2000.sh` (as referenced above):
 
-	#!/bin/bash
-	
-	#make sure that rvm is set up
-	[[ -s "/home/siriproxy/.rvm/scripts/rvm" ]] && . "/home/siriproxy/.rvm/scripts/rvm"
-	
-	#feel free to insert logging if needed.
-	siriproxy server --port 2000 > /dev/null 2>&1 
-	
+  #!/bin/bash
+
+  #make sure that rvm is set up
+  [[ -s "/home/siriproxy/.rvm/scripts/rvm" ]] && . "/home/siriproxy/.rvm/scripts/rvm"
+
+  #feel free to insert logging if needed.
+  siriproxy server --port 2000 > /dev/null 2>&1
+
 Note that I run my server on port 2000 as the siriproxy user. See the comments above about running as an unprivileged user.
 
 
@@ -232,7 +232,7 @@ Acknowledgements
 ----------------
 I really can't give enough credit to [Applidium](http://applidium.com/en/news/cracking_siri/) and the [tools they created](https://github.com/applidium/Cracking-Siri). While I've been toying with Siri for a while, their proof of concept for intercepting and interpreting the Siri protocol was invaluable. Although all the code included in the project (so far) is my own, much of the base logic behind my code is based on the sample code they provided. They do great work.
 
-I also want to give a shout-out to [Arch Reactor](http://www.archreactor.org) - my local Hackerspace. Hackerspaces are a fantastic place to go learn about stuff like this. I was able to get some help from folks there, and more importantly, I got encouragement to do stuff like this. Check [Hackerspaces.org](http://www.hackerspaces.org) for a hackerspace in your area and make sure to check it out! 
+I also want to give a shout-out to [Arch Reactor](http://www.archreactor.org) - my local Hackerspace. Hackerspaces are a fantastic place to go learn about stuff like this. I was able to get some help from folks there, and more importantly, I got encouragement to do stuff like this. Check [Hackerspaces.org](http://www.hackerspaces.org) for a hackerspace in your area and make sure to check it out!
 
 Regarding Licensing
 -------------------
@@ -241,7 +241,7 @@ Several people have come to me over the past few weeks about licensing. They (co
 
 **What does this mean for forks?**
 
-Good question. It is my totally-not-a-lawyer belief that the change in license affects all versions of the code starting with [this one](https://github.com/plamoni/SiriProxy/commit/5f9d4a66b6c01488325680cbce59a5a3e69d0de7). 
+Good question. It is my totally-not-a-lawyer belief that the change in license affects all versions of the code starting with [this one](https://github.com/plamoni/SiriProxy/commit/5f9d4a66b6c01488325680cbce59a5a3e69d0de7).
 
 If you forked the project before this commit and you want to use the new license, I recommend (to be on the safe side, and remember, I'm totally not a lawyer) that you re-fork from this commit or a future one and then merge/patch in your changes. Should be pretty simple with Git.
 
@@ -283,7 +283,7 @@ along with this program.  If not, see [http://www.gnu.org/licenses/](http://www.
 
 Disclaimer
 ----------
-I'm not affiliated with Apple in any way. They don't endorse this application. They own all the rights to Siri (and all associated trademarks). 
+I'm not affiliated with Apple in any way. They don't endorse this application. They own all the rights to Siri (and all associated trademarks).
 
 This software is provided as-is with no warranty whatsoever. Apple could do things to block this kind of behavior if they want. Also, if you cause problems (by sending lots of trash to the Guzzoni servers or anything), I fully support Apple's right to ban your UDID (making your phone unable to use Siri). They can, and I wouldn't blame them if they do.
 
