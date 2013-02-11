@@ -153,7 +153,7 @@ No. The only action you need to take on the phone is to install the root CA's pu
 
 	Create server for iPhone connection
 	start conn #<SiriProxy::Connection::Iphone:0x966a400 @signature=880, @processed_headers=false, @output_buffer="", @input_buffer="", @unzipped_input="", @unzipped_output="", @unzip_stream=#<Zlib::Inflate:0x9669640>, @zip_stream=#<Zlib::Deflate:0x96695dc>, @consumed_ace=false, @name="iPhone", @ssled=false>
-	[Info - Plugin Manager] Plugins laoded: [#<SiriProxy::Plugin::Example:0x968a818 @manager=#<SiriProxy::PluginManager:0x9685750 @plugins=[...]>>]
+	[Info - Plugin Manager] Plugins loaded: [#<SiriProxy::Plugin::Example:0x968a818 @manager=#<SiriProxy::PluginManager:0x9685750 @plugins=[...]>>]
 	
 This is actually really common (but can be tricky to fix). The problem is that your SiriProxy server is using your tainted DNS server. So what happens is this:
 
