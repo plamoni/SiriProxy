@@ -38,7 +38,7 @@ class SiriProxy::Interpret
         phraseObj["properties"]["interpretations"].first["properties"]["tokens"].map { |token|
           tokenProps = token["properties"]
           
-          phrase = phrase[0..-2] if tokenProps["removeSpaceBefore"]
+          phrase = phrase[0..-2] if tokenProps["removeSpaceBefore"] and phrase[-1] == " "
           phrase << tokenProps["text"]
           phrase << " " if !tokenProps["removeSpaceAfter"]
         }
