@@ -237,49 +237,19 @@ I also want to give a shout-out to [Arch Reactor](http://www.archreactor.org) - 
 Regarding Licensing
 -------------------
 
-Several people have come to me over the past few weeks about licensing. They (correctly) informed me that my [previous use](https://github.com/plamoni/SiriProxy/blob/2d7134fe93bd7b9281ceeda94a95f350d68f39b6/README.md) of the Creative Commons 3.0 [BY-NC-SA](http://creativecommons.org/licenses/by-nc-sa/3.0/) license was a [bad idea](http://wiki.creativecommons.org/FAQ#Can_I_use_a_Creative_Commons_license_for_software.3F). That being said, I spoke with the other core contributors and we decided a change was in order. Going forward, SiriProxy will be licensed under the [GNU General Public License v3.0](http://www.gnu.org/licenses/). In order to head off some confusion, here's a quick FAQ about the switch:
+It's a pain. MIT seems nice. Go hunt through the commit history if you're interested in knowing about SiriProxy's long and frustrating licensing history.
 
-**What does this mean for forks?**
-
-Good question. It is my totally-not-a-lawyer belief that the change in license affects all versions of the code starting with [this one](https://github.com/plamoni/SiriProxy/commit/5f9d4a66b6c01488325680cbce59a5a3e69d0de7). 
-
-If you forked the project before this commit and you want to use the new license, I recommend (to be on the safe side, and remember, I'm totally not a lawyer) that you re-fork from this commit or a future one and then merge/patch in your changes. Should be pretty simple with Git.
-
-**What does this mean for public SiriProxy servers?**
-
-If you are selling public SiriProxy spots, then shame on you, you violated the spirit of the [CC license](http://creativecommons.org/licenses/by-nc-sa/3.0/). But good news, this new license lets you continue about your whacky ways without fear of legal recourse. As far as I'm concerned. If Apple calls, you are on your own. Read the "WITHOUT ANY WARRANTY" part of the GPL. You should probably pull the latest version of the code to use on your servers in order to be sure you're in 100% compliance.
-
-**What does this mean for end-users?**
-
-If you're using SiriProxy at home (like I am!), then you can do what you want. If you want to pull the latest code, that's cool. If you want to leave it as is, then that's cool too.
-
-**What does this mean for home automation companies that want to sell solutions based on SiriProxy**
-
-It's open season. You probably sell other services based on GPL licensed software (like Linux). So just do what you've always done. Keep up the good work. Home automation is awesome. Some of our most helpful bug reports came from a couple of home automation guys who hung out in our IRC chat. Working in home automation is totally going to be my retirement job. Keep me in mind if you have any job openings in 2045 or so.
-
-**Are you a lawyer?**
-
-No, I'm a programmer. So if you really seriously have real-life legal questions, you should go talk to someone with a real-life legal law degree. And a license to practice law. And the ability to advise you regarding copyright stuff.
-
-License
--------
+License (MIT)
+-------------
 
 SiriProxy - A tampering proxy server for the Siri (Ace) Protocol.
-Copyright (C) 2012  Pete Lamonica
+Copyright (c) 2013 Pete Lamonica
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Disclaimer
 ----------
