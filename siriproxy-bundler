@@ -1,0 +1,14 @@
+#!/bin/bash
+while true;
+do
+echo "[Info - SiriProxy] Bundling and Starting Server"
+    siriproxy bundle;
+       echo "[Info - SiriProxy] Bundling Complete!"
+    if siriproxy server; then
+       echo "[Info - SiriProxy] Restarter Bye"
+      exit 1
+    else
+      echo "[Warning - Crash - SiriProxy] Crashed! Bundling then restarting in 2 sec!"
+      sleep 1
+    fi
+done
