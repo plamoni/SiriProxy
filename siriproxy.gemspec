@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = Gem::Requirement.new(">= 1.9.2")
 
-  s.add_runtime_dependency "CFPropertyList"
+  s.add_runtime_dependency "CFPropertyList", "=2.1.2"
   s.add_runtime_dependency "eventmachine"
   s.add_runtime_dependency "uuidtools"
   s.add_development_dependency "rake"
