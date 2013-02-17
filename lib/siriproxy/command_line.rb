@@ -82,6 +82,7 @@ Options:
 
   def run_server(subcommand='start')
     load_code
+    init_plugins
     start_server
     # @todo: support for forking server into bg and start/stop/restart
     # subcommand ||= 'start'
@@ -187,5 +188,27 @@ Options:
 
     require 'siriproxy/plugin'
     require 'siriproxy/plugin_manager'
+  end
+  
+  def init_plugins
+    if $APP_CONFIG.plugins
+      $APP_CONFIG.plugins.each_with_index do |pluginConfig, i|
+          if pluginConfig.is_a? String
+            className = pluginConfig
+            requireName = "siriproxy-#{className.downcase}"
+          else
+            className = pluginConfig['name']
+            requireName = pluginConfig['require'] || "siriproxy-#{className.downcase}"
+          end
+          require requireName
+          plugin = SiriProxy::Plugin.const_get(className).new(pluginConfig)
+          
+          if plugin.respond_to?('plugin_init')                                                                     
+            $APP_CONFIG.plugins[i]['init'] = plugin.plugin_init
+          end
+          
+          plugin = nil
+      end
+    end
   end
 end
