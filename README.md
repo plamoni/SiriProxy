@@ -103,9 +103,9 @@ Installs the latest code from the [master] branch on GitHub.
 
 Installs the code from /path/to/SiriProxy
 	
-	siriproxy update -b gemify 
+	siriproxy update -b dev 
 
-Installs the latest code from the [gemify] branch on GitHub
+Installs the latest code from the development branch (called "dev") on GitHub.
 	
 
 FAQ
