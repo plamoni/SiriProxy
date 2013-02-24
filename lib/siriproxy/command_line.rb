@@ -9,6 +9,8 @@ class SiriProxy
 end
 
 class SiriProxy::CommandLine
+  $LOG_LEVEL = 0
+  
   BANNER = <<-EOS
 Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow for the creation of custom handlers for different actions. This can allow developers to easily add functionality to Siri.
 
@@ -46,7 +48,8 @@ Options:
 
   def run_console
     load_code
-    $LOG_LEVEL = 0 
+    init_plugins
+
     # this is ugly, but works for now
     SiriProxy::PluginManager.class_eval do
       def respond(text, options={})
@@ -191,24 +194,12 @@ Options:
   end
   
   def init_plugins
-    if $APP_CONFIG.plugins
-      $APP_CONFIG.plugins.each_with_index do |pluginConfig, i|
-          if pluginConfig.is_a? String
-            className = pluginConfig
-            requireName = "siriproxy-#{className.downcase}"
-          else
-            className = pluginConfig['name']
-            requireName = pluginConfig['require'] || "siriproxy-#{className.downcase}"
-          end
-          require requireName
-          plugin = SiriProxy::Plugin.const_get(className).new(pluginConfig)
-          
-          if plugin.respond_to?('plugin_init')                                                                     
-            $APP_CONFIG.plugins[i]['init'] = plugin.plugin_init
-          end
-          
-          plugin = nil
+    pManager = SiriProxy::PluginManager.new
+    pManager.plugins.each_with_index do |plugin, i|
+      if plugin.respond_to?('plugin_init')                                                                     
+        $APP_CONFIG.plugins[i]['init'] = plugin.plugin_init
       end
     end
+    pManager = nil
   end
 end
