@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "siriproxy"
   s.version     = SiriProxy::VERSION
   s.authors     = ["plamoni", "chendo", "netpro2k"]
-  s.email       = []
-  s.homepage    = ""
+  s.email       = ["plamoni@siriproxy.info"]
+  s.homepage    = "http://www.siriproxy.info/"
   s.summary     = %q{A (tampering) proxy server for Apple's Siri}
   s.description = %q{Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow for the creation of custom handlers for different actions. This can allow developers to easily add functionality to Siri.}
 
