@@ -23,7 +23,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "CFPropertyList", "=2.1.2"
   s.add_runtime_dependency "eventmachine"
   s.add_runtime_dependency "uuidtools"
-  s.add_runtime_dependency "cora", ">=0.0.4"
+  s.add_runtime_dependency "cora", "=0.0.4"
   s.add_runtime_dependency "bundler"
   s.add_runtime_dependency "rake"
+  s.add_runtime_dependency "rubydns"
 end

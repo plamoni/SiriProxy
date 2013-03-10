@@ -12,20 +12,29 @@ class SiriProxy::PluginManager < Cora
     @plugins = []
     if $APP_CONFIG.plugins
       $APP_CONFIG.plugins.each do |pluginConfig|
-          if pluginConfig.is_a? String
-            className = pluginConfig
-            requireName = "siriproxy-#{className.downcase}"
-          else
-            className = pluginConfig['name']
-            requireName = pluginConfig['require'] || "siriproxy-#{className.downcase}"
+          begin
+            if pluginConfig.is_a? String
+              className = pluginConfig
+              requireName = "siriproxy-#{className.downcase}"
+            else
+              className = pluginConfig['name']
+              requireName = pluginConfig['require'] || "siriproxy-#{className.downcase}"
+            end
+            require requireName
+            plugin = SiriProxy::Plugin.const_get(className).new(pluginConfig)
+            plugin.plugin_name = className
+            plugin.manager = self
+            @plugins << plugin
+          rescue
+            if pluginConfig['name']
+              puts "[Error] Failed to load plugin: #{pluginConfig['name']}"
+            else
+              puts "[Error] Failed to load a plugin that has no name, check your config.yml"
+            end 
           end
-          require requireName
-          plugin = SiriProxy::Plugin.const_get(className).new(pluginConfig)
-          plugin.manager = self
-          @plugins << plugin
       end
     end
-    log "Plugins loaded: #{@plugins}"
+    log "Plugins loaded: #{@plugins.join(', ')}"
   end
 
   def process_filters(object, direction)

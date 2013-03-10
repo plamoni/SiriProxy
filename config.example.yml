@@ -1,6 +1,17 @@
 listen: 0.0.0.0
 port: 443
 log_level: 1
+
+#Create an array of DNS servers for use by internal DNS server and resolving guzzoni.apple.com
+upstream_dns: [8.8.8.8, 8.8.4.4]
+
+#Set your computer's IP for use by the internal DNS server
+# server_ip: 192.168.1.100 
+
+#Set effective user when running as root. Supply a non-privileged user (such as 'nobody')
+# user: nobody
+
+
 plugins:
     # NOTE: run bundle after changing plugin configurations to update required gems
 

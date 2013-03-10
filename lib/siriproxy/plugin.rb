@@ -1,6 +1,8 @@
 require 'cora'
 
 class SiriProxy::Plugin < Cora::Plugin
+  attr_accessor :plugin_name
+
   def initialize(config)
 
   end
@@ -53,6 +55,10 @@ class SiriProxy::Plugin < Cora::Plugin
 
   def filters
     self.class.filters
+  end
+
+  def to_s
+    self.plugin_name
   end
 
 end

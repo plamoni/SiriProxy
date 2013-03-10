@@ -55,9 +55,15 @@ class SiriProxy::Connection < EventMachine::Connection
       self.consumed_ace = true;
     end
     
-    process_compressed_data()
-    
-    flush_output_buffer()
+    begin
+      process_compressed_data()
+  
+      flush_output_buffer()
+    rescue
+      puts "[Info - #{self.name}] Got invalid data (non-ACE protocol?), terminating the connection."
+
+      self.close_connection
+    end
   end
   
   def flush_output_buffer

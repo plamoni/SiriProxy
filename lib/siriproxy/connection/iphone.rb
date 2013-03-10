@@ -5,7 +5,6 @@ require 'resolv'
 #####
 class SiriProxy::Connection::Iphone < SiriProxy::Connection
   def initialize upstream_dns
-    puts "Create server for iPhone connection"
     super()
     self.name = "iPhone"
     @upstream_dns = upstream_dns
