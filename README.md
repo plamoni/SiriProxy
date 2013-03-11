@@ -38,75 +38,46 @@ For a list of current plugins and some more demo videos, check the [Plugins page
 Set-up Instructions
 -------------------
 
-**Video of a complete installation on Ubuntu 11.10**
+**NEW Instructions for 0.5.0**
 
-[http://www.youtube.com/watch?v=GQXyJR6mOk0](http://www.youtube.com/watch?v=GQXyJR6mOk0)
+Note that the installation instructions have changed. It's no longer necessary to install dnsmasq. Also, SiriProxy is available via rubygems for easy installation.
 
-This is a video of a complete start-to-finish installation on a fresh install of Ubuntu 11.10. 
+**Set up RVM and Ruby 2.0.0**
 
-The commands used in the video can be found at [https://gist.github.com/1428474](https://gist.github.com/1428474).
+If you don't already have Ruby 2.0.0 (or at least 1.9.3) installed through RVM, please do so in order to make sure you can follow the steps later. Experts can ignore this. If you're unsure, follow these directions carefully:
 
-**Set up DNS**
+1. Install pre-requisites. Veries by system. For a fresh Ubuntu 12.10 install, these seem to be good:
 
-Before you can use SiriProxy, you must set up a DNS server on your network to forward requests for guzzoni.apple.com to the computer running the proxy (siriproxy uses Google's public DNS servers to resolve guzzoni.apple.com, so it may use your forwarding DNS server). I recommend dnsmasq for this purpose. It's easy to get running and can easily handle this sort of behavior. ([http://www.youtube.com/watch?v=a9gO4L0U59s](http://www.youtube.com/watch?v=a9gO4L0U59s))
+	`sudo apt-get install libxslt1.1 libxslt-dev xvfb build-essential git-core curl libyaml-dev libssl-dev`
 
-**Set up RVM and Ruby 1.9.3**
-
-If you don't already have Ruby 1.9.3 installed through RVM, please do so in order to make sure you can follow the steps later. Experts can ignore this. If you're unsure, follow these directions carefully:
-
-1. Download and install RVM (if you don't have it already):
+2. Download and install RVM (if you don't have it already):
 	* Download/install RVM:  
-		`bash < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)`  
-	* Activate RVM:  
-		`[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"`  
-	* (optional, but useful) Add RVM to your .bash_profile:  
-		`echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm" # Load RVM function' >> ~/.bash_profile`   
-2. Install Ruby 1.9.3 (if you don't have it already):   
-	`rvm install 1.9.3`  
-3. Set RVM to use/default to 1.9.3:   
-	`rvm use 1.9.3 --default`
+		`curl -L https://get.rvm.io | bash -s stable --ruby`  
+	* Update .bashrc:  
+		`echo '[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"' >> ~/.bashrc`
+		`echo 'export PATH=$HOME/.rvm/bin:$PATH' >> ~/.bashrc`  
+	* Activate changes:  
+		`. ~/.bashrc`   
+3. Install Ruby 2.0.0 (if you don't have it already):   
+	`rvm install 2.0.0`  
+4. Set RVM to use/default to 2.0.0:   
+	`rvm use 2.0.0 --default`
 	
 **Set up SiriProxy**
 
 Clone this repo locally, then navigate into the SiriProxy directory (the root of the repo). Then follow these instructions carefully. Note that nothing needs to be (or should be) done as root until you launch the server:
 
-1. Install Rake and Bundler:  
-	`rvmsudo gem install rake bundler`  
-2. Install SiriProxy gem (do this from your SiriProxy directory):  
-	`rake install`  
-3. Make .siriproxy directory:  
-	`mkdir ~/.siriproxy`  
-4. Move default config file to .siriproxy (if you need to make configuration changes, do that now by editing the config.yml):  
-	`cp ./config.example.yml ~/.siriproxy/config.yml`  
-5. Generate certificates:  
+1. Install SiriProxy Gem
+	`gem install siriproxy`
+2. Create `~/.siriproxy` directory
+	`mkdir ~/.siriproxy`
+3. Generate Certificates
 	`siriproxy gencerts`
-6. Install `~/.siriproxy/ca.pem` on your phone. This can easily be done by emailing the file to yourself and clicking on it in the iPhone email app. Follow the prompts.
-7. Bundle SiriProxy (this should be done every time you change the config.yml):  
-	`siriproxy bundle`
-8. Start SiriProxy (must start as root because it uses a port < 1024):  
-	`rvmsudo siriproxy server`
-9. Test that the server is running by saying "Test Siri Proxy" to your phone.
-
-Note: on some machines, rvmsudo changes "`~`" to "`/root/`". This means that you may need to symlink your "`.siriproxy`" directory to "`/root/`" in order to get the application to work:  
-
-	sudo ln -s ~/.siriproxy /root/.siriproxy
-
-**Updating SiriProxy**
-
-Once you're up and running, if you modify the code, or you want to grab the latest code from GitHub, you can do that easily using the "siriproxy update" command. Here's a couple of examples:
-
-	siriproxy update  
-	
-Installs the latest code from the [master] branch on GitHub.
-	
-	siriproxy update /path/to/SiriProxy  
-
-Installs the code from /path/to/SiriProxy
-	
-	siriproxy update -b dev 
-
-Installs the latest code from the development branch (called "dev") on GitHub.
-	
+4. Transfer certificate to your phone (it will be located at `~/.siriproxy/ca.pem`, email it to your phone)
+5. Start SiriProxy (`XXX.XXX.XXX.XXX` should be replaced with your server's IP address, e.g. `192.168.1.100`), `nobody` can be replaced with any un-privileged user.
+	`rvmsudo siriproxy server -d XXX.XXX.XXX.XXX -u nobody`
+6. Tell your phone to use your SiriProxy server as its DNS server (under your Wifi settings)
+7. Test that the server is running by saying "Test Siri Proxy" to your phone.
 
 FAQ
 ---
