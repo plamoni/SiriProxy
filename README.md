@@ -59,23 +59,32 @@ If you don't already have Ruby 2.0.0 (or at least 1.9.3) installed through RVM, 
 	* Activate changes:  
 		`. ~/.bashrc`   
 3. Install Ruby 2.0.0 (if you don't have it already):   
+
 	`rvm install 2.0.0`  
+
 4. Set RVM to use/default to 2.0.0:   
+
 	`rvm use 2.0.0 --default`
 	
 **Set up SiriProxy**
 
-Clone this repo locally, then navigate into the SiriProxy directory (the root of the repo). Then follow these instructions carefully. Note that nothing needs to be (or should be) done as root until you launch the server:
-
 1. Install SiriProxy Gem
+ 
 	`gem install siriproxy`
+
 2. Create `~/.siriproxy` directory
+
 	`mkdir ~/.siriproxy`
+
 3. Generate Certificates
+
 	`siriproxy gencerts`
+
 4. Transfer certificate to your phone (it will be located at `~/.siriproxy/ca.pem`, email it to your phone)
 5. Start SiriProxy (`XXX.XXX.XXX.XXX` should be replaced with your server's IP address, e.g. `192.168.1.100`), `nobody` can be replaced with any un-privileged user.
+
 	`rvmsudo siriproxy server -d XXX.XXX.XXX.XXX -u nobody`
+
 6. Tell your phone to use your SiriProxy server as its DNS server (under your Wifi settings)
 7. Test that the server is running by saying "Test Siri Proxy" to your phone.
 
