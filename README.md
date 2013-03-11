@@ -58,6 +58,7 @@ If you don't already have Ruby 2.0.0 (or at least 1.9.3) installed through RVM, 
 		`echo 'export PATH=$HOME/.rvm/bin:$PATH' >> ~/.bashrc`  
 	* Activate changes:  
 		`. ~/.bashrc`   
+
 3. Install Ruby 2.0.0 (if you don't have it already):   
 
 	`rvm install 2.0.0`  
@@ -151,35 +152,12 @@ Your network setup may be different. This is THE most complex part of setting up
 Running SiriProxy as an unprivileged user
 -----------------------------------------
 
-Given that SiriProxy is a bit of a hack and very unstable, it's probably a good idea to not run it as root. This is especially true if you're allowing access to your server from outside your network. Doing this isn't actually that hard, as SiriProxy doesn't need access to anything privileged.
-
-The only trick is that Siri expects the server to be running on port 443, and only privileged users can open ports below 1024 on *NIX operating systems. So I work around this by running SiriProxy on port 2000 and redirecting traffic to that port using iptables.
-
-**Step 1: Set up an account**
-
-I just set up an account called "siriproxy". I made sure it wasn't a "sudoer" (on my computer, that means keep it out of the "sudo" group). I also think it's a good idea to refrain from giving it login privileges. But do as I say on that one, not as I do.
-
-**Step 2: Set up iptables/ufw**
-
-I run UFW on my machine, which is pretty much a wrapper on iptables. I tossed in the following at the top of my `/etc/ufw/before.rules`:
-
-	*nat
-	:PREROUTING ACCEPT [0:0]
-	-A PREROUTING --dst 10.0.0.3 -p tcp --dport 443 -j REDIRECT --to-port 2000
-	COMMIT
-
-The IP referenced (10.0.0.3) is the IP of the computer running SiriProxy. Since this computer is being used as a wireless AP, it's important to only redirect traffic targeted directly at the server, otherwise all traffic to 443/tcp on my wifi network would be incorrectly redirected.
-
-I also made sure to open up 2000/tcp to allow traffic:
-
-    sudo ufw allow 2000/tcp
-    
-**Step 3: Set up upstart script**
-
-The full explanation of this is shown below. It's a handy thing to do by itself. It allows me to have SiriProxy start on boot and also allows me to easily control it using commands like `start siriproxy` and `stop siriproxy`.
+This used to be really hard. Now it's very easy. Just run `rvmsudo siriproxy server -u USER` and SiriProxy will set it's userid to `USER`'s userid.
 
 Running SiriProxy via Upstart
 -----------------------------
+
+**NOTE: This section needs to be updated.** It was written before some of the newer features for SiriProxy. It should be much simpler now.
 
 Here's the upstart script I created for my home SiriProxy server. It respawns on a crash because SiriProxy is delicate and likes to crash. My server is running BackTrack 5 (a derivative of Ubuntu 10.04, I believe) and I use it as my wireless access point, making it an obvious location for SiriProxy:
 
@@ -193,7 +171,7 @@ Here's the upstart script I created for my home SiriProxy server. It respawns on
 	
 	respawn
 	
-	exec start-stop-daemon --start --chuid siriproxy --exec /home/siriproxy/src/SiriProxy/siriproxy2000.sh
+	exec start-stop-daemon --start --exec /home/siriproxy/src/SiriProxy/siriproxy2000.sh
 
 Here are the contents of `siriproxy2000.sh` (as referenced above):
 
