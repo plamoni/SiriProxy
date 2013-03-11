@@ -24,13 +24,28 @@ class SiriProxy
 
       begin
         listen_addr = $APP_CONFIG.listen || "0.0.0.0"
-        puts "[Info - Server] Starting SiriProxy on #{listen_addr}:#{$APP_CONFIG.port}.."
+        puts "[Info - Server] Starting SiriProxy on #{listen_addr}:#{$APP_CONFIG.port}..."
         EventMachine::start_server(listen_addr, $APP_CONFIG.port, SiriProxy::Connection::Iphone, $APP_CONFIG.upstream_dns) { |conn|
           puts "[Info - Guzzoni] Starting conneciton #{conn.inspect}" if $LOG_LEVEL < 1
           conn.plugin_manager = SiriProxy::PluginManager.new()
           conn.plugin_manager.iphone_conn = conn
         }
+      
+        retries = 0
+        while $APP_CONFIG.server_ip && !$SP_DNS_STARTED && retries <= 5
+          puts "[Info - Server] DNS server is not running yet, waiting #{2**retries} second#{'s' if retries > 0}..."
+          sleep 2**retries
+          retries += 1
+        end
+
+        if retries > 5
+          puts "[Error - Server] DNS server did not start up."
+          exit 1
+        end
+
+        EventMachine.set_effective_user($APP_CONFIG.user) if $APP_CONFIG.user
         puts "[Info - Server] SiriProxy up and running."
+
       rescue RuntimeError => err
         if err.message == "no acceptor"
           raise "[Error - Server] Cannot start the server on port #{$APP_CONFIG.port} - are you root, or have another process on this port already?"
@@ -38,9 +53,6 @@ class SiriProxy
           raise
         end
       end
-
-      EventMachine.set_effective_user($APP_CONFIG.user) if $APP_CONFIG.user
-      
     end
   end
 end

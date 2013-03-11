@@ -23,9 +23,11 @@ class SiriProxy::Dns
     @thread = Thread.new {
       begin
         self.run(log_level)
+        $SP_DNS_STARTED = true
       rescue RuntimeError => e
         if e.message.match /^no acceptor/
-          puts "[Error - Server] You must be root to run the DNS server, DNS server is disabled"
+          puts "[Error - Server] Either you're not root or tcp/udp port 53 is in use. DNS server is disabled"
+          $SP_DNS_STARTED = true #Yeah, it didn't start, but we don't want to sit around and wait for it.
         else
           puts "[Error - Server] DNS Error: #{e.message}"
           puts "[Error - Server] DNS Server has crashed. Terminating SiriProxy"
