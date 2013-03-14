@@ -92,7 +92,7 @@ If you don't already have Ruby 2.0.0 (or at least 1.9.3) installed through RVM, 
 FAQ
 ---
 
-**Will this let me run Siri on my iPhone 4, iPod Touch, iPhone 3G, Microwave, etc?**
+**Will this let me run Siri on my devices that doesn't Siri (eg. iPhone 4, iPod Touch, iPhone 3G, Microwave, etc)?**
 
 No. Please stop asking. 
 
@@ -120,7 +120,7 @@ No. Don't even ask.
 
 **I'm getting a bunch of "[Info - Guzzoni] Object: SessionValidationFailed" messages. What's wrong?!**
 
-You're probably not using an iPhone 4S. You need to be using an iPhone 4S (or have a UDID you can sub in) in order to make use of SiriProxy. Sorry, this is not designed to be a way around that limitation. (Thanks to [@brownie545](http://www.twitter.com/brownie545) for providing information on what happens when you use a non-iPhone 4S)
+You're probably using a device without an official Siri. You need to be using an official Siri supported device (or have a UDID you can sub in) in order to make use of SiriProxy. Sorry, this is not designed to be a way around that limitation. (Thanks to [@brownie545](http://www.twitter.com/brownie545) for providing information on what happens when you use a unofficial Siri-devices)
 
 **How do I remove the certificate from my iPhone when I'm done?**
 
