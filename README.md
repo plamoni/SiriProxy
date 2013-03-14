@@ -92,7 +92,7 @@ If you don't already have Ruby 2.0.0 (or at least 1.9.3) installed through RVM, 
 FAQ
 ---
 
-**Will this let me run Siri on my devices that none Siri devices (eg. iPhone 4, iPod Touch, iPhone 3G, Microwave, etc)?**
+**Will this let me run Siri on my none Siri devices (eg. iPhone 4, iPod Touch, iPhone 3G, Microwave, etc)?**
 
 No. Please stop asking. 
 
