@@ -53,7 +53,7 @@ class SiriProxy::Dns
       RubyDNS::run_server(:listen => @interfaces) do
         @logger.level = log_level
 
-        match(/guzzoni.apple.com/, Resolv::DNS::Resource::IN::A) do |_host, transaction|
+        match(/guzzoni.apple.com/, Resolv::DNS::Resource::IN::A) do |transaction|
           transaction.respond!(server_ip)
         end
 
