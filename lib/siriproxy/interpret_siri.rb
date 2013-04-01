@@ -44,7 +44,7 @@ class SiriProxy::Interpret
         }
       }
       
-      phrase
+      phrase.strip
     end
   end
 end
