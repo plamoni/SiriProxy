@@ -33,7 +33,7 @@ class SiriProxy
       
         retries = 0
         while $APP_CONFIG.server_ip && !$SP_DNS_STARTED && retries <= 5
-          puts "[Info - Server] DNS server is not running yet, waiting #{2**retries} second#{'s' if retries > 0}..."
+          puts "[Info - Server] DNS server is not running yet, waiting #{2**retries} second#{'s' if retries > 1}..."
           sleep 2**retries
           retries += 1
         end
