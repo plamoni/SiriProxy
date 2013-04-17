@@ -25,9 +25,9 @@ class SiriProxy::PluginManager < Cora
             plugin.plugin_name = className
             plugin.manager = self
             @plugins << plugin
-          rescue
+          rescue Exception=>e
             if pluginConfig['name']
-              puts "[Error] Failed to load plugin: #{pluginConfig['name']}"
+              puts "[Error] Failed to load plugin: #{pluginConfig['name']} reason: #{e}.message"
             else
               puts "[Error] Failed to load a plugin that has no name, check your config.yml"
             end 
