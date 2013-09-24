@@ -1,6 +1,12 @@
 Siri Proxy
 ==========
 
+SiriProxy and iOS 7
+-------------------
+
+***SiriProxy does not (at this time) work with iOS 7***. Significant changes made to the Siri protocol stack have rendered SiriProxy inoperable with iOS 7. Some of the changes are easy to patch, others may wind up requiring significant work. See [#542](https://github.com/plamoni/SiriProxy/issues/542) for ongoing discussion regarding the effort to make SiriProxy work with iOS 7. However, SiriProxy may *never* support iOS 7. So if SiriProxy is important, you should avoid upgrading your device.
+
+
 About
 -----
 Siri Proxy is a proxy server for Apple's Siri "assistant." The idea is to allow for the creation of custom handlers for different actions. This can allow developers to easily add functionality to Siri. 
