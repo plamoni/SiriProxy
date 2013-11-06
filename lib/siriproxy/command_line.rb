@@ -1,12 +1,5 @@
 require 'optparse'
-require 'yaml'
-require 'ostruct'
-
-# @todo want to make SiriProxy::Commandline without having to
-# require 'siriproxy'. Im sure theres a better way.
-class SiriProxy
-
-end
+require 'siriproxy/configuration'
 
 class SiriProxy::CommandLine
   $LOG_LEVEL = 0
@@ -20,6 +13,7 @@ Usage: siriproxy COMMAND OPTIONS
 
 Commands:
 server            Start up the Siri proxy server
+genconfig         Generate the default configuration directory
 gencerts          Generate a the certificates needed for SiriProxy
 bundle            Install any dependancies needed by plugins
 console           Launch the plugin test console 
@@ -32,12 +26,13 @@ Options:
 
   def initialize
     @branch = nil
-    parse_options
+    parse_options unless ARGV[0] == 'genconfig'
     command     = ARGV.shift
     subcommand  = ARGV.shift
     case command
     when 'server'           then run_server(subcommand)
     when 'gencerts'         then gen_certs
+    when 'genconfig'        then gen_config
     when 'bundle'           then run_bundle(subcommand)
     when 'console'          then run_console
     when 'update'           then update(subcommand)
@@ -98,7 +93,7 @@ Options:
   end
 
   def start_server
-    if $APP_CONFIG.server_ip
+    if SiriProxy.config.server_ip
       require 'siriproxy/dns'
       dns_server = SiriProxy::Dns.new
       dns_server.start()
@@ -107,11 +102,15 @@ Options:
     proxy.start()
   end
 
+  def gen_config
+    SiriProxy::Configuration.create_default
+  end
+
   def gen_certs
     ca_name = @ca_name ||= ""
     command = File.join(File.dirname(__FILE__), '..', "..", "scripts", 'gen_certs.sh')
     sp_root = File.join(File.dirname(__FILE__), '..', "..")
-    puts `#{command} "#{sp_root}" "#{ca_name}"`
+    puts `#{command} "#{sp_root}" "#{ca_name}" "#{SiriProxy.config.config_path}"`
   end
 
   def update(directory=nil)
@@ -145,7 +144,7 @@ Options:
 
   def dns
     require 'siriproxy/dns'
-    $APP_CONFIG.use_dns = true
+    SiriProxy.config.use_dns = true
     server = SiriProxy::Dns.new
     server.run(Logger::DEBUG)
   end
@@ -157,37 +156,28 @@ Options:
   private
   
   def parse_options
-    config_file = File.expand_path(File.join('~', '.siriproxy', 'config.yml'));
-
-    unless File.exists?(config_file)
-      default_config = config_file
-      config_file = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'config.example.yml'))
-    end
-
-    $APP_CONFIG = OpenStruct.new(YAML.load_file(config_file))
-
     # Google Public DNS servers
-    $APP_CONFIG.upstream_dns ||= %w[8.8.8.8 8.8.4.4]
+    SiriProxy.config.upstream_dns ||= %w[8.8.8.8 8.8.4.4]
 
     @branch = nil
     @option_parser = OptionParser.new do |opts|
       opts.on('-d', '--dns ADDRESS',     '[server]      Launch DNS server guzzoni.apple.com with ADDRESS (requires root)') do |ip| 
-        $APP_CONFIG.server_ip = ip
+        SiriProxy.config.server_ip = ip
       end
       opts.on('-l', '--log LOG_LEVEL',   '[server]      The level of debug information displayed (higher is more)') do |log_level|
-        $APP_CONFIG.log_level = log_level
+        SiriProxy.config.log_level = log_level
       end
       opts.on('-L', '--listen ADDRESS',  '[server]      Address to listen on (central or node)') do |listen|
-        $APP_CONFIG.listen = listen
+        SiriProxy.config.listen = listen
       end
       opts.on('-D', '--upstream-dns SERVERS', Array, '[server]      List of upstream DNS servers to use.  Defaults to \'[8.8.8.8, 8.8.4.4]\'') do |servers|
-        $APP_CONFIG.upstream_dns = servers
+        SiriProxy.config.upstream_dns = servers
       end
       opts.on('-p', '--port PORT',       '[server]      Port number for server (central or node)') do |port_num|
-        $APP_CONFIG.port = port_num
+        SiriProxy.config.port = port_num
       end
       opts.on('-u', '--user USER',       '[server]      The user to run as after launch') do |user|
-        $APP_CONFIG.user = user
+        SiriProxy.config.user = user
       end
       opts.on('-b', '--branch BRANCH',   '[update]      Choose the branch to update from (default: master)') do |branch|
         @branch = branch
@@ -230,7 +220,7 @@ Options:
     pManager = SiriProxy::PluginManager.new
     pManager.plugins.each_with_index do |plugin, i|
       if plugin.respond_to?('plugin_init')                                                                     
-        $APP_CONFIG.plugins[i]['init'] = plugin.plugin_init
+        SiriProxy.config.plugins[i]['init'] = plugin.plugin_init
       end
     end
     pManager = nil

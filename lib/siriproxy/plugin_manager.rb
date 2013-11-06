@@ -10,8 +10,8 @@ class SiriProxy::PluginManager < Cora
 
   def load_plugins()
     @plugins = []
-    if $APP_CONFIG.plugins
-      $APP_CONFIG.plugins.each do |pluginConfig|
+    if SiriProxy.config.plugins
+      SiriProxy.config.plugins.each do |pluginConfig|
           begin
             if pluginConfig.is_a? String
               className = pluginConfig
