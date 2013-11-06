@@ -13,6 +13,7 @@ Usage: siriproxy COMMAND OPTIONS
 
 Commands:
 server            Start up the Siri proxy server
+genconfig         Generate the default configuration directory
 gencerts          Generate a the certificates needed for SiriProxy
 bundle            Install any dependancies needed by plugins
 console           Launch the plugin test console 
