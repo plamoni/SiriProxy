@@ -1,6 +1,7 @@
 require 'eventmachine'
 require 'zlib'
 require 'pp'
+require 'siriproxy/configuration'
 
 class String
   def to_hex(seperator=" ")
@@ -55,4 +56,5 @@ class SiriProxy
       end
     end
   end
+
 end
