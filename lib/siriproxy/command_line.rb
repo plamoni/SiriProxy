@@ -25,12 +25,13 @@ Options:
 
   def initialize
     @branch = nil
-    parse_options
+    parse_options unless ARGV[0] == 'genconfig'
     command     = ARGV.shift
     subcommand  = ARGV.shift
     case command
     when 'server'           then run_server(subcommand)
     when 'gencerts'         then gen_certs
+    when 'genconfig'        then gen_config
     when 'bundle'           then run_bundle(subcommand)
     when 'console'          then run_console
     when 'update'           then update(subcommand)
@@ -100,6 +101,10 @@ Options:
     proxy.start()
   end
 
+  def gen_config
+    SiriProxy::Configuration.create_default
+  end
+
   def gen_certs
     ca_name = @ca_name ||= ""
     command = File.join(File.dirname(__FILE__), '..', "..", "scripts", 'gen_certs.sh')
@@ -150,15 +155,6 @@ Options:
   private
   
   def parse_options
-    config_file = File.expand_path(File.join('~', '.siriproxy', 'config.yml'));
-
-    unless File.exists?(config_file)
-      default_config = config_file
-      config_file = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'config.example.yml'))
-    end
-
-    # SiriProxy.config = OpenStruct.new(YAML.load_file(config_file))
-
     # Google Public DNS servers
     SiriProxy.config.upstream_dns ||= %w[8.8.8.8 8.8.4.4]
 
