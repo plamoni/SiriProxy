@@ -11,7 +11,7 @@ class SiriProxy::Dns
   
     servers = []
 
-    $APP_CONFIG.upstream_dns.each { |dns_addr|
+    SiriProxy.config.upstream_dns.each { |dns_addr|
       servers << [:udp, dns_addr, 53]
       servers << [:tcp, dns_addr, 53]
     }
@@ -45,7 +45,7 @@ class SiriProxy::Dns
     Thread.kill(@thread)
   end
 
-  def run(log_level=Logger::WARN,server_ip=$APP_CONFIG.server_ip)
+  def run(log_level=Logger::WARN,server_ip=SiriProxy.config.server_ip)
     if server_ip
       upstream = @upstream
         

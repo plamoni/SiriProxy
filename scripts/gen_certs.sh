@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
 commonName=$2
+SIRI_PROXY_SETTINGS=$3
 
 if [ "${commonName}" == "" ]
 then
   commonName="SiriProxyCA"
+else
+  if [ "${SIRI_PROXY_SETTINGS}" == ""]
+  then
+    SIRI_PROXY_SETTINGS=~/.siriproxy
+  fi
 fi
 
 # Feel free to change any of these defaults
@@ -17,7 +23,6 @@ emailAddress=""
 
 #You probably don't need to modify these unless you know what you're doing.
 SIRI_PROXY_ROOT=$1
-SIRI_PROXY_SETTINGS=~/.siriproxy
 LOG_FILE=$SIRI_PROXY_SETTINGS/cert.log
 TMP_DIR=/tmp
 TMP_CA_DIR=/tmp/siriCA #THIS ($dir) ALSO MUST BE MODIFIED IN openssl.cnf IF YOU CHANGE IT!
