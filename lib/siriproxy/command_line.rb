@@ -47,6 +47,34 @@ Options:
     end
   end
 
+  def run(input)
+    load_code
+    init_plugins
+    # this is ugly, but works for now
+    SiriProxy::PluginManager.class_eval do
+      def respond(text, options={})
+        @response = text
+      end
+      def process(text)
+        super(text)
+      end
+      def send_request_complete_to_iphone
+      end
+      def no_matches
+        @response = "No plugin responded"
+      end
+    end
+    SiriProxy::Plugin.class_eval do
+      def last_ref_id
+        0
+      end
+    end
+
+    cora = SiriProxy::PluginManager.new
+    cora.process(input)
+    return cora.response
+  end
+
   def run_console
     load_code
     init_plugins
