@@ -4,4 +4,8 @@ server.passless.key
 demoCA/
 newkey.pem
 newreq.pem
-
+config.yml
+Gemfile.lock
+*.gem
+.bundle
+pkg/*
